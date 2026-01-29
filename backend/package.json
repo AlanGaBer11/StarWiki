@@ -1,0 +1,47 @@
+{
+  "name": "starwiki-backend",
+  "version": "3.0.0",
+  "description": "Backend para StarWiki, un blog de ciencia ficción y fantasía.",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "dev": " nodemon ./src/server.js",
+    "lint": "standard"
+  },
+  "keywords": [
+    "StarWiki",
+    "starwiki",
+    "blog",
+    "backend",
+    "api"
+  ],
+  "author": "Alan Yahir García Bernal",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "3.0.3",
+    "body-parser": "2.2.2",
+    "cors": "2.8.6",
+    "dotenv": "17.2.3",
+    "express": "5.2.1",
+    "express-rate-limit": "8.2.1",
+    "express-validator": "7.3.1",
+    "helmet": "8.1.0",
+    "jsonwebtoken": "9.0.3",
+    "nodemailer": "7.0.12",
+    "pg": "8.17.2",
+    "pg-hstore": "2.3.4",
+    "sequelize": "6.37.7",
+    "swagger-jsdoc": "6.2.8",
+    "swagger-ui-express": "5.0.1",
+    "multer": "2.0.2",
+    "sharp": "0.34.5",
+    "jest": "30.2.0",
+    "supertest": "7.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "3.1.11",
+    "standard": "17.1.2",
+    "swagger-autogen": "2.23.7"
+  },
+  "type": "module"
+}
