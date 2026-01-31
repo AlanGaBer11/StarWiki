@@ -34,7 +34,7 @@ StarWiki utiliza una **arquitectura Cliente-Servidor** que separa claramente las
 
 ## 🛠️ Tecnologías
 
-### [Backend](./backend/README.md "Documentación Backend")
+### [Backend](./backend/docs/API.md "Documentación Backend")
 
 - **Node.js**: Entorno de ejecución para JavaScript
 - **Express.js**: Framework web minimalista y flexible
@@ -52,21 +52,22 @@ StarWiki utiliza una **arquitectura Cliente-Servidor** que separa claramente las
 ## 📁 Estructura del Proyecto
 
 ```
-StarWiki-App/
+StarWiki/
 ├── backend/
+│   └── docs/                          # Documentación del backend
 │   └── src/
 │       ├── api/                       # Definición de rutas de la API
-│       │   └── index.js               # Rutas principales
+│       │   └── index.router.js        # Rutas principales
 │       ├── config/                    # Configuración de la aplicación
 │       ├── modules/                   # Módulos por dominio de negocio
 │       │   ├── auth/                  # Autenticación y autorización
 │       │   ├── categories/            # Gestión de categorías del blog
 │       │   ├── comments/              # Sistema de comentarios
-│       │   ├── email/                 # Gestión de correos electrónicos
 │       │   ├── posts/                 # Gestión de posts del blog
 │       │   ├── roles/                 # Gestión de roles
 │       │   └── users/                 # Gestión de usuarios
 │       ├── shared/                    # Código compartido entre módulos
+│       │   ├── email/                 # Gestión de correos electrónicos
 │       │   ├── interfaces/            # Definición de contratos e interfaces de repositorios
 │       │   ├── middlewares/           # Middlewares personalizados
 │       │   ├── utils/                 # Utilidades y funciones auxiliares
@@ -99,6 +100,9 @@ modules/users/
 
 - **`builder/`**: Patron Builder para la creación de objetos
 - **`controller/`**: Maneja las peticiones HTTP y coordina entre servicios
+- **`dto/`**: Objetos de transferencia de datos
+  - **`input/`**: DTOs para datos entrantes
+  - **`output/`**: DTOs para datos salientes
 - **`model/`**: Define las estructuras de datos y esquemas
 - **`process/`**: Procesos en segundo plano y tareas independientes
 - **`repository/`**: Implementaciones concretas de los repositorios para acceso a datos
@@ -115,7 +119,7 @@ modules/users/
 - npm
 - Ionic CLI
 
-### [Backend](./backend/README.md "Documentación Backend")
+### [Backend](./backend/docs/API.md "Documentación Backend")
 
 1. Navega al directorio del backend:
 
@@ -133,6 +137,13 @@ modules/users/
 
    ```bash
    .env
+   DB_HOST=localhost
+   DB_PORT = 5432
+   DB_NAME=starwiki_db
+   DB_USER=postgres
+   DB_PASSWORD=yourpassword
+   JWT_SECRET=yourjwtsecret
+
    # Edita .env con tu configuración de PostgreSQL
    ```
 
