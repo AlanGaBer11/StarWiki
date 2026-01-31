@@ -98,15 +98,15 @@ La API utiliza tokens JWT (JSON Web Tokens) para autenticar a los usuarios. A co
 
 ### Usuarios
 
-| Método | Endpoint                 | Descripción                                     | Protección                                       |
-| ------ | ------------------------ | ----------------------------------------------- | ------------------------------------------------ |
-| GET    | `/api/v3/users/`         | Obtiene todos los usuarios disponibles          | Solo usuarios autenticados (ADMIN)               |
-| GET    | `/api/v3/users/:user_id` | Obtiene un usuario específico por ID            | Solo usuarios autenticados (ADMIN, EDITOR, USER) |
-| POST   | `/api/v3/users/`         | Crea un usuario                                 | Solo usuarios autenticados (ADMIN)               |
-| PATCH  | `/api/v3/users/:user_id` | Actualiza un usuario                            | Solo usuarios autenticados (ADMIN, EDITOR, USER) |
-| PATCH  | `/api/v3/users/:user_id` | Desactiva un usuario con código de verificación | Solo usuarios autenticados (ADMIN, EDITOR, USER) |
-| PATCH  | `/api/v3/users/:user_id` | Reactiva un usuario con código de verificación  | Solo usuarios autenticados (ADMIN, EDITOR, USER) |
-| DELETE | `/api/v3/users/:user_id` | Elimina un usuario                              | Solo usuarios autenticados (ADMIN)               |
+| Método | Endpoint                            | Descripción                                     | Protección                                       |
+| ------ | ----------------------------------- | ----------------------------------------------- | ------------------------------------------------ |
+| GET    | `/api/v3/users/`                    | Obtiene todos los usuarios disponibles          | Solo usuarios autenticados (ADMIN)               |
+| GET    | `/api/v3/users/:user_id`            | Obtiene un usuario específico por ID            | Solo usuarios autenticados (ADMIN, EDITOR, USER) |
+| POST   | `/api/v3/users/`                    | Crea un usuario                                 | Solo usuarios autenticados (ADMIN)               |
+| PATCH  | `/api/v3/users/:user_id`            | Actualiza un usuario                            | Solo usuarios autenticados (ADMIN, EDITOR, USER) |
+| PATCH  | `/api/v3/users/deactivate/:user_id` | Desactiva un usuario con código de verificación | Solo usuarios autenticados (ADMIN, EDITOR, USER) |
+| PATCH  | `/api/v3/users/reactivate/:user_id` | Reactiva un usuario con código de verificación  | Solo usuarios autenticados (ADMIN, EDITOR, USER) |
+| DELETE | `/api/v3/users/:user_id`            | Elimina un usuario                              | Solo usuarios autenticados (ADMIN)               |
 
 ### Categorías
 
