@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
+import "./config/db.js";
 
 // Inicializar la aplicación
 const app = express();

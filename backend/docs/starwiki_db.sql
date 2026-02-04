@@ -1,6 +1,10 @@
 -- =============================================
 -- 1. CONFIGURACIÓN INICIAL Y LIMPIEZA
 -- =============================================
+-- Crear la base de datos si no existe
+CREATE DATABASE starwiki_db;
+-- Conectarse a la base de datos
+\c starwiki_db;
 
 -- Limpiamos tablas previas en orden correcto (por las dependencias)
 DROP TABLE IF EXISTS comments CASCADE;
