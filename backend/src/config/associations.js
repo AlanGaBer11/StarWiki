@@ -1,9 +1,9 @@
-import Role from "../modules/roles/model/Role.js";
-import Category from "../modules/categories/model/Category.js";
-import User from "../modules/users/model/User.js";
-import UserVerification from "../modules/users/model/UserVerification.js";
-import Post from "../modules/posts/model/Post.js";
-import Comment from "../modules/comments/model/Comment.js";
+import Role from "#modules/roles/model/Role.js";
+import Category from "#modules/categories/model/Category.js";
+import User from "#modules/users/model/User.js";
+import UserVerification from "#modules/users/model/UserVerification.js";
+import Post from "#modules/posts/model/Post.js";
+import Comment from "#modules/comments/model/Comment.js";
 
 // Relación entre User y Role
 User.belongsTo(Role, { foreignKey: "role_id" });
