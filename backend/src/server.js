@@ -4,7 +4,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
-import "./config/db.js";
+import "./config/loadModels.js"; // Cargar los modelos de la base de datos
+import "./config/associations.js"; // Cargar las asociaciones entre modelos
 
 // Inicializar la aplicación
 const app = express();
