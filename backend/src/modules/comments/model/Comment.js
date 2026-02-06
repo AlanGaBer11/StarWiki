@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "#config/db.js";
+import { logger } from "#config/chalk.js";
 
 class Comment extends Model {}
 
@@ -56,6 +57,6 @@ Comment.init(
   },
 );
 
-console.log("Modelo Comment cargado correctamente.");
+logger.info("Modelo Comment cargado correctamente.");
 
 export default Comment;

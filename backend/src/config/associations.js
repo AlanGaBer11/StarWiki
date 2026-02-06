@@ -1,3 +1,5 @@
+import { logger } from "#config/chalk.js";
+
 import Role from "#modules/roles/model/Role.js";
 import Category from "#modules/categories/model/Category.js";
 import User from "#modules/users/model/User.js";
@@ -19,4 +21,4 @@ Post.belongsTo(Category, { foreignKey: "category_id" });
 Comment.belongsTo(Post, { foreignKey: "post_id" });
 Comment.belongsTo(User, { foreignKey: "user_id" });
 
-console.log("Relaciones listas");
+logger.info("Relaciones listas.");

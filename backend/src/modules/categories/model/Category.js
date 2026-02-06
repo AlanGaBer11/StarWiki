@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "#config/db.js";
+import { logger } from "#config/chalk.js";
 
 class Category extends Model {}
 
@@ -40,6 +41,6 @@ Category.init(
   },
 );
 
-console.log("Modelo Category cargado correctamente.");
+logger.info("Modelo Category cargado correctamente.");
 
 export default Category;

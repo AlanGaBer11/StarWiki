@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize";
-
+import { logger } from "#config/chalk.js";
 class Database {
   constructor() {
     if (process.env.NODE_ENV === "development") {
@@ -17,7 +17,7 @@ class Database {
         },
       });
     } else {
-      console.error(
+      logger.error(
         "El entorno de la base de datos no está configurado correctamente.",
       );
     }
@@ -33,11 +33,11 @@ class Database {
   async initialize() {
     try {
       await this.sequelize.authenticate();
-      console.log(
+      logger.success(
         `Conexión a la base de datos desde ${process.env.NODE_ENV} exitosa.`,
       );
     } catch (error) {
-      console.error("No se pudo conectar a la base de datos:", error);
+      logger.error("No se pudo conectar a la base de datos:", error);
     }
   }
 

@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "#config/db.js";
+import { logger } from "#config/chalk.js";
 
 class User extends Model {}
 
@@ -88,6 +89,6 @@ User.init(
   },
 );
 
-console.log("Modelo User cargado correctamente.");
+logger.info("Modelo User cargado correctamente.");
 
 export default User;
