@@ -6,6 +6,7 @@ CREATE DATABASE starwiki_db;
 -- Conectarse a la base de datos
 \c starwiki_db;
 
+
 -- Limpiamos tablas previas en orden correcto (por las dependencias)
 DROP TABLE IF EXISTS comments CASCADE;
 DROP TABLE IF EXISTS posts CASCADE;
@@ -43,8 +44,8 @@ $$ LANGUAGE plpgsql;
 /* Roles Table */
 CREATE TABLE roles (
     role_id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE,
-    description VARCHAR(100),
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -53,7 +54,7 @@ CREATE TABLE roles (
 CREATE TABLE categories (
     category_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT,
+    description VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -93,9 +94,9 @@ CREATE TABLE posts(
     post_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     category_id INT NOT NULL,
-    title VARCHAR(200) NOT NULL,
+    title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    image_url VARCHAR(255),
+    image_url VARCHAR(255) NOT NULL,
     status content_status DEFAULT 'Borrador',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
