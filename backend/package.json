@@ -48,5 +48,11 @@
     "supertest": "7.2.2",
     "swagger-autogen": "2.23.7"
   },
+  "imports": {
+    "#api/*": "./src/api/*",
+    "#config/*": "./src/config/*",
+    "#modules/*": "./src/modules/*",
+    "#shared/*": "./src/shared/*"
+  },
   "type": "module"
 }

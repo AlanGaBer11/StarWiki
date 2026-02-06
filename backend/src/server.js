@@ -4,9 +4,10 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
-import sequelize from "./config/db.js";
-import "./config/loadModels.js"; // Cargar los modelos de la base de datos
-import "./config/associations.js"; // Cargar las asociaciones entre modelos
+
+import sequelize from "#config/db.js";
+import "#config/loadModels.js"; // Cargar los modelos de la base de datos
+import "#config/associations.js"; // Cargar las asociaciones entre modelos
 
 // Sincronizar modelos con la base de datos
 sequelize
