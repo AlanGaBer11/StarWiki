@@ -34,7 +34,7 @@ StarWiki utiliza una **arquitectura Cliente-Servidor** que separa claramente las
 
 ## 🛠️ Tecnologías
 
-### [Backend](./backend/docs/API.md "Documentación Backend")
+### [Backend](./backend/README.md "Documentación Backend")
 
 - **Node.js**: Entorno de ejecución para JavaScript
 - **Express.js**: Framework web minimalista y flexible
@@ -119,7 +119,7 @@ modules/users/
 - npm
 - Ionic CLI
 
-### [Backend](./backend/docs/API.md "Documentación Backend")
+### [Backend](./backend/README.md "Documentación Backend")
 
 1. Navega al directorio del backend:
 
