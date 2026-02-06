@@ -2,10 +2,6 @@ import { Sequelize } from "sequelize";
 
 class Database {
   constructor() {
-    if (Database.instance) {
-      return Database.instance;
-    }
-
     if (process.env.NODE_ENV === "development") {
       this.sequelize = new Sequelize({
         host: process.env.DB_HOST,
@@ -25,19 +21,24 @@ class Database {
         "El entorno de la base de datos no está configurado correctamente.",
       );
     }
+  }
 
-    this.sequelize
-      .authenticate()
-      .then(() =>
-        console.log(
-          `Conexión a la base de datos desde ${process.env.NODE_ENV} exitosa.`,
-        ),
-      )
-      .catch((error) =>
-        console.error("No se pudo conectar a la base de datos:", error),
+  static getInstance() {
+    if (!Database.instance) {
+      Database.instance = new Database();
+    }
+    return Database.instance;
+  }
+
+  async initialize() {
+    try {
+      await this.sequelize.authenticate();
+      console.log(
+        `Conexión a la base de datos desde ${process.env.NODE_ENV} exitosa.`,
       );
-
-    Database.instance = this;
+    } catch (error) {
+      console.error("No se pudo conectar a la base de datos:", error);
+    }
   }
 
   getConnection() {
@@ -45,6 +46,7 @@ class Database {
   }
 }
 
-const databaseInstance = new Database();
+const databaseInstance = Database.getInstance();
+databaseInstance.initialize();
 
 export default databaseInstance.getConnection();
