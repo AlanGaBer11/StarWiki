@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "#config/db.js";
+import { logger } from "#config/chalk.js";
 
 class Post extends Model {}
 
@@ -67,6 +68,6 @@ Post.init(
   },
 );
 
-console.log("Modelo Post cargado correctamente.");
+logger.info("Modelo Post cargado correctamente.");
 
 export default Post;

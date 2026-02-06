@@ -9,14 +9,15 @@ import sequelize from "#config/db.js";
 import "#config/loadModels.js"; // Cargar los modelos de la base de datos
 import "#config/associations.js"; // Cargar las asociaciones entre modelos
 
+import { logger } from "#config/chalk.js";
 // Sincronizar modelos con la base de datos
 sequelize
   .sync({ alter: true }) // Usar alter: true para actualizar tablas sin perder datos ó usar force: true para recrear tablas (pérdida de datos)
   .then(() => {
-    console.log("Base de datos sincronizada correctamente.");
+    logger.success("Base de datos sincronizada correctamente.");
   })
   .catch((error) => {
-    console.error("Error al sincronizar la base de datos:", error);
+    logger.error("Error al sincronizar la base de datos:", error);
   });
 
 // Inicializar la aplicación
@@ -35,7 +36,7 @@ const limiter = rateLimit({
     "¡Demasiadas solicitudes desde esta IP, por favor intente de nuevo más tarde!",
   standardHeaders: true,
   handler: (req, res) => {
-    console.log(`Límite de peticiones alcanzado para al IP: ${req.ip}`);
+    logger.warning(`Límite de peticiones alcanzado para al IP: ${req.ip}`);
     res.status(429).json({
       success: false,
       status: 429,
@@ -81,5 +82,5 @@ app.use((req, res, next) => {
 
 // Inicializar el servidor
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  logger.success(`Servidor corriendo en http://localhost:${PORT}`);
 });

@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "#config/db.js";
+import { logger } from "#config/chalk.js";
 
 class UserVerification extends Model {}
 
@@ -46,6 +47,6 @@ UserVerification.init(
   },
 );
 
-console.log("Modelo UserVerification cargado correctamente.");
+logger.info("Modelo UserVerification cargado correctamente.");
 
 export default UserVerification;

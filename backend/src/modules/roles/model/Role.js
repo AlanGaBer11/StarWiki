@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "#config/db.js";
+import { logger } from "#config/chalk.js";
 
 class Role extends Model {}
 
@@ -40,6 +41,6 @@ Role.init(
   },
 );
 
-console.log("Modelo Role cargado correctamente.");
+logger.info("Modelo Role cargado correctamente.");
 
 export default Role;
