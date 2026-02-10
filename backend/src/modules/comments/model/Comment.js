@@ -6,7 +6,7 @@ class Comment extends Model {}
 
 Comment.init(
   {
-    ccomment_id: {
+    comment_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -32,26 +32,24 @@ Comment.init(
       allowNull: false,
     },
     status: {
-      type: "content_status", // Usa el tipo ENUM ya creado en la BD
+      type: DataTypes.ENUM("Borrador", "Publicado", "Archivado"),
       allowNull: false,
       defaultValue: "Borrador",
     },
     created_at: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      allowNull: false,
     },
     updated_at: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      allowNull: false,
     },
   },
   {
     sequelize, // Instancia de Sequelize
     modelName: "Comment", // Nombre del modelo,
     tableName: "comments", // Nombre de la tabla en la base de datos
-    timestamps: true, // Desactivar timestamps automáticos
-    createdAt: "created_at", // Mapeo del campo created_at
-    updatedAt: "updated_at", // Mapeo del campo updated_at
+    timestamps: false, // Desactivar timestamps automáticos
   },
 );
 
