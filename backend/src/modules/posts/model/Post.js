@@ -52,7 +52,7 @@ Post.init(
       defaultValue: DataTypes.NOW,
     },
     updated_at: {
-      allowNull: false,
+      type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
   },
