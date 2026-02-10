@@ -5,11 +5,13 @@ import cors from "cors";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 
+import { logger } from "#config/chalk.js"; // Importar el logger configurado con Chalk
+import ApiRoutes from "./api/index.js"; // Importar la clase de rutas de la API
+
 import sequelize from "#config/db.js";
 import "#config/loadModels.js"; // Cargar los modelos de la base de datos
 import "#config/associations.js"; // Cargar las asociaciones entre modelos
 
-import { logger } from "#config/chalk.js";
 // Sincronizar modelos con la base de datos
 sequelize
   .sync({ alter: true }) // Usar alter: true para actualizar tablas sin perder datos ó usar force: true para recrear tablas (pérdida de datos)
@@ -70,17 +72,24 @@ app.get("/ping", (req, res) => {
   res.send("Pong!");
 });
 
-// Rutas que no existen
-app.use((req, res, next) => {
-  res.status(404).json({
-    success: false,
-    status: 404,
-    message: "Ruta no encontrada",
-    timestamp: new Date().toISOString(),
-  });
-});
+// Configurar las rutas de la API
+const startServer = async () => {
+  const apiRoutes = await ApiRoutes.create(); //
+  app.use("/api/v3", apiRoutes.router);
 
-// Inicializar el servidor
-app.listen(PORT, () => {
-  logger.success(`Servidor corriendo en http://localhost:${PORT}`);
-});
+  // Rutas que no existen
+  app.use((req, res, next) => {
+    res.status(404).json({
+      success: false,
+      status: 404,
+      message: "Ruta no encontrada",
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+  // Inicializar el servidor
+  app.listen(PORT, () => {
+    logger.success(`Servidor corriendo en http://localhost:${PORT}`);
+  });
+};
+startServer();
