@@ -22,20 +22,18 @@ Role.init(
     },
     created_at: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      allowNull: false,
     },
     updated_at: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      allowNull: false,
     },
   },
   {
     sequelize, // Instancia de Sequelize
     modelName: "Role", // Nombre del modelo
     tableName: "roles", // Nombre de la tabla en la base de datos
-    timestamps: true, // Desactivar timestamps automáticos
-    createdAt: "created_at", // Mapeo del campo created_at
-    updatedAt: "updated_at", // Mapeo del campo updated_at
+    timestamps: false, // Desactivar timestamps automáticos
   },
 );
 
