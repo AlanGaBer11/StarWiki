@@ -12,7 +12,7 @@ class Database {
         dialect: "postgres",
         logging: false,
         define: {
-          timestamps: true,
+          timestamps: false,
           underscored: true,
         },
       });
