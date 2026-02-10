@@ -58,6 +58,7 @@ User.init(
     },
     biography: {
       type: DataTypes.TEXT,
+      allowNull: true,
     },
     status: {
       type: "users_status", // Usa el tipo ENUM ya creado en la BD
@@ -70,12 +71,10 @@ User.init(
     },
     created_at: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: DataTypes.NOW,
     },
     updated_at: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: DataTypes.NOW,
     },
   },
