@@ -17,9 +17,9 @@ class RoleProcess {
   }
 
   // Método para buscar todos los roles
-  async findAllRoles() {
+  async findAllRoles(page, limit) {
     try {
-      return await this.roleService.findAllRoles();
+      return await this.roleService.findAllRoles(page, limit);
     } catch (error) {
       logger.error("Error en el proceso al buscar roles:", error);
       throw error;
