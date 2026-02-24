@@ -27,11 +27,34 @@ class RoleController {
   // Método para manejar la solicitud de buscar todos los roles
   async findAllRoles(req, res) {
     try {
+      // Obtener los parámetros de paginación de la consulta (si se proporcionan)
+      const page = Number.parseInt(req.query.page) || 1; // Página actual (por defecto es 1)
+      const limit = Number.parseInt(req.query.limit) || 10; // Número de roles por página (por defecto es 10)
+
+      // Validar que los parámetros sean números enteros positivos
+      if (page < 1 || limit < 1) {
+        logger.warning(
+          "Los parámetros de paginación deben ser números enteros positivos.",
+        );
+        const response = new RoleResponseDtoOutput({
+          success: false,
+          status: 400,
+          message:
+            "Los parámetros de paginación deben ser números enteros positivos.",
+          roles: [],
+        });
+        return res.status(400).json(response);
+      }
+
+      // Limitar el número máximo de roles por página para evitar sobrecargar el sistema
+      const MAX_LIMIT = 100;
+      const FINAL_LIMIT = Math.min(limit, MAX_LIMIT);
+
       // Llamar al proceso para buscar todos los roles
-      const roles = await this.roleProcess.findAllRoles();
+      const result = await this.roleProcess.findAllRoles(page, FINAL_LIMIT);
 
       // Validar si se encontraron roles
-      if (!roles || roles.length === 0) {
+      if (!result.roles || result.roles.length === 0) {
         logger.warning("No se encontraron roles.");
         const response = new RoleResponseDtoOutput({
           success: false,
@@ -48,7 +71,10 @@ class RoleController {
         success: true,
         status: 200,
         message: "Roles encontrados exitosamente.",
-        roles: roles,
+        page,
+        limit: FINAL_LIMIT,
+        totalRoles: result.totalRoles,
+        roles: result.roles,
       });
       return res.status(200).json(response);
     } catch (error) {

@@ -18,18 +18,23 @@ class RoleService {
   }
 
   // Método para buscar todos los roles
-  async findAllRoles() {
+  async findAllRoles(page, limit) {
     try {
-      const roles = await this.roleRepository.findAll();
+      const result = await this.roleRepository.findAll(page, limit);
 
       // Validar si se encontraron roles
-      if (!roles || roles.length === 0) {
+      if (!result.roles || result.roles.length === 0) {
         logger.warning("No se encontraron roles.");
-        return []; // Retornar un array vacío si no se encontraron roles
+        return { roles: [], totalPages: 0, totalRoles: 0, currentPage: 0 }; // Retornar un objeto con propiedades vacías si no se encontraron roles
       }
 
-      logger.info(`Se encontraron ${roles.length} roles.`);
-      return roles.map((role) => new RoleDtoOutput(role)); // Mapear cada rol a un DTO de salida
+      logger.info(`Se encontraron ${result.roles.length} roles.`);
+      return {
+        roles: result.roles.map((role) => new RoleDtoOutput(role)), // Mapear cada rol a un DTO de salida
+        totalRoles: result.totalRoles,
+        totalPages: result.totalPages,
+        currentPage: result.currentPage,
+      };
     } catch (error) {
       logger.error("Error al buscar roles:", error);
       throw error;
