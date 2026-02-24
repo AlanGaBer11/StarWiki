@@ -3,6 +3,11 @@ class IBaseRepository {
   async findAll() {
     throw new Error("Método no implementado.");
   }
+
+  // Método para buscar un registro por si ID
+  async findById(id) {
+    throw new Error("Método no implementado.");
+  }
 }
 
 export default IBaseRepository;
