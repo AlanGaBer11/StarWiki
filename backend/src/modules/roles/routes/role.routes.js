@@ -6,7 +6,15 @@ class RoleRoutes {
     // Crear una instancia del enrutador de Express
     this.router = Router();
 
+    /**
+     * @param {import('../controller/role.controller.js').default} roleController
+     */
+
     // Inyección de la dependencia del controlador de roles
+
+    /**
+     * @type {import('../controller/role.controller.js').default}
+     */
     this.roleController = roleController;
 
     // Configurar las rutas de roles
@@ -25,6 +33,11 @@ class RoleRoutes {
     this.router.get(
       "/",
       this.roleController.findAllRoles.bind(this.roleController),
+    );
+    // Ruta para obtener un rol por su ID
+    this.router.get(
+      "/:role_id",
+      this.roleController.findRoleById.bind(this.roleController),
     );
   }
 }

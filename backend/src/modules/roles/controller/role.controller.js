@@ -1,10 +1,20 @@
 import RoleProcess from "../proccess/role.process.js";
 import { logger } from "#config/chalk.js";
 import { RoleResponseDtoOutput } from "../dto/output/role.dto.output.js";
+import { RoleResponseSingleDtoOutput } from "../dto/output/role.single.dto.output.js";
 
 class RoleController {
+  /**
+   *
+   * @param {import('../proccess/role.process.js').default} roleProcess
+   */
+
   // Inyección de la dependencia del proceso de roles
   constructor(roleProcess) {
+    /**
+     * @type {import('../proccess/role.process.js').default}
+     */
+
     this.roleProcess = roleProcess;
   }
 
@@ -33,7 +43,7 @@ class RoleController {
       }
 
       // Enviar la respuesta con los roles encontrados
-      logger.success("Roles enviados exitosamente.entonce");
+      logger.success("Roles enviados exitosamente.");
       const response = new RoleResponseDtoOutput({
         success: true,
         status: 200,
@@ -49,6 +59,56 @@ class RoleController {
         message: "Ocurrió un error al buscar los roles.",
       });
       // Enviar una respuesta de error en caso de que ocurra un problema
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de buscar un rol por su ID
+  async findRoleById(req, res) {
+    try {
+      const { role_id } = req.params;
+
+      // Validar que el ID del rol sea un número válido
+      if (!/^\d+$/.test(role_id)) {
+        logger.warning(`ID inválido: ${role_id}`);
+        const response = new RoleResponseSingleDtoOutput({
+          success: false,
+          status: 400,
+          message: "El ID de rol debe ser un número entero positivo.",
+        });
+        return res.status(400).json(response);
+      }
+
+      // Llamar al proceso para buscar un rol por su ID
+      const role = await this.roleProcess.findRoleById(role_id);
+
+      // Validar si se encontró el rol
+      if (!role) {
+        logger.warning(`No se encontró el rol con ID: ${role_id}.`);
+        const response = new RoleResponseSingleDtoOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró el rol con ID: ${role_id}.`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Enviar la respuesta con el rol encontrado
+      logger.success("Rol enviado exitosamente.");
+      const response = new RoleResponseSingleDtoOutput({
+        success: true,
+        status: 200,
+        message: "Rol encontrado exitosamente.",
+        role: role,
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      logger.error("Error en el controlador al buscar el rol por ID:", error);
+      const response = new RoleResponseSingleDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al buscar el rol por ID.",
+      });
       return res.status(500).json(response);
     }
   }
