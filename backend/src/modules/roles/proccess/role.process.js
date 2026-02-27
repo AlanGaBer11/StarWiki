@@ -1,5 +1,5 @@
 import RoleService from "../service/role.service.js";
-import { logger } from "#config/chalk.js";
+import logger from "#config/chalk.js";
 
 class RoleProcess {
   /**

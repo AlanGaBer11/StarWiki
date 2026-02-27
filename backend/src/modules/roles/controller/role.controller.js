@@ -1,5 +1,6 @@
 import RoleProcess from "../proccess/role.process.js";
-import { logger } from "#config/chalk.js";
+import logger from "#config/chalk.js";
+
 import { RolesResponseDtoOutput } from "../dto/output/role.dto.output.js";
 import { RoleResponseSingleDtoOutput } from "../dto/output/role.single.dto.output.js";
 import { RoleResponseDtoOutput } from "../dto/output/role.response.dto.output.js";

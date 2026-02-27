@@ -1,5 +1,5 @@
 import { validationResult } from "express-validator";
-import { logger } from "#config/chalk.js";
+import logger from "#config/chalk.js";
 
 const validateData = async (req, res, next) => {
   const errors = validationResult(req);

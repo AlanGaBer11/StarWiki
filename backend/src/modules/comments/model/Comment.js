@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "#config/db.js";
-import { logger } from "#config/chalk.js";
+import logger from "#config/chalk.js";
 
 class Comment extends Model {}
 

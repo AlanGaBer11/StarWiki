@@ -1,4 +1,4 @@
-import { logger } from "#config/chalk.js";
+import logger from "#config/chalk.js";
 
 import Role from "#modules/roles/model/Role.js";
 import Category from "#modules/categories/model/Category.js";

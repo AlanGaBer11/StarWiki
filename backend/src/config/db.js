@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize";
-import { logger } from "#config/chalk.js";
+import logger from "#config/chalk.js";
 class Database {
   constructor() {
     if (process.env.NODE_ENV === "development") {

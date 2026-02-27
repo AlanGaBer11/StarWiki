@@ -1,8 +1,9 @@
 import RepositoryConfig from "#config/Repository.js";
-import { logger } from "#config/chalk.js";
+import logger from "#config/chalk.js";
+import RoleBuilder from "../builder/role.builder.js";
+
 import { RoleDtoOutput } from "../dto/output/role.dto.output.js";
 import { RoleSingleDtoOutput } from "../dto/output/role.single.dto.output.js";
-import RoleBuilder from "../builder/role.builder.js";
 
 class RoleService {
   /**
