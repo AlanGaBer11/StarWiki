@@ -5,7 +5,7 @@ import cors from "cors";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 
-import { logger } from "#config/chalk.js"; // Importar el logger configurado con Chalk
+import logger from "#config/chalk.js"; // Importar el logger configurado con Chalk
 import ApiRoutes from "./api/index.js"; // Importar la clase de rutas de la API
 
 // Inicializar la aplicación
