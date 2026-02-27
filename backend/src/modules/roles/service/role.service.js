@@ -2,6 +2,8 @@ import RepositoryConfig from "#config/Repository.js";
 import { logger } from "#config/chalk.js";
 import { RoleDtoOutput } from "../dto/output/role.dto.output.js";
 import { RoleSingleDtoOutput } from "../dto/output/role.single.dto.output.js";
+import RoleBuilder from "../builder/role.builder.js";
+
 class RoleService {
   /**
    * @param {import('../repository/role.repository.js').default} roleRepository
@@ -54,6 +56,32 @@ class RoleService {
       return new RoleSingleDtoOutput(role); // Mapear el rol a un DTO de salida
     } catch (error) {
       logger.error("Error al buscar el rol por ID:", error);
+      throw error;
+    }
+  }
+
+  async createRole(roleData) {
+    try {
+      const { name, description } = roleData;
+
+      // Validar si el rol ya existe
+      const existingRole = await this.roleRepository.findByName(name);
+      if (existingRole) {
+        logger.warning(`El rol con nombre "${name}" ya existe.`);
+        throw new Error(`El rol con nombre "${name}" ya existe.`);
+      }
+
+      // Builder para crear un nuevo rol
+      const builder = new RoleBuilder()
+        .setName(name)
+        .setDescription(description);
+
+      const newRole = builder.build();
+
+      // Crear el nuevo rol en el repositorio
+      return await this.roleRepository.create(newRole);
+    } catch (error) {
+      logger.error("Error al crear el rol:", error);
       throw error;
     }
   }
