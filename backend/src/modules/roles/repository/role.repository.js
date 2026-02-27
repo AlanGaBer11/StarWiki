@@ -23,6 +23,16 @@ class RoleRepository extends IRoleRepository {
   async findById(role_id) {
     return await Role.findByPk(role_id);
   }
+
+  // Método para buscar un rol por su nombre
+  async findByName(name) {
+    return await Role.findOne({ where: { name } });
+  }
+
+  // Método para crear un nuevo rol
+  async create(roleData) {
+    return await Role.create(roleData);
+  }
 }
 
 export default RoleRepository;
