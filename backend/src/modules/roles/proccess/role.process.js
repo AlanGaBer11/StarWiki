@@ -35,6 +35,16 @@ class RoleProcess {
       throw error;
     }
   }
+
+  // Método para crear un nuevo rol
+  async createRole(roleData) {
+    try {
+      return await this.roleService.createRole(roleData);
+    } catch (error) {
+      logger.error("Error en el proceso al crear el rol:", error);
+      throw error;
+    }
+  }
 }
 
 export default RoleProcess;

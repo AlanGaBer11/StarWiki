@@ -1,12 +1,15 @@
 import RoleProcess from "../proccess/role.process.js";
 import { logger } from "#config/chalk.js";
-import { RoleResponseDtoOutput } from "../dto/output/role.dto.output.js";
+import { RolesResponseDtoOutput } from "../dto/output/role.dto.output.js";
 import { RoleResponseSingleDtoOutput } from "../dto/output/role.single.dto.output.js";
+import { RoleResponseDtoOutput } from "../dto/output/role.response.dto.output.js";
+import RoleCreateDtoInput from "../dto/input/role.create.dto.input.js";
 
 class RoleController {
   /**
    *
    * @param {import('../proccess/role.process.js').default} roleProcess
+   *
    */
 
   // Inyección de la dependencia del proceso de roles
@@ -36,7 +39,7 @@ class RoleController {
         logger.warning(
           "Los parámetros de paginación deben ser números enteros positivos.",
         );
-        const response = new RoleResponseDtoOutput({
+        const response = new RolesResponseDtoOutput({
           success: false,
           status: 400,
           message:
@@ -56,7 +59,7 @@ class RoleController {
       // Validar si se encontraron roles
       if (!result.roles || result.roles.length === 0) {
         logger.warning("No se encontraron roles.");
-        const response = new RoleResponseDtoOutput({
+        const response = new RolesResponseDtoOutput({
           success: false,
           status: 404,
           message: "No se encontraron roles.",
@@ -67,7 +70,7 @@ class RoleController {
 
       // Enviar la respuesta con los roles encontrados
       logger.success("Roles enviados exitosamente.");
-      const response = new RoleResponseDtoOutput({
+      const response = new RolesResponseDtoOutput({
         success: true,
         status: 200,
         message: "Roles encontrados exitosamente.",
@@ -79,7 +82,7 @@ class RoleController {
       return res.status(200).json(response);
     } catch (error) {
       logger.error("Error en el controlador al buscar roles:", error);
-      const response = new RoleResponseDtoOutput({
+      const response = new RolesResponseDtoOutput({
         success: false,
         status: 500,
         message: "Ocurrió un error al buscar los roles.",
@@ -134,6 +137,44 @@ class RoleController {
         success: false,
         status: 500,
         message: "Ocurrió un error al buscar el rol por ID.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de crear un nuevo rol
+  async createRole(req, res) {
+    try {
+      const roleDto = new RoleCreateDtoInput(req.body);
+
+      // Validaciones básicas para los datos de entrada
+      if (!roleDto.name || !roleDto.description) {
+        logger.warning("Faltan datos requeridos para crear el rol.");
+        const response = new RoleResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: "El nombre y la descripción del rol son requeridos.",
+        });
+        return res.status(400).json(response);
+      }
+
+      // Llamar al proesso para crear un nuevo rol
+      const newRole = await this.roleProcess.roleService.createRole(roleDto);
+      // Enviar la respuesta con el nuevo rol creado
+      logger.success("Rol creado exitosamente.");
+      const response = new RoleResponseDtoOutput({
+        success: true,
+        status: 201,
+        message: "Rol creado exitosamente.",
+        role: newRole,
+      });
+      return res.status(201).json(response);
+    } catch (error) {
+      logger.error("Error en el controlador al crear el rol:", error);
+      const response = new RoleResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al crear el rol.",
       });
       return res.status(500).json(response);
     }
