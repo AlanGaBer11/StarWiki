@@ -18,7 +18,7 @@ class RoleDtoOutput {
   }
 }
 
-class RoleResponseDtoOutput {
+class RolesResponseDtoOutput {
   constructor({
     success,
     status,
@@ -57,4 +57,4 @@ class RoleResponseDtoOutput {
   }
 }
 
-export { RoleDtoOutput, RoleResponseDtoOutput };
+export { RoleDtoOutput, RolesResponseDtoOutput };
