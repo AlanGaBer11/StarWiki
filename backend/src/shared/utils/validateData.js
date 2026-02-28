@@ -4,7 +4,7 @@ import logger from "#config/chalk.js";
 const validateData = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    logger.warning("Error de validación");
+    logger.warning("Error de validación en la solicitud.");
     return res.status(400).json({
       success: false,
       status: 400,
