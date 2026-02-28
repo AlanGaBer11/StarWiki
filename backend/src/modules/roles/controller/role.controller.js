@@ -6,6 +6,7 @@ import logger from "#config/chalk.js";
 import RoleResponseDtoOutput from "../dto/output/role.response.dto.output.js";
 // Entrada
 import RoleCreateDtoInput from "../dto/input/role.create.dto.input.js";
+import RoleFindDtoInput from "../dto/input/role.find.dto.input.js";
 
 class RoleController {
   /**
@@ -97,29 +98,18 @@ class RoleController {
   // Método para manejar la solicitud de buscar un rol por su ID
   async findRoleById(req, res) {
     try {
-      const { role_id } = req.params;
-
-      // Validar que el ID del rol sea un número válido
-      if (!/^\d+$/.test(role_id)) {
-        logger.warning(`ID inválido: ${role_id}`);
-        const response = new RoleResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: "El ID de rol debe ser un número entero positivo.",
-        });
-        return res.status(400).json(response);
-      }
+      const roleDto = new RoleFindDtoInput(req.params);
 
       // Llamar al proceso para buscar un rol por su ID
-      const role = await this.roleProcess.findRoleById(role_id);
+      const role = await this.roleProcess.findRoleById(roleDto.role_id);
 
       // Validar si se encontró el rol
       if (!role) {
-        logger.warning(`No se encontró el rol con ID: ${role_id}.`);
+        logger.warning(`No se encontró el rol con ID: ${roleDto.role_id}.`);
         const response = new RoleResponseDtoOutput({
           success: false,
           status: 404,
-          message: `No se encontró el rol con ID: ${role_id}.`,
+          message: `No se encontró el rol con ID: ${roleDto.role_id}.`,
         });
         return res.status(404).json(response);
       }
@@ -130,10 +120,20 @@ class RoleController {
         success: true,
         status: 200,
         message: "Rol encontrado exitosamente.",
-        role: role,
+        role,
       });
       return res.status(200).json(response);
     } catch (error) {
+      // Si el error es de validación (del DTO)
+      if (error.message?.includes("número entero positivo")) {
+        logger.warning("ID inválido");
+        const response = new RoleResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
       logger.error("Error en el controlador al buscar el rol por ID:", error);
       const response = new RoleResponseDtoOutput({
         success: false,
