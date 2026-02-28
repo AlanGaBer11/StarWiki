@@ -37,9 +37,9 @@ class RoleResponseDtoOutput {
       success: this.success,
       status: this.status,
       message: this.message,
+      ...(this.pagination && { pagination: this.pagination }),
       ...(this.role && { role: this.role }),
       ...(this.roles && { roles: this.roles }),
-      ...(this.pagination && { pagination: this.pagination }),
     };
   }
 }
