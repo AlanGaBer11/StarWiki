@@ -1,9 +1,10 @@
 import RoleProcess from "../proccess/role.process.js";
 import logger from "#config/chalk.js";
 
-import { RolesResponseDtoOutput } from "../dto/output/role.dto.output.js";
-import { RoleResponseSingleDtoOutput } from "../dto/output/role.single.dto.output.js";
-import { RoleResponseDtoOutput } from "../dto/output/role.response.dto.output.js";
+/* DTOs */
+// Salida
+import RoleResponseDtoOutput from "../dto/output/role.response.dto.output.js";
+// Entrada
 import RoleCreateDtoInput from "../dto/input/role.create.dto.input.js";
 
 class RoleController {
@@ -40,7 +41,7 @@ class RoleController {
         logger.warning(
           "Los parámetros de paginación deben ser números enteros positivos.",
         );
-        const response = new RolesResponseDtoOutput({
+        const response = new RoleResponseDtoOutput({
           success: false,
           status: 400,
           message:
@@ -60,7 +61,7 @@ class RoleController {
       // Validar si se encontraron roles
       if (!result.roles || result.roles.length === 0) {
         logger.warning("No se encontraron roles.");
-        const response = new RolesResponseDtoOutput({
+        const response = new RoleResponseDtoOutput({
           success: false,
           status: 404,
           message: "No se encontraron roles.",
@@ -71,7 +72,7 @@ class RoleController {
 
       // Enviar la respuesta con los roles encontrados
       logger.success("Roles enviados exitosamente.");
-      const response = new RolesResponseDtoOutput({
+      const response = new RoleResponseDtoOutput({
         success: true,
         status: 200,
         message: "Roles encontrados exitosamente.",
@@ -83,7 +84,7 @@ class RoleController {
       return res.status(200).json(response);
     } catch (error) {
       logger.error("Error en el controlador al buscar roles:", error);
-      const response = new RolesResponseDtoOutput({
+      const response = new RoleResponseDtoOutput({
         success: false,
         status: 500,
         message: "Ocurrió un error al buscar los roles.",
@@ -101,7 +102,7 @@ class RoleController {
       // Validar que el ID del rol sea un número válido
       if (!/^\d+$/.test(role_id)) {
         logger.warning(`ID inválido: ${role_id}`);
-        const response = new RoleResponseSingleDtoOutput({
+        const response = new RoleResponseDtoOutput({
           success: false,
           status: 400,
           message: "El ID de rol debe ser un número entero positivo.",
@@ -115,7 +116,7 @@ class RoleController {
       // Validar si se encontró el rol
       if (!role) {
         logger.warning(`No se encontró el rol con ID: ${role_id}.`);
-        const response = new RoleResponseSingleDtoOutput({
+        const response = new RoleResponseDtoOutput({
           success: false,
           status: 404,
           message: `No se encontró el rol con ID: ${role_id}.`,
@@ -125,7 +126,7 @@ class RoleController {
 
       // Enviar la respuesta con el rol encontrado
       logger.success("Rol enviado exitosamente.");
-      const response = new RoleResponseSingleDtoOutput({
+      const response = new RoleResponseDtoOutput({
         success: true,
         status: 200,
         message: "Rol encontrado exitosamente.",
@@ -134,7 +135,7 @@ class RoleController {
       return res.status(200).json(response);
     } catch (error) {
       logger.error("Error en el controlador al buscar el rol por ID:", error);
-      const response = new RoleResponseSingleDtoOutput({
+      const response = new RoleResponseDtoOutput({
         success: false,
         status: 500,
         message: "Ocurrió un error al buscar el rol por ID.",
