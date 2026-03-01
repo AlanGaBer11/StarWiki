@@ -45,6 +45,16 @@ class RoleProcess {
       throw error;
     }
   }
+
+  // Método para actualizar un rol existente
+  async updateRole(role_id, roleData) {
+    try {
+      return await this.roleService.updateRole(role_id, roleData);
+    } catch (error) {
+      logger.error("Error en el proceso al actualizar el rol:", error);
+      throw error;
+    }
+  }
 }
 
 export default RoleProcess;
