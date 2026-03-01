@@ -28,7 +28,6 @@ class RoleService {
 
       // Validar si se encontraron roles
       if (!result.roles || result.roles.length === 0) {
-        logger.warning("No se encontraron roles.");
         return { roles: [], totalPages: 0, totalRoles: 0, currentPage: 0 }; // Retornar un objeto con propiedades vacías si no se encontraron roles
       }
 
@@ -52,7 +51,6 @@ class RoleService {
 
       // Validar si se encontró el rol
       if (!role) {
-        logger.warning(`No se encontró el rol con ID: ${role_id}.`);
         return null; // Retornar null si no se encontró el rol
       }
       return new RoleSingleDtoOutput(role); // Mapear el rol a un DTO de salida
@@ -69,7 +67,6 @@ class RoleService {
       // Validar si el rol ya existe
       const existingRole = await this.roleRepository.findByName(name);
       if (existingRole) {
-        logger.warning(`El rol con nombre "${name}" ya existe.`);
         throw new Error(`El rol con nombre "${name}" ya existe.`);
       }
 
@@ -94,7 +91,6 @@ class RoleService {
       // Verificar si el rol existe
       const existingRole = await this.roleRepository.findById(role_id);
       if (!existingRole) {
-        logger.warning(`No se encontró el rol con ID: ${role_id}.`);
         throw new Error(`No se encontró el rol con ID: ${role_id}.`);
       }
       const builder = new RoleBuilder()
@@ -117,7 +113,6 @@ class RoleService {
       // Verificar si el rol existe
       const existingRole = await this.roleRepository.findById(role_id);
       if (!existingRole) {
-        logger.warning(`No se encontró el rol con ID: ${role_id}.`);
         throw new Error(`No se encontró el rol con ID: ${role_id}.`);
       }
       return await this.roleRepository.delete(role_id);
