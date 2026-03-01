@@ -55,6 +55,16 @@ class RoleProcess {
       throw error;
     }
   }
+
+  // Método para eliminar un rol existente
+  async deleteRole(role_id) {
+    try {
+      return await this.roleService.deleteRole(role_id);
+    } catch (error) {
+      logger.error("Error en el proceso al eliminar el rol:", error);
+      throw error;
+    }
+  }
 }
 
 export default RoleProcess;
