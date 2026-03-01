@@ -18,6 +18,11 @@ class IBaseRepository {
   async update(id, data) {
     throw new Error("Método no implementado.");
   }
+
+  // Método para eliminar un registro
+  async delete(id) {
+    throw new Error("Método no implementado.");
+  }
 }
 
 export default IBaseRepository;
