@@ -40,15 +40,22 @@ class RoleRoutes {
       "/:role_id",
       this.roleController.findRoleById.bind(this.roleController),
     );
+    // Ruta para crear un nuevo rol
     this.router.post(
       "/",
       RoleValidator.createRoleValidation,
       this.roleController.createRole.bind(this.roleController),
     );
+    // Ruta para actualizar un rol existente
     this.router.patch(
       "/:role_id",
       RoleValidator.updateRoleValidation,
       this.roleController.updateRole.bind(this.roleController),
+    );
+    // Ruta para eliminar un rol existente
+    this.router.delete(
+      "/:role_id",
+      this.roleController.deleteRole.bind(this.roleController),
     );
   }
 }
