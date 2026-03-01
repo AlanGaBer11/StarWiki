@@ -1,6 +1,7 @@
 import RoleController from "../controller/role.controller.js";
+import RoleValidator from "../validator/role.validator.js";
 import { Router } from "express";
-import createRoleValidation from "../validator/role.validator.js";
+
 class RoleRoutes {
   constructor(roleController) {
     // Crear una instancia del enrutador de Express
@@ -41,8 +42,13 @@ class RoleRoutes {
     );
     this.router.post(
       "/",
-      createRoleValidation,
+      RoleValidator.createRoleValidation,
       this.roleController.createRole.bind(this.roleController),
+    );
+    this.router.patch(
+      "/:role_id",
+      RoleValidator.updateRoleValidation,
+      this.roleController.updateRole.bind(this.roleController),
     );
   }
 }

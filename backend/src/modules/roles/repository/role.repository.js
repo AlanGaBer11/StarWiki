@@ -33,6 +33,13 @@ class RoleRepository extends IRoleRepository {
   async create(roleData) {
     return await Role.create(roleData);
   }
+
+  // Método para actualizar un rol existente
+  async update(role_id, roleData) {
+    const role = await Role.findByPk(role_id);
+    if (!role) return null;
+    return await role.update(roleData);
+  }
 }
 
 export default RoleRepository;

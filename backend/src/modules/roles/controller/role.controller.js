@@ -8,6 +8,7 @@ import RoleResponseDtoOutput from "../dto/output/role.response.dto.output.js";
 // Entrada
 import RoleCreateDtoInput from "../dto/input/role.create.dto.input.js";
 import RoleFindDtoInput from "../dto/input/role.find.dto.input.js";
+import RoleUpdateDtoInput from "../dto/input/role.update.dto.input.js";
 
 class RoleController {
   /**
@@ -173,6 +174,64 @@ class RoleController {
       });
       return res.status(500).json(response);
     }
+  }
+
+  // Método para manejar la solicitud de actualizar un rol existente
+  async updateRole(req, res) {
+    try {
+      const roleDto = new RoleUpdateDtoInput({ ...req.params, ...req.body });
+
+      // Bucar el rol existente para validar su existencia antes de intentar actualizarlo
+      const existingRole = await this.roleProcess.findRoleById(roleDto.role_id);
+      if (!existingRole) {
+        logger.warning(`No se econtróe el rol con ID: ${roleDto.role_id}`);
+        const response = new RoleResponseDtoOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró el rol con ID: ${roleDto.role_id}.`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Llamar al proceso para actualizar el rol existente
+      const updateRole = await this.roleProcess.updateRole(
+        roleDto.role_id,
+        roleDto,
+      );
+
+      // Enviar la respuesta con el rol actualizado
+      logger.success("Rol actualizado exitosamente.");
+      const response = new RoleResponseDtoOutput({
+        success: true,
+        status: 200,
+        message: "Rol actualizado exitosamente.",
+        role: updateRole,
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (
+        error.message?.includes("número entero positivo") ||
+        error.message?.includes("al menos un campo para actualizar")
+      ) {
+        logger.warning(
+          "Datos inválidos para actualizar el rol:",
+          error.message,
+        );
+        const response = new RoleResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+    }
+    logger.error("Error en el controlador al actualizar el rol:", error);
+    const response = new RoleResponseDtoOutput({
+      success: false,
+      status: 500,
+      message: "Ocurrió un error al actualizar el rol.",
+    });
+    return res.status(500).json(response);
   }
 }
 

@@ -87,5 +87,28 @@ class RoleService {
       throw error;
     }
   }
+  async updateRole(role_id, roleData) {
+    try {
+      const { name, description, updated_at } = roleData;
+
+      // Verificar si el rol existe
+      const existingRole = await this.roleRepository.findById(role_id);
+      if (!existingRole) {
+        logger.warning(`No se encontró el rol con ID: ${role_id}.`);
+        throw new Error(`No se encontró el rol con ID: ${role_id}.`);
+      }
+      const builder = new RoleBuilder()
+        .setName(name)
+        .setDescription(description)
+        .setUpdatedAt(updated_at || new Date());
+
+      const updatedRole = builder.build();
+
+      return await this.roleRepository.update(role_id, updatedRole);
+    } catch (error) {
+      logger.error("Error al actualizar el rol:", error);
+      throw error;
+    }
+  }
 }
 export default RoleService;
