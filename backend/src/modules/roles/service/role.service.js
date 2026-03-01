@@ -110,5 +110,21 @@ class RoleService {
       throw error;
     }
   }
+
+  // Método para eliminar un rol existente
+  async deleteRole(role_id) {
+    try {
+      // Verificar si el rol existe
+      const existingRole = await this.roleRepository.findById(role_id);
+      if (!existingRole) {
+        logger.warning(`No se encontró el rol con ID: ${role_id}.`);
+        throw new Error(`No se encontró el rol con ID: ${role_id}.`);
+      }
+      return await this.roleRepository.delete(role_id);
+    } catch (error) {
+      logger.error("Error al eliminar el rol:", error);
+      throw error;
+    }
+  }
 }
 export default RoleService;

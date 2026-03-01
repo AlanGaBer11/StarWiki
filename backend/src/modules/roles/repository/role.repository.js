@@ -40,6 +40,13 @@ class RoleRepository extends IRoleRepository {
     if (!role) return null;
     return await role.update(roleData);
   }
+
+  // Método para eliminar un rol existente
+  async delete(role_id) {
+    const role = await Role.findByPk(role_id);
+    if (!role) return null;
+    return await role.destroy();
+  }
 }
 
 export default RoleRepository;

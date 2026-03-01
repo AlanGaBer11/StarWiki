@@ -233,6 +233,54 @@ class RoleController {
     });
     return res.status(500).json(response);
   }
+
+  // Método para manejar la solicitud de eliminar un rol existente
+  async deleteRole(req, res) {
+    try {
+      const roleDto = new RoleFindDtoInput(req.params);
+
+      // Bucar el rol existente para validar su existencia antes de intentar eliminarlo
+      const existingRole = await this.roleProcess.findRoleById(roleDto.role_id);
+      if (!existingRole) {
+        logger.warning(`No se econtróe el rol con ID: ${roleDto.role_id}`);
+        const response = new RoleResponseDtoOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró el rol con ID: ${roleDto.role_id}.`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Llamar al proceso para eliminar el rol existente
+      await this.roleProcess.deleteRole(roleDto.role_id);
+
+      // Enviar la respuesta con el rol eliminado
+      logger.success("Rol eliminado exitosamente.");
+      const response = new RoleResponseDtoOutput({
+        success: true,
+        status: 200,
+        message: "Rol eliminado exitosamente.",
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (error.message?.includes("número entero positivo")) {
+        logger.warning("ID inválido");
+        const response = new RoleResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      logger.error("Error en el controlador al eliminar el rol:", error);
+      const response = new RoleResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al eliminar el rol.",
+      });
+      return res.status(500).json(response);
+    }
+  }
 }
 
 export default RoleController;
