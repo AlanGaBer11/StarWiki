@@ -18,6 +18,11 @@ class CategoryRepository extends ICategoryRepository {
       currentPage: page,
     };
   }
+
+  // Método para buscar una categoria por su ID
+  async findById(category_id) {
+    return await Category.findByPk(category_id);
+  }
 }
 
 export default CategoryRepository;
