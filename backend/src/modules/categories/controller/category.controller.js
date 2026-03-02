@@ -5,7 +5,8 @@ import pagination from "#shared/utils/pagination.js";
 /* DTOs */
 // Salida
 import CategoryResponseDtOutput from "../dto/output/category.response.dto.output.js";
-
+// Entrada
+import CategoryFindDtoInput from "../dto/input/category.find.dto.input.js";
 class CategoryController {
   /**
    * @param {import ('../process/category.process.js').default} categoryProcess
@@ -75,6 +76,62 @@ class CategoryController {
         success: false,
         status: 500,
         message: "Error al buscar categorías.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  async findCategoryById(req, res) {
+    try {
+      const categoryIdInput = new CategoryFindDtoInput(req.params);
+
+      // Llamar al proceso para buscar la categoría por ID
+      const category = await this.categoryProcess.findCategoryById(
+        categoryIdInput.category_id,
+      );
+
+      // Validar que se encontró la categoría
+      if (!category) {
+        logger.warning(
+          `No se encontró la categoría con ID: ${categoryIdInput.category_id}`,
+        );
+        const response = new CategoryResponseDtOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró la categoría con ID: ${categoryIdInput.category_id}`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Enviar la respuesta con la categoría encontrada
+      logger.success("Categoría enviada exitosamente.");
+      const response = new CategoryResponseDtOutput({
+        success: true,
+        status: 200,
+        message: "Categoría encontrada exitosamente.",
+        category,
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      // Validar si el error es por un ID no válido
+      if (error.message?.includes("número entero positivo")) {
+        logger.warning("ID inválido");
+        const reponse = new CategoryResponseDtOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(reponse);
+      }
+
+      logger.error(
+        "Error en el controlador al buscar la categoría por ID:",
+        error,
+      );
+      const response = new CategoryResponseDtOutput({
+        success: false,
+        status: 500,
+        message: "Error al buscar la categoría por ID.",
       });
       return res.status(500).json(response);
     }
