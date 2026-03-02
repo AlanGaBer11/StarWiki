@@ -1,4 +1,4 @@
-import RoleProcess from "../proccess/role.process.js";
+import RoleProcess from "../process/role.process.js";
 import logger from "#config/chalk.js";
 import pagination from "#shared/utils/pagination.js";
 
@@ -13,14 +13,14 @@ import RoleUpdateDtoInput from "../dto/input/role.update.dto.input.js";
 class RoleController {
   /**
    *
-   * @param {import('../proccess/role.process.js').default} roleProcess
+   * @param {import('../process/role.process.js').default} roleProcess
    *
    */
 
   // Inyección de la dependencia del proceso de roles
   constructor(roleProcess) {
     /**
-     * @type {import('../proccess/role.process.js').default}
+     * @type {import('../process/role.process.js').default}
      */
 
     this.roleProcess = roleProcess;
