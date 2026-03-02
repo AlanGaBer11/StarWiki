@@ -26,6 +26,16 @@ class CategoryProcess {
       throw error;
     }
   }
+
+  // Método para buscar una categoría por su ID
+  async findCategoryById(category_id) {
+    try {
+      return await this.categoryService.findCategoryById(category_id);
+    } catch (error) {
+      logger.error("Error en el proceso al buscar categoría por ID:", error);
+      throw error;
+    }
+  }
 }
 
 export default CategoryProcess;

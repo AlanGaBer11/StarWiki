@@ -3,6 +3,7 @@ import logger from "#config/chalk.js";
 
 /* DTOs */
 import CategoryDtoOutput from "../dto/output/category.dto.output.js";
+import CategorySingleDtoOutput from "../dto/output/category.single.dto.output.js";
 
 class CategoryService {
   /**
@@ -43,7 +44,23 @@ class CategoryService {
         currentPage: result.currentPage,
       };
     } catch (error) {
-      logger.error("Erro al bucar categorías:", error);
+      logger.error("Error al buscar categorías:", error);
+      throw error;
+    }
+  }
+
+  // Método para buscar una categoría por su ID
+  async findCategoryById(category_id) {
+    try {
+      const category = await this.categoryRepository.findById(category_id);
+
+      // Validar si se encontró la categoría
+      if (!category) {
+        return null; // Retornar null si no se encontró la categoría
+      }
+      return new CategorySingleDtoOutput(category); // Mapear la categoría a un DTO de salida
+    } catch (error) {
+      logger.error("Error al buscar la categoría por ID:", error);
       throw error;
     }
   }
