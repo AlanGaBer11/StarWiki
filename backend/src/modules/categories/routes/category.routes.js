@@ -33,6 +33,11 @@ class CategoryRoutes {
       "/",
       this.categoryController.findAllCategories.bind(this.categoryController),
     );
+    // Ruta para obtener una categoría por su ID
+    this.router.get(
+      "/:category_id",
+      this.categoryController.findCategoryById.bind(this.categoryController),
+    );
   }
 }
 
