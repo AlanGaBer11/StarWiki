@@ -1,0 +1,31 @@
+import CategoryService from "../service/category.service.js";
+import logger from "#config/chalk.js";
+
+class CategoryProcess {
+  /**
+   * @param {import ('../service/category.service.js').default} categoriService
+   */
+  constructor(categoriService) {
+    /**
+     * @type {import ('../service/category.service.js').default}
+     */
+    this.categoryService = categoriService;
+  }
+  // Método estático para crear una instancia del proceso con el servicio inyectado
+  static async create() {
+    const service = await CategoryService.create();
+    return new CategoryProcess(service);
+  }
+
+  // Método para buscar todas las categorias
+  async findAllCategories(page, limit) {
+    try {
+      return await this.categoryService.findAllCategories(page, limit);
+    } catch (error) {
+      logger.error("Error en el proceso al buscar categorías:", error);
+      throw error;
+    }
+  }
+}
+
+export default CategoryProcess;
