@@ -3,6 +3,8 @@ class RepositoryConfig {
   static async getRepository(type) {
     const repositories = {
       role: () => import("#modules/roles/repository/role.repository.js"),
+      category: () =>
+        import("#modules/categories/repository/category.repository.js"),
     };
 
     // Validar si el tipo de repositorio existe
