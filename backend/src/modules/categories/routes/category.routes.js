@@ -1,4 +1,5 @@
 import CategoryController from "../controller/category.controller.js";
+import CategoryValidator from "../validator/category.validator.js";
 import { Router } from "express";
 
 class CategoryRoutes {
@@ -37,6 +38,12 @@ class CategoryRoutes {
     this.router.get(
       "/:category_id",
       this.categoryController.findCategoryById.bind(this.categoryController),
+    );
+    // Ruta para crear una nueva categoría
+    this.router.post(
+      "/",
+      CategoryValidator.createCategoryValidation,
+      this.categoryController.createCategory.bind(this.categoryController),
     );
   }
 }
