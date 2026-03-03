@@ -1,5 +1,6 @@
 import RepositoryConfig from "#config/Repository.js";
 import logger from "#config/chalk.js";
+import CategoryBuilder from "../builder/category.builder.js";
 
 /* DTOs */
 import CategoryDtoOutput from "../dto/output/category.dto.output.js";
@@ -61,6 +62,32 @@ class CategoryService {
       return new CategorySingleDtoOutput(category); // Mapear la categoría a un DTO de salida
     } catch (error) {
       logger.error("Error al buscar la categoría por ID:", error);
+      throw error;
+    }
+  }
+
+  // Método para crear una nueva categoría
+  async createCategory(categoryData) {
+    try {
+      const { name, description } = categoryData;
+
+      // Validar si ya existe una categoría con el mismo nombre
+      const existingCategory = await this.categoryRepository.findByName(name);
+      if (existingCategory) {
+        throw new Error(`La categoría con nombre ${name} ya existe.`);
+      }
+
+      // Builder para crear la nueva categoría
+      const categoryBuilder = new CategoryBuilder()
+        .setName(name)
+        .setDescription(description);
+
+      const newCategory = categoryBuilder.build();
+
+      // Crear la nueva categoría en el repositorio
+      return await this.categoryRepository.create(newCategory);
+    } catch (error) {
+      logger.error("Error al crear la categoría:", error);
       throw error;
     }
   }

@@ -23,6 +23,16 @@ class CategoryRepository extends ICategoryRepository {
   async findById(category_id) {
     return await Category.findByPk(category_id);
   }
+
+  // Método para buscar una categoría por su nombre
+  async findByName(name) {
+    return await Category.findOne({ where: { name } });
+  }
+
+  // Método para crear una nueva categoría
+  async create(categoryData) {
+    return await Category.create(categoryData);
+  }
 }
 
 export default CategoryRepository;

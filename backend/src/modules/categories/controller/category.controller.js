@@ -7,6 +7,8 @@ import pagination from "#shared/utils/pagination.js";
 import CategoryResponseDtOutput from "../dto/output/category.response.dto.output.js";
 // Entrada
 import CategoryFindDtoInput from "../dto/input/category.find.dto.input.js";
+import CategoryCreateDtoInput from "../dto/input/category.create.dto.input.js";
+
 class CategoryController {
   /**
    * @param {import ('../process/category.process.js').default} categoryProcess
@@ -75,12 +77,13 @@ class CategoryController {
       const response = new CategoryResponseDtOutput({
         success: false,
         status: 500,
-        message: "Error al buscar categorías.",
+        message: "Ocurrió un error al buscar categorías.",
       });
       return res.status(500).json(response);
     }
   }
 
+  // Método para manejar la solicitud de buscar una categoría por su ID
   async findCategoryById(req, res) {
     try {
       const categoryIdInput = new CategoryFindDtoInput(req.params);
@@ -131,7 +134,47 @@ class CategoryController {
       const response = new CategoryResponseDtOutput({
         success: false,
         status: 500,
-        message: "Error al buscar la categoría por ID.",
+        message: "Ocurrió un error al buscar la categoría por ID.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de crear una nueva categoría
+  async createCategory(req, res) {
+    try {
+      const categoryCreateInput = new CategoryCreateDtoInput(req.body);
+
+      // Validaciones básicas  para los datos de entrada
+      if (!categoryCreateInput.name || !categoryCreateInput.description) {
+        logger.warning("Faltan datos requeridos para crear la categoría.");
+        const response = new CategoryResponseDtOutput({
+          success: false,
+          status: 400,
+          message: "El nombre y la descripción son requeridos.",
+        });
+        return res.status(400).json(response);
+      }
+
+      // Llamar al proceso para crear la nueva categoría
+      const newCategory =
+        await this.categoryProcess.createCategory(categoryCreateInput);
+
+      // Enviar la respuesta con la categoría creada
+      logger.success("Categoría creada exitosamente.");
+      const response = new CategoryResponseDtOutput({
+        success: true,
+        status: 201,
+        message: "Categoría creada exitosamente.",
+        category: newCategory,
+      });
+      return res.status(201).json(response);
+    } catch (error) {
+      logger.error("Error en el controlador al crear la categoría:", error);
+      const response = new CategoryResponseDtOutput({
+        success: false,
+        status: 500,
+        message: "EError al crear la categoría.",
       });
       return res.status(500).json(response);
     }

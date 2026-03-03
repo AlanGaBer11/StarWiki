@@ -36,6 +36,16 @@ class CategoryProcess {
       throw error;
     }
   }
+
+  // Método para crear una nueva categoría
+  async createCategory(categoryData) {
+    try {
+      return await this.categoryService.createCategory(categoryData);
+    } catch (error) {
+      logger.error("Error en el proceso al crear la categoría:", error);
+      throw error;
+    }
+  }
 }
 
 export default CategoryProcess;
