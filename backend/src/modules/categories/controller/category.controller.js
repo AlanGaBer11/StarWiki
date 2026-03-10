@@ -8,6 +8,7 @@ import CategoryResponseDtOutput from "../dto/output/category.response.dto.output
 // Entrada
 import CategoryFindDtoInput from "../dto/input/category.find.dto.input.js";
 import CategoryCreateDtoInput from "../dto/input/category.create.dto.input.js";
+import CategoryUpdateDtoInput from "../dto/input/category.update.dto.input.js";
 
 class CategoryController {
   /**
@@ -175,6 +176,69 @@ class CategoryController {
         success: false,
         status: 500,
         message: "EError al crear la categoría.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de actualizar una categoría existente
+  async updateCategory(req, res) {
+    try {
+      const dto = new CategoryUpdateDtoInput({ ...req.params, ...req.body });
+
+      // Buscar la categoría existente
+      const existingCateory = await this.categoryProcess.findCategoryById(
+        dto.category_id,
+      );
+      if (!existingCateory) {
+        const response = new CategoryResponseDtOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró la categoría con ID: ${dto.category_id}.`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Llamar al proceso para actualizar la categoría
+      const updatedCategory = await this.categoryProcess.updateCategory(
+        dto.category_id,
+        dto,
+      );
+
+      //Envar la respuesta con la categoría actualizada
+      logger.success("Categoría actualizada exitosamente.");
+      const response = new CategoryResponseDtOutput({
+        success: true,
+        status: 200,
+        message: "Categoría actualizada exitosamente.",
+        category: updatedCategory,
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (
+        error.message?.includes("número entero positivo") ||
+        error.message?.includes("al menos un campo para actualizar")
+      ) {
+        logger.warning(
+          "Datos inválidos para actualizar la categoría:",
+          error.message,
+        );
+        const response = new CategoryResponseDtOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+
+      logger.error(
+        "Error en el controlador al actualizar la categoría:",
+        error,
+      );
+      const response = new CategoryResponseDtOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al actualizar la categoría.",
       });
       return res.status(500).json(response);
     }

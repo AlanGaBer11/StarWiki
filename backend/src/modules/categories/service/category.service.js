@@ -91,6 +91,33 @@ class CategoryService {
       throw error;
     }
   }
+
+  // Método para actualizar una categoría existente
+  async updateCategory(category_id, categoryData) {
+    try {
+      const { name, description, updated_at } = categoryData;
+
+      // Verificar si la categoría existe
+      const existingCategory =
+        await this.categoryRepository.findById(category_id);
+      if (!existingCategory) {
+        throw new Error(`No se encontró la categoría con ID: ${category_id}.`);
+      }
+
+      // Builder para actualizar la categoría
+      const builder = new CategoryBuilder()
+        .setName(name)
+        .setDescription(description)
+        .setUpdatedAt(updated_at || new Date());
+
+      const updatedCategory = builder.build();
+
+      return await this.categoryRepository.update(category_id, updatedCategory);
+    } catch (error) {
+      logger.error("Error al actualizar la categoría:", error);
+      throw error;
+    }
+  }
 }
 
 export default CategoryService;

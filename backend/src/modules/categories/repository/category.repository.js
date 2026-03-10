@@ -33,6 +33,13 @@ class CategoryRepository extends ICategoryRepository {
   async create(categoryData) {
     return await Category.create(categoryData);
   }
+
+  // Método para actualizar una categoría existente
+  async update(category_id, categoryData) {
+    const category = await this.findById(category_id);
+    if (!category) return null;
+    return await category.update(categoryData);
+  }
 }
 
 export default CategoryRepository;

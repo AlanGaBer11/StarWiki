@@ -46,6 +46,19 @@ class CategoryProcess {
       throw error;
     }
   }
+
+  // Método para actualizar una categoría existente
+  async updateCategory(category_id, categoryData) {
+    try {
+      return await this.categoryService.updateCategory(
+        category_id,
+        categoryData,
+      );
+    } catch (error) {
+      logger.error("Error en el proceso al actualizar la categoría:", error);
+      throw error;
+    }
+  }
 }
 
 export default CategoryProcess;
