@@ -45,6 +45,12 @@ class CategoryRoutes {
       CategoryValidator.createCategoryValidation,
       this.categoryController.createCategory.bind(this.categoryController),
     );
+    // Ruta para actualizar una categoría existente
+    this.router.put(
+      "/:category_id",
+      CategoryValidator.updateCategoryValidation,
+      this.categoryController.updateCategory.bind(this.categoryController),
+    );
   }
 }
 
