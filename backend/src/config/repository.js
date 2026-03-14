@@ -5,6 +5,7 @@ class RepositoryConfig {
       role: () => import("#modules/roles/repository/role.repository.js"),
       category: () =>
         import("#modules/categories/repository/category.repository.js"),
+      user: () => import("#modules/users/repository/user.repository.js"),
     };
 
     // Validar si el tipo de repositorio existe
