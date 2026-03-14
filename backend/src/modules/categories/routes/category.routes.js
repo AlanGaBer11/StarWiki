@@ -51,6 +51,11 @@ class CategoryRoutes {
       CategoryValidator.updateCategoryValidation,
       this.categoryController.updateCategory.bind(this.categoryController),
     );
+    // Ruta para eliminar una categoría existente
+    this.router.delete(
+      "/:category_id",
+      this.categoryController.deleteCategory.bind(this.categoryController),
+    );
   }
 }
 
