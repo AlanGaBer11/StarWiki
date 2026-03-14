@@ -5,6 +5,8 @@ import pagination from "#shared/utils/pagination.js";
 /* DTOs */
 // Salida
 import UserResponseDtoOutput from "../dto/output/user.response.dto.output.js";
+// Entrada
+import UserFindDtoInput from "../dto/input/user.find.dto.input.js";
 
 class UserController {
   /**
@@ -75,6 +77,56 @@ class UserController {
         success: false,
         status: 500,
         message: "Ocurrió un error al buscar usuarios.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de buscar un usuario por su ID
+  async findUserById(req, res) {
+    try {
+      const dto = new UserFindDtoInput(req.params);
+
+      // Llamar al proceso para buscar el usuario por su ID
+      const user = await this.userProcess.findUserById(dto.user_id);
+
+      // Validar si se encontró el usuario
+      if (!user) {
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró el usuario con ID: ${dto.user_id}.`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Enviar la respuesta con el usuario encontrado
+      logger.success("Usuario enviado exitosamente.");
+      const response = new UserResponseDtoOutput({
+        success: true,
+        status: 200,
+        message: "Usuario encontrado exitosamente.",
+        user,
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (error.message?.includes("número entero positivo")) {
+        logger.warning("ID inválido");
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      logger.error(
+        "Error en el controlador al buscar el usuario por ID:",
+        error,
+      );
+      const response = new UserResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al buscar el usuario por ID.",
       });
       return res.status(500).json(response);
     }

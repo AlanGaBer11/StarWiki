@@ -30,6 +30,11 @@ class UserRoutes {
       "/",
       this.userController.findAllUsers.bind(this.userController),
     );
+    // Ruta para obtener un usuario por su ID
+    this.router.get(
+      "/:user_id",
+      this.userController.findUserById.bind(this.userController),
+    );
   }
 }
 
