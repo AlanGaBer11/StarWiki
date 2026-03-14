@@ -118,6 +118,21 @@ class CategoryService {
       throw error;
     }
   }
+
+  // Método para eliminar una categoría existente
+  async deleteCategory(category_id) {
+    try {
+      const existingCategory =
+        await this.categoryRepository.findById(category_id);
+      if (!existingCategory) {
+        throw new Error(`No se encontró la categorría con ID: ${category_id}`);
+      }
+      return await this.categoryRepository.delete(category_id);
+    } catch (error) {
+      logger.error("Error al eliminar la categoría:", error);
+      throw error;
+    }
+  }
 }
 
 export default CategoryService;

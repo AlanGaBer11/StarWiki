@@ -243,6 +243,55 @@ class CategoryController {
       return res.status(500).json(response);
     }
   }
+
+  // Método para manejar la solicitud de eliminar una categoría existente
+  async deleteCategory(req, res) {
+    try {
+      const dto = new CategoryFindDtoInput(req.params);
+
+      // Buscar la categoría existente
+      const existingCateory = await this.categoryProcess.findCategoryById(
+        dto.category_id,
+      );
+      if (!existingCateory) {
+        const response = new CategoryResponseDtOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró la categoría con ID: ${dto.category_id}`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Llamar al proceso para eliminar la categoría
+      await this.categoryProcess.deleteCategory(dto.category_id);
+      const response = new CategoryResponseDtOutput({
+        success: true,
+        status: 200,
+        message: "Categoría eliminada exitosamente.",
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (error.message?.includes("número entero positivo")) {
+        logger.warning(
+          "Datos inválidos para actualizar la categoría:",
+          error.message,
+        );
+        const response = new CategoryResponseDtOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      logger.error("Error en el controlador al eliminar la categoría:", error);
+      const response = new CategoryResponseDtOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al eliminar la categoría.",
+      });
+      return res.status(500).json(response);
+    }
+  }
 }
 
 export default CategoryController;

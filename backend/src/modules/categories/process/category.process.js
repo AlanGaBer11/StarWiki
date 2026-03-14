@@ -59,6 +59,16 @@ class CategoryProcess {
       throw error;
     }
   }
+
+  // Método para eliminar una categoría existente
+  async deleteCategory(category_id) {
+    try {
+      return await this.categoryService.deleteCategory(category_id);
+    } catch (error) {
+      logger.error("Error en el proceso al eliminar la categoría:", error);
+      throw error;
+    }
+  }
 }
 
 export default CategoryProcess;

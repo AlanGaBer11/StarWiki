@@ -9,6 +9,7 @@ class CategoryRepository extends ICategoryRepository {
     const { count, rows } = await Category.findAndCountAll({
       offset,
       limit,
+      order: [["category_id", "ASC"]],
     });
 
     return {
@@ -39,6 +40,13 @@ class CategoryRepository extends ICategoryRepository {
     const category = await this.findById(category_id);
     if (!category) return null;
     return await category.update(categoryData);
+  }
+
+  // Método para eliminar una categoría existente
+  async delete(category_id) {
+    const category = await this.findById(category_id);
+    if (!category) return null;
+    return await category.destroy();
   }
 }
 
