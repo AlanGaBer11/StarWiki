@@ -27,6 +27,16 @@ class UserProcess {
       throw error;
     }
   }
+
+  // Método para buscar un usuario por su ID
+  async findUserById(user_id) {
+    try {
+      return await this.userService.findUserById(user_id);
+    } catch (error) {
+      logger.error("Error en el proceso al buscar el usuario por ID:", error);
+      throw error;
+    }
+  }
 }
 
 export default UserProcess;

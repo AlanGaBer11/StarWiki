@@ -17,6 +17,13 @@ class UserRepository extends IUserRepository {
       currentPage: page,
     };
   }
+
+  // Método para buscar un usuario por su ID
+  async findById(user_id) {
+    return await User.findByPk(user_id, {
+      attributes: { exclude: ["password"] },
+    });
+  }
 }
 
 export default UserRepository;
