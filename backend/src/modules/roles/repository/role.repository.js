@@ -9,6 +9,7 @@ class RoleRepository extends IRoleRepository {
     const { count, rows } = await Role.findAndCountAll({
       offset,
       limit,
+      order: [["role_id", "ASC"]],
     });
 
     return {
