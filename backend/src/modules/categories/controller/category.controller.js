@@ -171,6 +171,15 @@ class CategoryController {
       });
       return res.status(201).json(response);
     } catch (error) {
+      if (error.message?.includes("La categoría ya existe")) {
+        logger.warning(error.message);
+        const response = new CategoryResponseDtOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
       logger.error("Error en el controlador al crear la categoría:", error);
       const response = new CategoryResponseDtOutput({
         success: false,
