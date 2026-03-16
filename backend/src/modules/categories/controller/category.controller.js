@@ -119,7 +119,7 @@ class CategoryController {
     } catch (error) {
       // Validar si el error es por un ID no válido
       if (error.message?.includes("número entero positivo")) {
-        logger.warning("ID inválido");
+        logger.warning(error.message);
         const reponse = new CategoryResponseDtOutput({
           success: false,
           status: 400,
@@ -228,10 +228,7 @@ class CategoryController {
         error.message?.includes("número entero positivo") ||
         error.message?.includes("al menos un campo para actualizar")
       ) {
-        logger.warning(
-          "Datos inválidos para actualizar la categoría:",
-          error.message,
-        );
+        logger.warning(error.message);
         const response = new CategoryResponseDtOutput({
           success: false,
           status: 400,
@@ -281,10 +278,7 @@ class CategoryController {
       return res.status(200).json(response);
     } catch (error) {
       if (error.message?.includes("número entero positivo")) {
-        logger.warning(
-          "Datos inválidos para actualizar la categoría:",
-          error.message,
-        );
+        logger.warning(error.message);
         const response = new CategoryResponseDtOutput({
           success: false,
           status: 400,
