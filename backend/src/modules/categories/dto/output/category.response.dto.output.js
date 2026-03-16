@@ -1,4 +1,16 @@
 class CategoryResponseDtOutput {
+  /**
+   * @param {Object} params
+   * @param {boolean} params.success - Indica si la operación fue exitosa
+   * @param {number} params.status - Código de estado HTTP
+   * @param {string} params.message - Mensaje de respuesta
+   * @param {Object|null} params.category - Categoría individual (opcional)
+   * @param {Array<Object>|null} params.categories - Lista de categorías (opcional)
+   * @param {number|null} params.page - Página actual (opcional)
+   * @param {number|null} params.limit - Categorías por página (opcional)
+   * @param {number|null} params.totalCategories - Total de categorías (opcional)
+   * @param {Object|null} params.pagination - Objeto de paginación (opcional)
+   */
   constructor({
     success,
     status,
