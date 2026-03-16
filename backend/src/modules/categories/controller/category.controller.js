@@ -87,22 +87,22 @@ class CategoryController {
   // Método para manejar la solicitud de buscar una categoría por su ID
   async findCategoryById(req, res) {
     try {
-      const categoryIdInput = new CategoryFindDtoInput(req.params);
+      const dto = new CategoryFindDtoInput(req.params);
 
       // Llamar al proceso para buscar la categoría por ID
       const category = await this.categoryProcess.findCategoryById(
-        categoryIdInput.category_id,
+        dto.category_id,
       );
 
       // Validar que se encontró la categoría
       if (!category) {
         logger.warning(
-          `No se encontró la categoría con ID: ${categoryIdInput.category_id}`,
+          `No se encontró la categoría con ID: ${dto.category_id}`,
         );
         const response = new CategoryResponseDtOutput({
           success: false,
           status: 404,
-          message: `No se encontró la categoría con ID: ${categoryIdInput.category_id}`,
+          message: `No se encontró la categoría con ID: ${dto.category_id}`,
         });
         return res.status(404).json(response);
       }
