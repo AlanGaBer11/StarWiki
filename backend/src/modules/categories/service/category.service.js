@@ -4,7 +4,6 @@ import CategoryBuilder from "../builder/category.builder.js";
 
 /* DTOs */
 import CategoryDtoOutput from "../dto/output/category.dto.output.js";
-import CategorySingleDtoOutput from "../dto/output/category.single.dto.output.js";
 
 class CategoryService {
   /**
@@ -59,7 +58,7 @@ class CategoryService {
       if (!category) {
         return null; // Retornar null si no se encontró la categoría
       }
-      return new CategorySingleDtoOutput(category); // Mapear la categoría a un DTO de salida
+      return new CategoryDtoOutput(category); // Mapear la categoría a un DTO de salida
     } catch (error) {
       logger.error("Error al buscar la categoría por ID:", error);
       throw error;
