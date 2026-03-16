@@ -154,6 +154,22 @@ class UserService {
       throw error;
     }
   }
+
+  // Método para eliminar (soft delete) un usuario
+  async deleteUser(user_id) {
+    try {
+      // Validar si el usuario existe
+      const existingUser = await this.userRepository.findById(user_id);
+      if (!existingUser) {
+        throw new Error(`No se encontro el usuario co ID: ${user_id}`);
+      }
+
+      return await this.userRepository.delete(user_id);
+    } catch (error) {
+      logger.error("Error al eliminar el usuario:", error.message);
+      throw error;
+    }
+  }
 }
 
 export default UserService;

@@ -63,6 +63,19 @@ class UserProcess {
       throw error;
     }
   }
+
+  // Método para eliminar un usuario por su ID
+  async deleteUser(user_id) {
+    try {
+      return await this.userService.deleteUser(user_id);
+    } catch (error) {
+      logger.error(
+        "Error en el proceso al eliminar el usuario:",
+        error.message,
+      );
+      throw error;
+    }
+  }
 }
 
 export default UserProcess;

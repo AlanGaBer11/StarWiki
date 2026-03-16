@@ -116,7 +116,7 @@ class UserController {
       return res.status(200).json(response);
     } catch (error) {
       if (error.message?.includes("número entero positivo")) {
-        logger.warning("ID inválido");
+        logger.warning(error.message);
         const response = new UserResponseDtoOutput({
           success: false,
           status: 400,
@@ -173,7 +173,7 @@ class UserController {
       return res.status(201).json(response);
     } catch (error) {
       if (error.message?.includes("número entero positivo")) {
-        logger.warning("ID inválido");
+        logger.warning(error.message);
         const response = new UserResponseDtoOutput({
           success: false,
           status: 400,
@@ -257,6 +257,56 @@ class UserController {
         success: false,
         status: 500,
         message: "Ocurrió un error al actualizar el usuario.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de eliminar un usuario por su ID
+  async deleteUser(req, res) {
+    try {
+      const dto = new UserFindDtoInput(req.params);
+
+      // Buscar el usuario existente
+      const existingUser = await this.userProcess.findUserById(dto.user_id);
+      if (!existingUser) {
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró el usuario con ID: ${dto.user_id}`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Llamar al proceso para eliminar el usuario por su ID
+      await this.userProcess.deleteUser(dto.user_id);
+
+      // Enviar la respuesta indicando que el usuario fue eliminado
+      logger.success("Usuario eliminado exitosamente.");
+      const response = new UserResponseDtoOutput({
+        success: true,
+        status: 200,
+        message: "Usuario eliminado exitosamente.",
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (error.message?.includes("número entero positivo")) {
+        logger.warning(error.message);
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      logger.error(
+        "Error en el controlador al eliminar el usuario:",
+        error.message,
+      );
+      const response = new UserResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al eliminar el usuario.",
       });
       return res.status(500).json(response);
     }
