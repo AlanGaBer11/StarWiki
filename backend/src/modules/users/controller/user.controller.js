@@ -74,7 +74,10 @@ class UserController {
         return res.status(400).json(response);
       }
 
-      logger.error("Error en el controlador al buscar usuarios:", error);
+      logger.error(
+        "Error en el controlador al buscar usuarios:",
+        error.message,
+      );
       const response = new UserResponseDtoOutput({
         success: false,
         status: 500,
@@ -123,7 +126,7 @@ class UserController {
       }
       logger.error(
         "Error en el controlador al buscar el usuario por ID:",
-        error,
+        error.message,
       );
       const response = new UserResponseDtoOutput({
         success: false,
@@ -190,7 +193,10 @@ class UserController {
         });
         return res.status(400).json(response);
       }
-      logger.error("Error en el controlador al crear el usuario:", error);
+      logger.error(
+        "Error en el controlador al crear el usuario:",
+        error.message,
+      );
       const response = new UserResponseDtoOutput({
         success: false,
         status: 500,
@@ -243,7 +249,10 @@ class UserController {
         });
         return res.status(400).json(response);
       }
-      logger.error("Error en el controlador al actualizar el usuario:", error);
+      logger.error(
+        "Error en el controlador al actualizar el usuario:",
+        error.message,
+      );
       const response = new UserResponseDtoOutput({
         success: false,
         status: 500,

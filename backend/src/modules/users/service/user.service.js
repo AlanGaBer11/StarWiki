@@ -37,7 +37,7 @@ class UserService {
         currentPage: result.currentPage,
       };
     } catch (error) {
-      logger.error("Error al buscar usuarios:", error);
+      logger.error("Error al buscar usuarios:", error.message);
       throw error;
     }
   }
@@ -53,7 +53,7 @@ class UserService {
       }
       return new UserDtoOutput(user); // Mapear el usuario a un DTO de salida
     } catch (error) {
-      logger.error("Error al buscar el usuario por ID:", error);
+      logger.error("Error al buscar el usuario por ID:", error.message);
       throw error;
     }
   }
@@ -90,7 +90,7 @@ class UserService {
       // Crear el nuevo usuario en el repositorio
       return await this.userRepository.create(newUser);
     } catch (error) {
-      logger.error("Error al crear el usuario:", error);
+      logger.error("Error al crear el usuario:", error.message);
       throw error;
     }
   }
@@ -150,7 +150,7 @@ class UserService {
 
       return await this.userRepository.update(user_id, updatedUser);
     } catch (error) {
-      logger.error("Error al actualizar el usuario:", error);
+      logger.error("Error al actualizar el usuario:", error.message);
       throw error;
     }
   }
