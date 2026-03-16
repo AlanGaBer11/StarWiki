@@ -206,6 +206,9 @@ class CategoryController {
         dto.category_id,
       );
       if (!existingCateory) {
+        logger.warning(
+          `No se encontró la categoría con ID: ${dto.category_id}.`,
+        );
         const response = new CategoryResponseDtOutput({
           success: false,
           status: 404,
@@ -266,6 +269,9 @@ class CategoryController {
         dto.category_id,
       );
       if (!existingCateory) {
+        logger.warning(
+          `No se encontró la categoría con ID: ${dto.category_id}.`,
+        );
         const response = new CategoryResponseDtOutput({
           success: false,
           status: 404,
@@ -276,6 +282,9 @@ class CategoryController {
 
       // Llamar al proceso para eliminar la categoría
       await this.categoryProcess.deleteCategory(dto.category_id);
+
+      // Enviar la respuesta indicando que la categoría fue eliminada
+      logger.success("Categoría eliminada exitosamente.");
       const response = new CategoryResponseDtOutput({
         success: true,
         status: 200,
