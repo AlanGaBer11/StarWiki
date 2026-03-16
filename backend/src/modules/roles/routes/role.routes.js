@@ -47,7 +47,7 @@ class RoleRoutes {
       this.roleController.createRole.bind(this.roleController),
     );
     // Ruta para actualizar un rol existente
-    this.router.patch(
+    this.router.put(
       "/:role_id",
       RoleValidator.updateRoleValidation,
       this.roleController.updateRole.bind(this.roleController),

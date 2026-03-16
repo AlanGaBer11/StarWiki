@@ -4,7 +4,6 @@ import logger from "#config/chalk.js";
 
 /*  DTOs */
 import RoleDtoOutput from "../dto/output/role.dto.output.js";
-import RoleSingleDtoOutput from "../dto/output/role.single.dto.output.js";
 
 class RoleService {
   /**
@@ -53,7 +52,7 @@ class RoleService {
       if (!role) {
         return null; // Retornar null si no se encontró el rol
       }
-      return new RoleSingleDtoOutput(role); // Mapear el rol a un DTO de salida
+      return new RoleDtoOutput(role); // Mapear el rol a un DTO de salida
     } catch (error) {
       logger.error("Error al buscar el rol por ID:", error);
       throw error;

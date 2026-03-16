@@ -1,4 +1,16 @@
 class RoleResponseDtoOutput {
+  /**
+   * @param {Object} params
+   * @param {boolean} params.success - Indica si la operación fue exitosa
+   * @param {number} params.status - Código de estado HTTP
+   * @param {string} params.message - Mensaje de respuesta
+   * @param {Object|null} params.role - Rol individual (opcional)
+   * @param {Array<Object>|null} params.roles - Lista de roles (opcional)
+   * @param {number|null} params.page - Página actual (opcional)
+   * @param {number|null} params.limit - Roles por página (opcional)
+   * @param {number|null} params.totalRoles - Total de roles (opcional)
+   * @param {Object|null} params.pagination - Objeto de paginación (opcional)
+   */
   constructor({
     success,
     status,
