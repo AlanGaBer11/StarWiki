@@ -44,7 +44,7 @@ class CategoryService {
         currentPage: result.currentPage,
       };
     } catch (error) {
-      logger.error("Error al buscar categorías:", error);
+      logger.error("Error al buscar categorías:", error.message);
       throw error;
     }
   }
@@ -60,7 +60,7 @@ class CategoryService {
       }
       return new CategoryDtoOutput(category); // Mapear la categoría a un DTO de salida
     } catch (error) {
-      logger.error("Error al buscar la categoría por ID:", error);
+      logger.error("Error al buscar la categoría por ID:", error.message);
       throw error;
     }
   }
@@ -86,7 +86,7 @@ class CategoryService {
       // Crear la nueva categoría en el repositorio
       return await this.categoryRepository.create(newCategory);
     } catch (error) {
-      logger.error("Error al crear la categoría:", error);
+      logger.error("Error al crear la categoría:", error.message);
       throw error;
     }
   }
@@ -113,7 +113,7 @@ class CategoryService {
 
       return await this.categoryRepository.update(category_id, updatedCategory);
     } catch (error) {
-      logger.error("Error al actualizar la categoría:", error);
+      logger.error("Error al actualizar la categoría:", error.message);
       throw error;
     }
   }
@@ -128,7 +128,7 @@ class CategoryService {
       }
       return await this.categoryRepository.delete(category_id);
     } catch (error) {
-      logger.error("Error al eliminar la categoría:", error);
+      logger.error("Error al eliminar la categoría:", error.message);
       throw error;
     }
   }

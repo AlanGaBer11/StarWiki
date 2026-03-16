@@ -74,7 +74,10 @@ class CategoryController {
         });
         return res.status(400).json(response);
       }
-      logger.error("Error en el controlador al buscar categorías:", error);
+      logger.error(
+        "Error en el controlador al buscar categorías:",
+        error.message,
+      );
       const response = new CategoryResponseDtOutput({
         success: false,
         status: 500,
@@ -130,7 +133,7 @@ class CategoryController {
 
       logger.error(
         "Error en el controlador al buscar la categoría por ID:",
-        error,
+        error.message,
       );
       const response = new CategoryResponseDtOutput({
         success: false,
@@ -180,7 +183,10 @@ class CategoryController {
         });
         return res.status(400).json(response);
       }
-      logger.error("Error en el controlador al crear la categoría:", error);
+      logger.error(
+        "Error en el controlador al crear la categoría:",
+        error.message,
+      );
       const response = new CategoryResponseDtOutput({
         success: false,
         status: 500,
@@ -242,7 +248,7 @@ class CategoryController {
 
       logger.error(
         "Error en el controlador al actualizar la categoría:",
-        error,
+        error.message,
       );
       const response = new CategoryResponseDtOutput({
         success: false,
@@ -292,7 +298,10 @@ class CategoryController {
         });
         return res.status(400).json(response);
       }
-      logger.error("Error en el controlador al eliminar la categoría:", error);
+      logger.error(
+        "Error en el controlador al eliminar la categoría:",
+        error.message,
+      );
       const response = new CategoryResponseDtOutput({
         success: false,
         status: 500,
