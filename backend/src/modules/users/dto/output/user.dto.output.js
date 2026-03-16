@@ -1,4 +1,20 @@
 class UserDtoOutput {
+  /**
+   * @param {Object} params
+   * @param {number} params.user_id - ID del usuario
+   * @param {number} params.role_id - ID del rol
+   * @param {string} params.name - Nombre
+   * @param {string} params.lastname - Apellido
+   * @param {string} params.username - Nombre de usuario
+   * @param {string} params.email - Correo electrónico
+   * @param {string} params.password - Contraseña
+   * @param {string} params.avatar_url - URL del avatar
+   * @param {string} params.biography - Biografía
+   * @param {string} params.status - Estado
+   * @param {boolean} params.verified - Verificado
+   * @param {Date} params.created_at - Fecha de creación
+   * @param {Date} params.updated_at - Fecha de actualización
+   */
   constructor({
     user_id,
     role_id,

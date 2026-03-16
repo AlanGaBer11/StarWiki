@@ -4,7 +4,6 @@ import UserBuilder from "../builder/user.builder.js";
 
 /* DTOs */
 import UserDtoOutput from "../dto/output/user.dto.output.js";
-import UserSingleDtoOutput from "../dto/output/user.single.dto.output.js";
 
 class UserService {
   /**
@@ -52,7 +51,7 @@ class UserService {
       if (!user) {
         return null;
       }
-      return new UserSingleDtoOutput(user); // Mapear el usuario a un DTO de salida
+      return new UserDtoOutput(user); // Mapear el usuario a un DTO de salida
     } catch (error) {
       logger.error("Error al buscar el usuario por ID:", error);
       throw error;
