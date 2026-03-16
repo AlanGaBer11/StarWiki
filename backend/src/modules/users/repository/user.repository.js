@@ -52,6 +52,13 @@ class UserRepository extends IUserRepository {
     if (!user) return null;
     return await user.update(userData);
   }
+
+  // Método para eliminar (soft delete) un usuario
+  async delete(user_id) {
+    const user = await User.findByPk(user_id);
+    if (!user) return null;
+    return await user.destroy();
+  }
 }
 
 export default UserRepository;
