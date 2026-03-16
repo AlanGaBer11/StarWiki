@@ -282,6 +282,9 @@ class CategoryController {
 
       // Llamar al proceso para eliminar la categoría
       await this.categoryProcess.deleteCategory(dto.category_id);
+
+      // Enviar la respuesta indicando que la categoría fue eliminada
+      logger.success("Categoría eliminada exitosamente.");
       const response = new CategoryResponseDtOutput({
         success: true,
         status: 200,
