@@ -37,6 +37,16 @@ class UserProcess {
       throw error;
     }
   }
+
+  // Método para crear un nuevo usuario
+  async createUser(userData) {
+    try {
+      return await this.userService.createUser(userData);
+    } catch (error) {
+      logger.error("Error en el proceso al crear el usuario:", error);
+      throw error;
+    }
+  }
 }
 
 export default UserProcess;

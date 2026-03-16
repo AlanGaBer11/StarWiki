@@ -1,5 +1,6 @@
 import RepositoryConfig from "#config/Repository.js";
 import logger from "#config/chalk.js";
+import UserBuilder from "../builder/user.builder.js";
 
 /* DTOs */
 import UserDtoOutput from "../dto/output/user.dto.output.js";
@@ -54,6 +55,43 @@ class UserService {
       return new UserSingleDtoOutput(user); // Mapear el usuario a un DTO de salida
     } catch (error) {
       logger.error("Error al buscar el usuario por ID:", error);
+      throw error;
+    }
+  }
+
+  // Método para crear un nuevo usuario
+  async createUser(userData) {
+    try {
+      const { role_id, name, lastname, username, email, password } = userData;
+
+      // Validar si el email existe
+      const existingEmail = await this.userRepository.findByEmail(email);
+      if (existingEmail) {
+        throw new Error("El correo electrónico ya está registrado.");
+      }
+
+      // Validar si el username existe
+      const existingUsername =
+        await this.userRepository.findByUserName(username);
+      if (existingUsername) {
+        throw new Error("El nombre de usuario ya está registrado.");
+      }
+
+      // Builder para crear un nuevo usuario
+      const userBuilder = new UserBuilder()
+        .setRoleId(role_id)
+        .setName(name)
+        .setLastname(lastname)
+        .setUsername(username)
+        .setEmail(email)
+        .setPassword(password);
+
+      const newUser = userBuilder.build();
+
+      // Crear el nuevo usuario en el repositorio
+      return await this.userRepository.create(newUser);
+    } catch (error) {
+      logger.error("Error al crear el usuario:", error);
       throw error;
     }
   }
