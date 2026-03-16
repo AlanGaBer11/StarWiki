@@ -155,7 +155,7 @@ class RoleController {
       }
 
       // Llamar al proesso para crear un nuevo rol
-      const newRole = await this.roleProcess.roleService.createRole(roleDto);
+      const newRole = await this.roleProcess.createRole(roleDto);
       // Enviar la respuesta con el nuevo rol creado
       logger.success("Rol creado exitosamente.");
       const response = new RoleResponseDtoOutput({
