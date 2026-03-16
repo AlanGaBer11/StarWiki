@@ -175,7 +175,7 @@ class CategoryController {
       const response = new CategoryResponseDtOutput({
         success: false,
         status: 500,
-        message: "EError al crear la categoría.",
+        message: "Ocurrió un error al crear la categoría.",
       });
       return res.status(500).json(response);
     }
