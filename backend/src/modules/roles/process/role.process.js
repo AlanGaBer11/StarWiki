@@ -21,7 +21,7 @@ class RoleProcess {
     try {
       return await this.roleService.findAllRoles(page, limit);
     } catch (error) {
-      logger.error("Error en el proceso al buscar roles:", error);
+      logger.error("Error en el proceso al buscar roles:", error.message);
       throw error;
     }
   }
@@ -31,7 +31,10 @@ class RoleProcess {
     try {
       return await this.roleService.findRoleById(role_id);
     } catch (error) {
-      logger.error("Error en el proceso al buscar el rol por ID:", error);
+      logger.error(
+        "Error en el proceso al buscar el rol por ID:",
+        error.message,
+      );
       throw error;
     }
   }
@@ -41,7 +44,7 @@ class RoleProcess {
     try {
       return await this.roleService.createRole(roleData);
     } catch (error) {
-      logger.error("Error en el proceso al crear el rol:", error);
+      logger.error("Error en el proceso al crear el rol:", error.message);
       throw error;
     }
   }
@@ -51,7 +54,7 @@ class RoleProcess {
     try {
       return await this.roleService.updateRole(role_id, roleData);
     } catch (error) {
-      logger.error("Error en el proceso al actualizar el rol:", error);
+      logger.error("Error en el proceso al actualizar el rol:", error.message);
       throw error;
     }
   }
@@ -61,7 +64,7 @@ class RoleProcess {
     try {
       return await this.roleService.deleteRole(role_id);
     } catch (error) {
-      logger.error("Error en el proceso al eliminar el rol:", error);
+      logger.error("Error en el proceso al eliminar el rol:", error.message);
       throw error;
     }
   }

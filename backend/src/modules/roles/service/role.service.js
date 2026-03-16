@@ -38,7 +38,7 @@ class RoleService {
         currentPage: result.currentPage,
       };
     } catch (error) {
-      logger.error("Error al buscar roles:", error);
+      logger.error("Error al buscar roles:", error.message);
       throw error;
     }
   }
@@ -54,7 +54,7 @@ class RoleService {
       }
       return new RoleDtoOutput(role); // Mapear el rol a un DTO de salida
     } catch (error) {
-      logger.error("Error al buscar el rol por ID:", error);
+      logger.error("Error al buscar el rol por ID:", error.message);
       throw error;
     }
   }
@@ -79,7 +79,7 @@ class RoleService {
       // Crear el nuevo rol en el repositorio
       return await this.roleRepository.create(newRole);
     } catch (error) {
-      logger.error("Error al crear el rol:", error);
+      logger.error("Error al crear el rol:", error.message);
       throw error;
     }
   }
@@ -101,7 +101,7 @@ class RoleService {
 
       return await this.roleRepository.update(role_id, updatedRole);
     } catch (error) {
-      logger.error("Error al actualizar el rol:", error);
+      logger.error("Error al actualizar el rol:", error.message);
       throw error;
     }
   }
@@ -116,7 +116,7 @@ class RoleService {
       }
       return await this.roleRepository.delete(role_id);
     } catch (error) {
-      logger.error("Error al eliminar el rol:", error);
+      logger.error("Error al eliminar el rol:", error.message);
       throw error;
     }
   }

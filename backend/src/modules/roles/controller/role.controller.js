@@ -78,7 +78,7 @@ class RoleController {
         });
         return res.status(400).json(response);
       }
-      logger.error("Error en el controlador al buscar roles:", error);
+      logger.error("Error en el controlador al buscar roles:", error.message);
       const response = new RoleResponseDtoOutput({
         success: false,
         status: 500,
@@ -128,7 +128,10 @@ class RoleController {
         });
         return res.status(400).json(response);
       }
-      logger.error("Error en el controlador al buscar el rol por ID:", error);
+      logger.error(
+        "Error en el controlador al buscar el rol por ID:",
+        error.message,
+      );
       const response = new RoleResponseDtoOutput({
         success: false,
         status: 500,
@@ -175,7 +178,7 @@ class RoleController {
         });
         return res.status(400).json(response);
       }
-      logger.error("Error en el controlador al crear el rol:", error);
+      logger.error("Error en el controlador al crear el rol:", error.message);
       const response = new RoleResponseDtoOutput({
         success: false,
         status: 500,
@@ -234,7 +237,10 @@ class RoleController {
         return res.status(400).json(response);
       }
     }
-    logger.error("Error en el controlador al actualizar el rol:", error);
+    logger.error(
+      "Error en el controlador al actualizar el rol:",
+      error.message,
+    );
     const response = new RoleResponseDtoOutput({
       success: false,
       status: 500,
@@ -281,7 +287,10 @@ class RoleController {
         });
         return res.status(400).json(response);
       }
-      logger.error("Error en el controlador al eliminar el rol:", error);
+      logger.error(
+        "Error en el controlador al eliminar el rol:",
+        error.message,
+      );
       const response = new RoleResponseDtoOutput({
         success: false,
         status: 500,

@@ -23,7 +23,7 @@ class UserProcess {
     try {
       return await this.userService.findAllUsers(page, limit);
     } catch (error) {
-      logger.error("Error en el proceso al buscar usuarios:", error);
+      logger.error("Error en el proceso al buscar usuarios:", error.message);
       throw error;
     }
   }
@@ -33,7 +33,10 @@ class UserProcess {
     try {
       return await this.userService.findUserById(user_id);
     } catch (error) {
-      logger.error("Error en el proceso al buscar el usuario por ID:", error);
+      logger.error(
+        "Error en el proceso al buscar el usuario por ID:",
+        error.message,
+      );
       throw error;
     }
   }
@@ -43,7 +46,7 @@ class UserProcess {
     try {
       return await this.userService.createUser(userData);
     } catch (error) {
-      logger.error("Error en el proceso al crear el usuario:", error);
+      logger.error("Error en el proceso al crear el usuario:", error.message);
       throw error;
     }
   }
@@ -53,7 +56,10 @@ class UserProcess {
     try {
       return await this.userService.updateUser(user_id, userData);
     } catch (error) {
-      logger.error("Error en el proceso al actualizar el usuario:", error);
+      logger.error(
+        "Error en el proceso al actualizar el usuario:",
+        error.message,
+      );
       throw error;
     }
   }

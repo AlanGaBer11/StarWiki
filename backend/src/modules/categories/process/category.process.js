@@ -22,7 +22,7 @@ class CategoryProcess {
     try {
       return await this.categoryService.findAllCategories(page, limit);
     } catch (error) {
-      logger.error("Error en el proceso al buscar categorías:", error);
+      logger.error("Error en el proceso al buscar categorías:", error.message);
       throw error;
     }
   }
@@ -32,7 +32,10 @@ class CategoryProcess {
     try {
       return await this.categoryService.findCategoryById(category_id);
     } catch (error) {
-      logger.error("Error en el proceso al buscar categoría por ID:", error);
+      logger.error(
+        "Error en el proceso al buscar categoría por ID:",
+        error.message,
+      );
       throw error;
     }
   }
@@ -42,7 +45,7 @@ class CategoryProcess {
     try {
       return await this.categoryService.createCategory(categoryData);
     } catch (error) {
-      logger.error("Error en el proceso al crear la categoría:", error);
+      logger.error("Error en el proceso al crear la categoría:", error.message);
       throw error;
     }
   }
@@ -55,7 +58,10 @@ class CategoryProcess {
         categoryData,
       );
     } catch (error) {
-      logger.error("Error en el proceso al actualizar la categoría:", error);
+      logger.error(
+        "Error en el proceso al actualizar la categoría:",
+        error.message,
+      );
       throw error;
     }
   }
@@ -65,7 +71,10 @@ class CategoryProcess {
     try {
       return await this.categoryService.deleteCategory(category_id);
     } catch (error) {
-      logger.error("Error en el proceso al eliminar la categoría:", error);
+      logger.error(
+        "Error en el proceso al eliminar la categoría:",
+        error.message,
+      );
       throw error;
     }
   }
