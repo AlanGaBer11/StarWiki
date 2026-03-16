@@ -87,22 +87,22 @@ class CategoryController {
   // Método para manejar la solicitud de buscar una categoría por su ID
   async findCategoryById(req, res) {
     try {
-      const categoryIdInput = new CategoryFindDtoInput(req.params);
+      const dto = new CategoryFindDtoInput(req.params);
 
       // Llamar al proceso para buscar la categoría por ID
       const category = await this.categoryProcess.findCategoryById(
-        categoryIdInput.category_id,
+        dto.category_id,
       );
 
       // Validar que se encontró la categoría
       if (!category) {
         logger.warning(
-          `No se encontró la categoría con ID: ${categoryIdInput.category_id}`,
+          `No se encontró la categoría con ID: ${dto.category_id}`,
         );
         const response = new CategoryResponseDtOutput({
           success: false,
           status: 404,
-          message: `No se encontró la categoría con ID: ${categoryIdInput.category_id}`,
+          message: `No se encontró la categoría con ID: ${dto.category_id}`,
         });
         return res.status(404).json(response);
       }
@@ -171,11 +171,20 @@ class CategoryController {
       });
       return res.status(201).json(response);
     } catch (error) {
+      if (error.message?.includes("La categoría ya existe")) {
+        logger.warning(error.message);
+        const response = new CategoryResponseDtOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
       logger.error("Error en el controlador al crear la categoría:", error);
       const response = new CategoryResponseDtOutput({
         success: false,
         status: 500,
-        message: "EError al crear la categoría.",
+        message: "Ocurrió un error al crear la categoría.",
       });
       return res.status(500).json(response);
     }
