@@ -74,7 +74,7 @@ class CategoryService {
       // Validar si ya existe una categoría con el mismo nombre
       const existingCategory = await this.categoryRepository.findByName(name);
       if (existingCategory) {
-        throw new Error(`La categoría con nombre ${name} ya existe.`);
+        throw new Error(`La categoría ya existe.`);
       }
 
       // Builder para crear la nueva categoría
@@ -125,7 +125,7 @@ class CategoryService {
       const existingCategory =
         await this.categoryRepository.findById(category_id);
       if (!existingCategory) {
-        throw new Error(`No se encontró la categorría con ID: ${category_id}`);
+        throw new Error(`No se encontró la categoría con ID: ${category_id}`);
       }
       return await this.categoryRepository.delete(category_id);
     } catch (error) {
