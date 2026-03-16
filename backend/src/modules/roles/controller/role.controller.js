@@ -120,7 +120,7 @@ class RoleController {
     } catch (error) {
       // Si el error es de validación (del DTO)
       if (error.message?.includes("número entero positivo")) {
-        logger.warning("ID inválido");
+        logger.warning(error.message);
         const response = new RoleResponseDtoOutput({
           success: false,
           status: 400,
@@ -222,10 +222,7 @@ class RoleController {
         error.message?.includes("número entero positivo") ||
         error.message?.includes("al menos un campo para actualizar")
       ) {
-        logger.warning(
-          "Datos inválidos para actualizar el rol:",
-          error.message,
-        );
+        logger.warning(error.message);
         const response = new RoleResponseDtoOutput({
           success: false,
           status: 400,
@@ -273,7 +270,7 @@ class RoleController {
       return res.status(200).json(response);
     } catch (error) {
       if (error.message?.includes("número entero positivo")) {
-        logger.warning("ID inválido");
+        logger.warning(error.message);
         const response = new RoleResponseDtoOutput({
           success: false,
           status: 400,
