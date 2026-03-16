@@ -48,6 +48,11 @@ class UserRoutes {
       UserValidator.updateUserValidation,
       this.userController.updateUser.bind(this.userController),
     );
+    // Ruta para eliminar un usuario
+    this.router.delete(
+      "/:user_id",
+      this.userController.deleteUser.bind(this.userController),
+    );
   }
 }
 
