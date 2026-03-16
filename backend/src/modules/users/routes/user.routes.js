@@ -42,6 +42,12 @@ class UserRoutes {
       UserValidator.createUserValidation,
       this.userController.createUser.bind(this.userController),
     );
+    // Ruta para actualizar un usuario existente
+    this.router.put(
+      "/:user_id",
+      UserValidator.updateUserValidation,
+      this.userController.updateUser.bind(this.userController),
+    );
   }
 }
 

@@ -95,6 +95,66 @@ class UserService {
       throw error;
     }
   }
+
+  // Método para actualizar un usuario existente
+  async updateUser(user_id, userData) {
+    try {
+      const {
+        role_id,
+        name,
+        lastname,
+        username,
+        email,
+        password,
+        avatar_url,
+        biography,
+        updated_at,
+      } = userData;
+
+      // Validar si el usuario existe
+      const existingUser = await this.userRepository.findById(user_id);
+      if (!existingUser) {
+        throw new Error(`No se encontró el usuario con ID ${user_id}.`);
+      }
+
+      // Validar si el email existe y pertenece a otro usuario
+      if (email) {
+        const existingEmail = await this.userRepository.findByEmail(email);
+        if (existingEmail && existingEmail.user_id !== user_id) {
+          throw new Error("El correo electrónico ya está registrado.");
+        }
+      }
+
+      // Validar si el username existe y pertenece a otro usuario
+      if (username) {
+        const existingUsername =
+          await this.userRepository.findByUserName(username);
+        if (existingUsername && existingUsername.user_id !== user_id) {
+          throw new Error("El nombre de usuario ya está registrado.");
+        }
+      }
+
+      // Builder para actualizar el usuario
+      const builder = new UserBuilder()
+        .setRoleId(role_id)
+        .setName(name)
+        .setLastname(lastname)
+        .setUsername(username)
+        .setEmail(email)
+        .setPassword(password)
+        .setAvatarUrl(avatar_url)
+        .setBiography(biography)
+        .setUpdatedAt(updated_at || new Date());
+
+      // Construir el objeto de usuario actualizado
+      const updatedUser = builder.build();
+
+      return await this.userRepository.update(user_id, updatedUser);
+    } catch (error) {
+      logger.error("Error al actualizar el usuario:", error);
+      throw error;
+    }
+  }
 }
 
 export default UserService;

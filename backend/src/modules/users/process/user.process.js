@@ -47,6 +47,16 @@ class UserProcess {
       throw error;
     }
   }
+
+  // Método para actualizar un usuario existente
+  async updateUser(user_id, userData) {
+    try {
+      return await this.userService.updateUser(user_id, userData);
+    } catch (error) {
+      logger.error("Error en el proceso al actualizar el usuario:", error);
+      throw error;
+    }
+  }
 }
 
 export default UserProcess;

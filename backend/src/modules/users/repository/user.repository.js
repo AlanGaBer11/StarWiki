@@ -45,6 +45,13 @@ class UserRepository extends IUserRepository {
   async create(userData) {
     return await User.create(userData);
   }
+
+  // Método para actualizar un usuario
+  async update(user_id, userData) {
+    const user = await User.findByPk(user_id);
+    if (!user) return null;
+    return await user.update(userData);
+  }
 }
 
 export default UserRepository;
