@@ -206,6 +206,9 @@ class CategoryController {
         dto.category_id,
       );
       if (!existingCateory) {
+        logger.warning(
+          `No se encontró la categoría con ID: ${dto.category_id}.`,
+        );
         const response = new CategoryResponseDtOutput({
           success: false,
           status: 404,
@@ -266,6 +269,9 @@ class CategoryController {
         dto.category_id,
       );
       if (!existingCateory) {
+        logger.warning(
+          `No se encontró la categoría con ID: ${dto.category_id}.`,
+        );
         const response = new CategoryResponseDtOutput({
           success: false,
           status: 404,

@@ -97,6 +97,7 @@ class UserController {
 
       // Validar si se encontró el usuario
       if (!user) {
+        logger.warning(`No se encontró el usuario con ID: ${dto.user_id}.`);
         const response = new UserResponseDtoOutput({
           success: false,
           status: 404,
@@ -151,6 +152,7 @@ class UserController {
         !dto.email ||
         !dto.password
       ) {
+        logger.warning("Faltan datos requeridos para crear el usuario.");
         const response = new UserResponseDtoOutput({
           success: false,
           status: 400,
@@ -172,16 +174,8 @@ class UserController {
       });
       return res.status(201).json(response);
     } catch (error) {
-      if (error.message?.includes("número entero positivo")) {
-        logger.warning(error.message);
-        const response = new UserResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
-      }
       if (
+        error.message?.includes("número entero positivo") ||
         error.message?.includes("correo electrónico ya está registrado") ||
         error.message?.includes("nombre de usuario ya está registrado")
       ) {
@@ -214,6 +208,7 @@ class UserController {
       //Buscar el usuario existente
       const existingUser = await this.userProcess.findUserById(dto.user_id);
       if (!existingUser) {
+        logger.warning(`No se encontró el usuario con ID: ${dto.user_id}.`);
         const response = new UserResponseDtoOutput({
           success: false,
           status: 404,
@@ -270,6 +265,7 @@ class UserController {
       // Buscar el usuario existente
       const existingUser = await this.userProcess.findUserById(dto.user_id);
       if (!existingUser) {
+        logger.warning(`No se encontró el usuario con ID: ${dto.user_id}.`);
         const response = new UserResponseDtoOutput({
           success: false,
           status: 404,
