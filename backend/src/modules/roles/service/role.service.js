@@ -67,7 +67,7 @@ class RoleService {
       // Validar si el rol ya existe
       const existingRole = await this.roleRepository.findByName(name);
       if (existingRole) {
-        throw new Error(`El rol con nombre "${name}" ya existe.`);
+        throw new Error(`El rol ya existe.`);
       }
 
       // Builder para crear un nuevo rol
