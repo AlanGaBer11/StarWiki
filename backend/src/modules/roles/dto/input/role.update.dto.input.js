@@ -20,7 +20,7 @@ class RoleUpdateDtoInput {
       throw new Error("Debes enviar al menos un campo para actualizar");
     }
 
-    this.role_id = role_id;
+    this.role_id = parseId;
     this.name = name;
     this.description = description;
     this.updated_at = updated_at;
