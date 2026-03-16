@@ -7,6 +7,7 @@ import pagination from "#shared/utils/pagination.js";
 import UserResponseDtoOutput from "../dto/output/user.response.dto.output.js";
 // Entrada
 import UserFindDtoInput from "../dto/input/user.find.dto.input.js";
+import UserCreateDtoInput from "../dto/input/user.create.dto.input.js";
 
 class UserController {
   /**
@@ -127,6 +128,72 @@ class UserController {
         success: false,
         status: 500,
         message: "Ocurrió un error al buscar el usuario por ID.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de crear un nuevo usuario
+  async createUser(req, res) {
+    try {
+      const dto = new UserCreateDtoInput(req.body);
+
+      // Validaciones adicionales para el DTO de creación de usuario
+      if (
+        !dto.role_id ||
+        !dto.name ||
+        !dto.lastname ||
+        !dto.username ||
+        !dto.email ||
+        !dto.password
+      ) {
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: "Todos los campos son requeridos.",
+        });
+        return res.status(400).json(response);
+      }
+
+      // Llamar al proceso para crear un nuevo usuario
+      const newUser = await this.userProcess.createUser(dto);
+
+      // Enviar la respuesta con el nuevo usuario creado
+      logger.success("Usuario creado exitosamente.");
+      const response = new UserResponseDtoOutput({
+        success: true,
+        status: 201,
+        message: "Usuario creado exitosamente.",
+        user: newUser,
+      });
+      return res.status(201).json(response);
+    } catch (error) {
+      if (error.message?.includes("número entero positivo")) {
+        logger.warning("ID inválido");
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      if (
+        error.message?.includes("correo electrónico ya está registrado") ||
+        error.message?.includes("nombre de usuario ya está registrado")
+      ) {
+        logger.warning(error.message);
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      logger.error("Error en el controlador al crear el usuario:", error);
+      const response = new UserResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al crear el usuario.",
       });
       return res.status(500).json(response);
     }

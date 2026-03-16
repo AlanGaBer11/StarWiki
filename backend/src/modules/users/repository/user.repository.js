@@ -24,6 +24,27 @@ class UserRepository extends IUserRepository {
       attributes: { exclude: ["password"] },
     });
   }
+
+  // Método para buscar un usuario por su username
+  async findByUserName(username) {
+    return await User.findOne({
+      where: { username },
+      attributes: { exclude: ["password"] },
+    });
+  }
+
+  // Método para buscar un usuario por su email
+  async findByEmail(email) {
+    return await User.findOne({
+      where: { email },
+      attributes: { exclude: ["password"] },
+    });
+  }
+
+  // Método para crear un usuario
+  async create(userData) {
+    return await User.create(userData);
+  }
 }
 
 export default UserRepository;

@@ -1,5 +1,6 @@
 import UserController from "../controller/user.controller.js";
 import { Router } from "express";
+import UserValidator from "../validator/user.validator.js";
 
 class UserRoutes {
   constructor(userController) {
@@ -34,6 +35,12 @@ class UserRoutes {
     this.router.get(
       "/:user_id",
       this.userController.findUserById.bind(this.userController),
+    );
+    // Ruta para crear un nuevo usuario
+    this.router.post(
+      "/",
+      UserValidator.createUserValidation,
+      this.userController.createUser.bind(this.userController),
     );
   }
 }
