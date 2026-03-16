@@ -8,6 +8,7 @@ import UserResponseDtoOutput from "../dto/output/user.response.dto.output.js";
 // Entrada
 import UserFindDtoInput from "../dto/input/user.find.dto.input.js";
 import UserCreateDtoInput from "../dto/input/user.create.dto.input.js";
+import UserUpdateDtoInput from "../dto/input/user.update.dto.input.js";
 
 class UserController {
   /**
@@ -194,6 +195,59 @@ class UserController {
         success: false,
         status: 500,
         message: "Ocurrió un error al crear el usuario.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de actualizar un usuario existente
+  async updateUser(req, res) {
+    try {
+      const dto = new UserUpdateDtoInput({ ...req.params, ...req.body });
+
+      //Buscar el usuario existente
+      const existingUser = await this.userProcess.findUserById(dto.user_id);
+      if (!existingUser) {
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró el usuario con ID: ${dto.user_id}.`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Lamar al proceso para actualizar el usuario existente
+      const updatedUser = await this.userProcess.updateUser(dto.user_id, dto);
+
+      // Enviar la respuesta con el usuario actualizado
+      logger.success("Usuario actualizado exitosamente.");
+      const response = new UserResponseDtoOutput({
+        success: true,
+        status: 200,
+        message: "Usuario actualizado exitosamente.",
+        user: updatedUser,
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (
+        error.message?.includes("correo electrónico ya está registrado") ||
+        error.message?.includes("nombre de usuario ya está registrado") ||
+        error.message?.includes("número entero positivo") ||
+        error.message?.includes("al menos un campo para actualizar")
+      ) {
+        logger.warning(error.message);
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      logger.error("Error en el controlador al actualizar el usuario:", error);
+      const response = new UserResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al actualizar el usuario.",
       });
       return res.status(500).json(response);
     }
