@@ -60,32 +60,36 @@ class UserRepository extends IUserRepository {
     return await user.destroy();
   }
 
-  // Método para desactivar un usuario
-  async deactivate(user_id) {
-    const user = await User.findByPk(user_id);
-    if (!user) return null;
-    return await user.update({ status: "Inactivo" });
-  }
-
   // Método para realizar un soft delete de un usuario
   async softDelete(user_id) {
     const user = await User.findByPk(user_id);
     if (!user) return null;
-    return await user.update({ status: "Eliminado", deleted_at: new Date() });
+    return await user.update({
+      status: "Eliminado",
+      updated_at: new Date(),
+      deleted_at: new Date(),
+    });
+  }
+
+  // Método para desactivar un usuario
+  async deactivate(user_id) {
+    const user = await User.findByPk(user_id);
+    if (!user) return null;
+    return await user.update({ status: "Inactivo", updated_at: new Date() });
   }
 
   // Método para activar un usuario
   async activate(user_id) {
     const user = await User.findByPk(user_id);
     if (!user) return null;
-    return await user.update({ status: "Activo" });
+    return await user.update({ status: "Activo", updated_at: new Date() });
   }
 
   // Método para suspender un usuario
   async suspend(user_id) {
     const user = await User.findByPk(user_id);
     if (!user) return null;
-    return await user.update({ status: "Suspendido" });
+    return await user.update({ status: "Suspendido", updated_at: new Date() });
   }
 }
 export default UserRepository;
