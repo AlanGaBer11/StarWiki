@@ -99,6 +99,19 @@ class UserProcess {
       throw error;
     }
   }
+
+  // Método para suspender un usuario por su ID
+  async suspendUser(user_id) {
+    try {
+      return await this.userService.suspendUser(user_id);
+    } catch (error) {
+      logger.error(
+        "Error en el proceso al suspender el usuario:",
+        error.message,
+      );
+      throw error;
+    }
+  }
 }
 
 export default UserProcess;

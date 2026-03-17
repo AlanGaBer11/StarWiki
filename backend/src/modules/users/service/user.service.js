@@ -161,7 +161,7 @@ class UserService {
       // Validar si el usuario existe
       const existingUser = await this.userRepository.findById(user_id);
       if (!existingUser) {
-        throw new Error(`No se encontró el usuario con ID: ${user_id}`);
+        throw new Error(`No se encontró el usuario con ID: ${user_id}.`);
       }
 
       return await this.userRepository.delete(user_id);
@@ -177,7 +177,7 @@ class UserService {
       // Validar si el usuario existe
       const existingUser = await this.userRepository.findById(user_id);
       if (!existingUser) {
-        throw new Error(`No se encontro el usuario con ID: ${user_id}`);
+        throw new Error(`No se encontró el usuario con ID: ${user_id}.`);
       }
 
       // Validar si el usuario ya está inactivo
@@ -201,7 +201,7 @@ class UserService {
 
       // Registrar el cambio de estado para auditoría
       logger.info(
-        `Usuario ${user_id} cambiado de estado: ${existingUser.status} -> Inactivo`,
+        `Usuario ${user_id} cambiado de estado: ${existingUser.status} -> Inactivo.`,
       );
 
       return await this.userRepository.deactivate(user_id);
@@ -217,7 +217,7 @@ class UserService {
       // Validar si el usuario existe
       const existingUser = await this.userRepository.findById(user_id);
       if (!existingUser) {
-        throw new Error(`No se encontró el usuario con ID: ${user_id}`);
+        throw new Error(`No se encontró el usuario con ID: ${user_id}.`);
       }
 
       // Validar el estado del usuario antes de activarlo
@@ -244,12 +244,50 @@ class UserService {
 
       // Registrar el cambio de estado para auditoría
       logger.info(
-        `Usuario ${user_id} cambiado de estado: ${existingUser.status} -> Activo`,
+        `Usuario ${user_id} cambiado de estado: ${existingUser.status} -> Activo.`,
       );
 
       return await this.userRepository.activate(user_id);
     } catch (error) {
       logger.error("Error al activar el usuario:", error.message);
+      throw error;
+    }
+  }
+
+  // Método para suspender un usuario
+  async suspendUser(user_id) {
+    try {
+      // Validar si el usuario existe+
+      const existingUser = await this.userRepository.findById(user_id);
+      if (!existingUser) {
+        throw new Error(`No se encontró el usuario con ID: ${user_id}.`);
+      }
+
+      // Validar si el usuario ya está suspendido
+      if (existingUser.status === "Suspendido") {
+        throw new Error("El usuario ya está suspendido.");
+      }
+
+      // Validar si el usuario está eliminado
+      if (existingUser.status === "Eliminado") {
+        throw new Error(
+          "El usuario ha sido eliminado y no puede ser suspendido.",
+        );
+      }
+
+      // Validar si el usuario está activo
+      if (existingUser.status !== "Activo") {
+        throw new Error("Solo usuarios activos pueden ser suspendidos.");
+      }
+
+      // Registrar el cambio de estado para auditoría
+      logger.info(
+        `Usuario ${user_id} cambiado de estado: ${existingUser.status} -> Suspendido.`,
+      );
+
+      return await this.userRepository.suspend(user_id);
+    } catch (error) {
+      logger.error("Error al suspender el usuario:", error.message);
       throw error;
     }
   }
