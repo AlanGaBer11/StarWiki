@@ -53,11 +53,17 @@ class UserRoutes {
       "/:user_id",
       this.userController.deleteUser.bind(this.userController),
     );
-    // Ruta para activar un usuario
-    this.router.patch(
-      "/:user_id/activate",
-      this.userController.activateUser.bind(this.userController),
-    );
+    
+    // Ruta para desactivar un usuario
+this.router.patch(
+  "/:user_id/deactivate",
+  this.userController.deactivateUser.bind(this.userController),
+);
+// Ruta para activar un usuario
+this.router.patch(
+  "/:user_id/activate",
+  this.userController.activateUser.bind(this.userController),
+);
   }
 }
 
