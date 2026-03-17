@@ -128,6 +128,16 @@ class UserBuilder {
 
   /**
    *
+   * @param {string} deleted_at
+   * @returns {UserBuilder}
+   */
+  setDeletedAt(deleted_at) {
+    this.user.deleted_at = deleted_at;
+    return this;
+  }
+
+  /**
+   *
    * @returns {Object} - El objeto de usuario construido
    */
   build() {
