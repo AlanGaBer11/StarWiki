@@ -73,5 +73,12 @@ class UserRepository extends IUserRepository {
     if (!user) return null;
     return await user.update({ status: "Activo" });
   }
+
+  // Método para suspender un usuario
+  async suspend(user_id) {
+    const user = await User.findByPk(user_id);
+    if (!user) return null;
+    return await user.update({ status: "Suspendido" });
+  }
 }
 export default UserRepository;

@@ -420,6 +420,62 @@ class UserController {
       return res.status(500).json(response);
     }
   }
+
+  // Método para manejar la solicitud de suspender un usuario por su ID
+  async suspendUser(req, res) {
+    try {
+      const dto = new UserFindDtoInput(req.params);
+
+      // Buscar el usuario existente
+      const existingUser = await this.userProcess.findUserById(dto.user_id);
+      if (!existingUser) {
+        logger.warning(`No se encontró el usuario con ID: ${dto.user_id}.`);
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró el usuario con ID: ${dto.user_id}.`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Llamar al proceso para suspender el usuario por su ID
+      await this.userProcess.suspendUser(dto.user_id);
+
+      // Enviar la respuesta indicando que el usuario fue suspendido
+      logger.success("Usuario suspendido exitosamente.");
+      const response = new UserResponseDtoOutput({
+        success: true,
+        status: 200,
+        message: "Usuario suspendido exitosamente.",
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (
+        error.message?.includes("número entero positivo") ||
+        error.message?.includes("ya está suspendido") ||
+        error.message?.includes("ha sido eliminado") ||
+        error.message?.includes("Solo usuarios activos pueden ser suspendidos")
+      ) {
+        logger.warning(error.message);
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      logger.error(
+        "Error en el controlador al suspender el usuario:",
+        error.message,
+      );
+      const response = new UserResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al suspender el usuario.",
+      });
+      return res.status(500).json(response);
+    }
+  }
 }
 
 export default UserController;
