@@ -59,19 +59,19 @@ class UserRepository extends IUserRepository {
     if (!user) return null;
     return await user.destroy();
   }
-  
+
   // Método para desactivar un usuario
   async deactivate(user_id) {
     const user = await User.findByPk(user_id);
     if (!user) return null;
     return await user.update({ status: "Inactivo" });
   }
-  
+
   // Método para activar un usuario
   async activate(user_id) {
     const user = await User.findByPk(user_id);
     if (!user) return null;
     return await user.update({ status: "Activo" });
+  }
 }
-
 export default UserRepository;

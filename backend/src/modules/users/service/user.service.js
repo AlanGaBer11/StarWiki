@@ -171,89 +171,88 @@ class UserService {
     }
   }
 
+  // Método para desactivar un usuario
+  async deactivateUser(user_id) {
+    try {
+      // Validar si el usuario existe
+      const existingUser = await this.userRepository.findById(user_id);
+      if (!existingUser) {
+        throw new Error(`No se encontro el usuario con ID: ${user_id}`);
+      }
 
-// Método para desactivar un usuario
-async deactivateUser(user_id) {
-  try {
-    // Validar si el usuario existe
-    const existingUser = await this.userRepository.findById(user_id);
-    if (!existingUser) {
-      throw new Error(`No se encontro el usuario con ID: ${user_id}`);
-    }
+      // Validar si el usuario ya está inactivo
+      if (existingUser.status === "Inactivo") {
+        throw new Error(`El usuario ya está inactivo.`);
+      }
 
-    // Validar si el usuario ya está inactivo
-    if (existingUser.status === "Inactivo") {
-      throw new Error(`El usuario ya está inactivo.`);
-    }
+      // Validar si el usuario está suspendido
+      if (existingUser.status === "Suspendido") {
+        throw new Error(
+          `El usuario está suspendido y no puede ser desactivado.`,
+        );
+      }
 
-    // Validar si el usuario está suspendido
-    if (existingUser.status === "Suspendido") {
-      throw new Error(
-        `El usuario está suspendido y no puede ser desactivado.`,
+      // Validar si el usuario ya ha sido eliminado
+      if (existingUser.status === "Eliminado") {
+        throw new Error(
+          `El usuario ya ha sido eliminado y no puede ser desactivado.`,
+        );
+      }
+
+      // Registrar el cambio de estado para auditoría
+      logger.info(
+        `Usuario ${user_id} cambiado de estado: ${existingUser.status} -> Inactivo`,
       );
+
+      return await this.userRepository.deactivate(user_id);
+    } catch (error) {
+      logger.error("Error al desactivar el usuario:", error.message);
+      throw error;
     }
-
-    // Validar si el usuario ya ha sido eliminado
-    if (existingUser.status === "Eliminado") {
-      throw new Error(
-        `El usuario ya ha sido eliminado y no puede ser desactivado.`,
-      );
-    }
-
-    // Registrar el cambio de estado para auditoría
-    logger.info(
-      `Usuario ${user_id} cambiado de estado: ${existingUser.status} -> Inactivo`,
-    );
-
-    return await this.userRepository.deactivate(user_id);
-  } catch (error) {
-    logger.error("Error al desactivar el usuario:", error.message);
-    throw error;
   }
-}
-  
+
   // Método para activar un usuario
-async activateUser(user_id) {
-  try {
-    // Validar si el usuario existe
-    const existingUser = await this.userRepository.findById(user_id);
-    if (!existingUser) {
-      throw new Error(`No se encontró el usuario con ID: ${user_id}`);
-    }
+  async activateUser(user_id) {
+    try {
+      // Validar si el usuario existe
+      const existingUser = await this.userRepository.findById(user_id);
+      if (!existingUser) {
+        throw new Error(`No se encontró el usuario con ID: ${user_id}`);
+      }
 
-    // Validar el estado del usuario antes de activarlo
-    if (existingUser.status === "Activo") {
-      throw new Error("El usuario ya está activo.");
-    }
+      // Validar el estado del usuario antes de activarlo
+      if (existingUser.status === "Activo") {
+        throw new Error("El usuario ya está activo.");
+      }
 
-    // Validar si el usuario está eliminado
-    if (existingUser.status === "Eliminado") {
-      throw new Error(
-        "El usuario ha sido eliminado y no puede ser activado.",
+      // Validar si el usuario está eliminado
+      if (existingUser.status === "Eliminado") {
+        throw new Error(
+          "El usuario ha sido eliminado y no puede ser activado.",
+        );
+      }
+
+      // Validar si el usuario está suspendido
+      if (existingUser.status === "Suspendido") {
+        throw new Error("El usuario está suspendido y no puede ser activado.");
+      }
+
+      // Validar si el usuario está inactivo
+      if (existingUser.status !== "Inactivo") {
+        throw new Error("Solo usuarios inactivos pueden ser activados.");
+      }
+
+      // Registrar el cambio de estado para auditoría
+      logger.info(
+        `Usuario ${user_id} cambiado de estado: ${existingUser.status} -> Activo`,
       );
+
+      return await this.userRepository.activate(user_id);
+    } catch (error) {
+      logger.error("Error al activar el usuario:", error.message);
+      throw error;
     }
-
-    // Validar si el usuario está suspendido
-    if (existingUser.status === "Suspendido") {
-      throw new Error("El usuario está suspendido y no puede ser activado.");
-    }
-
-    // Validar si el usuario está inactivo
-    if (existingUser.status !== "Inactivo") {
-      throw new Error("Solo usuarios inactivos pueden ser activados.");
-    }
-
-    // Registrar el cambio de estado para auditoría
-    logger.info(
-      `Usuario ${user_id} cambiado de estado: ${existingUser.status} -> Activo`,
-    );
-
-    return await this.userRepository.activate(user_id);
-  } catch (error) {
-    logger.error("Error al activar el usuario:", error.message);
-    throw error;
   }
-}
 }
 
 export default UserService;
