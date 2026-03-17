@@ -64,6 +64,11 @@ class UserRoutes {
       "/:user_id/activate",
       this.userController.activateUser.bind(this.userController),
     );
+    // Ruta para suspender un usuario
+    this.router.patch(
+      "/:user_id/suspend",
+      this.userController.suspendUser.bind(this.userController),
+    );
   }
 }
 
