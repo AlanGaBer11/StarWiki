@@ -77,6 +77,19 @@ class UserProcess {
     }
   }
 
+  // Método para eliminar (soft delete) un usuario por su ID
+  async softDeleteUser(user_id) {
+    try {
+      return await this.userService.softDeleteUser(user_id,);
+    } catch (error) {
+      logger.error(
+        "Error en el proceso al eliminar el usuario (soft delete):",
+        error.message,
+      );
+      throw error;
+    }
+  }
+
   // Método para desactivar un usuario por su ID
   async deactivateUser(user_id) {
     try {
