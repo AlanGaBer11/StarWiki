@@ -20,6 +20,11 @@ class IUserRepository extends IBaseRepository {
   async activate(user_id) {
     throw new Error("Método no implementado");
   }
+
+  // Método para suspender un usuario
+  async suspend(user_id) {
+    throw new Error("Método no implementado");
+  }
 }
 
 export default IUserRepository;
