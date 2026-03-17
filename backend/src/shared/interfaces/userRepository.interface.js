@@ -11,6 +11,11 @@ class IUserRepository extends IBaseRepository {
     throw new Error("Método no implementado");
   }
 
+  // Método para eliminar (soft delete) un usuario
+  async softDelete(user_id) {
+    throw new Error("Método no implementado");
+  }
+
   // Método para desactivar un usuario
   async deactivate(user_id) {
     throw new Error("Método no implementado");
