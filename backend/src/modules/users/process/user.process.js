@@ -76,6 +76,16 @@ class UserProcess {
       throw error;
     }
   }
+
+  // Método para activar un usuario por su ID
+  async activateUser(user_id) {
+    try {
+      return await this.userService.activateUser(user_id);
+    } catch (error) {
+      logger.error("Error en el proceso al activar el usuario:", error.message);
+      throw error;
+    }
+  }
 }
 
 export default UserProcess;
