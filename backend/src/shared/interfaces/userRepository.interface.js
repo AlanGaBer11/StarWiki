@@ -10,6 +10,11 @@ class IUserRepository extends IBaseRepository {
   async findByEmail(email) {
     throw new Error("Método no implementado");
   }
+
+  // Método para activar un usuario
+  async activate(user_id) {
+    throw new Error("Método no implementado");
+  }
 }
 
 export default IUserRepository;
