@@ -76,6 +76,19 @@ class UserProcess {
       throw error;
     }
   }
+
+  // Método para desactivar un usuario por su ID
+  async deactivateUser(user_id) {
+    try {
+      return await this.userService.deactivateUser(user_id);
+    } catch (error) {
+      logger.error(
+        "Error en el proceso al desactivar el usuario:",
+        error.message,
+      );
+      throw error;
+    }
+  }
 }
 
 export default UserProcess;
