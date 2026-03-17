@@ -155,7 +155,7 @@ class UserService {
     }
   }
 
-  // Método para eliminar (soft delete) un usuario
+  // Método para eliminar (Hard Delete) un usuario (Solo para administradores)
   async deleteUser(user_id) {
     try {
       // Validar si el usuario existe
@@ -167,6 +167,45 @@ class UserService {
       return await this.userRepository.delete(user_id);
     } catch (error) {
       logger.error("Error al eliminar el usuario:", error.message);
+      throw error;
+    }
+  }
+
+  // Método para desactivar un usuario
+  async deactivateUser(user_id) {
+    try {
+      // Validar si el usuario existe
+      const existingUser = await this.userRepository.findById(user_id);
+      if (!existingUser) {
+        throw new Error(`No se encontro el usuario con ID: ${user_id}`);
+      }
+
+      // Validar si el usuario ya está inactivo
+      if (existingUser.status === "Inactivo") {
+        throw new Error(`El usuario ya está inactivo.`);
+      }
+
+      // Validar si el usuario está suspendido
+      if (existingUser.status === "Suspendido") {
+        throw new Error(
+          `El usuario está suspendido y no puede ser desactivado.`,
+        );
+      }
+      // Validar si el usuario ya ha sido eliminado
+      if (existingUser.status === "Eliminado") {
+        throw new Error(
+          `El usuario ya ha sido eliminado y no puede ser desactivado.`,
+        );
+      }
+
+      // Registrar el cambio de estado para auditoría
+      logger.info(
+        `Usuario ${user_id} cambiado de estado: ${existingUser.status} -> Inactivo`,
+      );
+
+      return await this.userRepository.deactivate(user_id);
+    } catch (error) {
+      logger.error("Error al desactivar el usuario:", error.message);
       throw error;
     }
   }
