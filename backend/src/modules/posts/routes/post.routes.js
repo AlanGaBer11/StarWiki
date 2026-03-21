@@ -31,6 +31,11 @@ class PostRoutes {
       "",
       this.postController.findAllPosts.bind(this.postController),
     );
+    // Ruta para obtener un post por su ID
+    this.router.get(
+      "/:post_id",
+      this.postController.findPostById.bind(this.postController),
+    );
   }
 }
 

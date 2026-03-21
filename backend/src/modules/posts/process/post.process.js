@@ -28,6 +28,19 @@ class PostProcess {
       throw error;
     }
   }
+
+  // Método para buscar un post por su ID
+  async findPostById(post_id) {
+    try {
+      return await this.postService.findPostById(post_id);
+    } catch (error) {
+      logger.error(
+        "Error en el proceso al buscar el post por ID:",
+        error.message,
+      );
+      throw error;
+    }
+  }
 }
 
 export default PostProcess;

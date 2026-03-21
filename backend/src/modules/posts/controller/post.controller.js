@@ -4,6 +4,8 @@ import pagination from "#shared/utils/pagination.js";
 /* DTOs */
 // Salida
 import PostResponseDtoOutput from "../dto/output/post.response.dto.output.js";
+// Entrada
+import PostFindDtoInput from "../dto/input/post.find.dto.input.js";
 
 class PostController {
   /**
@@ -16,7 +18,6 @@ class PostController {
      */
     this.postProcess = postProcess;
   }
-  j;
   // Método estático para crear una instancia del controlador con el proceso inyectado
   static async create() {
     const process = await PostProcess.create();
@@ -75,6 +76,62 @@ class PostController {
         success: false,
         status: 500,
         message: "Ocurrió un error al buscar posts.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de buscar un post por su ID
+  async findPostById(req, res) {
+    try {
+      const dto = new PostFindDtoInput(req.params);
+
+      // Llamar al proceso para buscar el post
+      const post = await this.postProcess.findPostById(dto.post_id);
+
+      // Validar si se encontro el post
+      if (!post) {
+        logger.warning(`No se encontró el post con ID: ${dto.post_id}`);
+        const response = new PostResponseDtoOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró el post con ID: ${dto.post_id}.`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Enviar la respuesta con el post encontrado
+      logger.success("Post encontrado exitosamente.");
+      const response = new PostResponseDtoOutput({
+        success: true,
+        status: 200,
+        message: "Post encontrado exitosamente.",
+        post,
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (
+        error.message?.includes(
+          "El ID del post debe ser un número entero positivo.",
+        )
+      ) {
+        logger.warning(error.message);
+        const response = new PostResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+
+      logger.error(
+        "Error en el controlador al buscar el post por ID:",
+        error.message,
+      );
+      const response = new PostResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al buscar el post por ID.",
       });
       return res.status(500).json(response);
     }
