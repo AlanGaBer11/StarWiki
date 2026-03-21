@@ -6,6 +6,7 @@ class RepositoryConfig {
       category: () =>
         import("#modules/categories/repository/category.repository.js"),
       user: () => import("#modules/users/repository/user.repository.js"),
+      post: () => import("#modules/posts/repository/post.repository.js"),
     };
 
     // Validar si el tipo de repositorio existe

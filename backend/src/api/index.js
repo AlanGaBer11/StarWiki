@@ -4,9 +4,10 @@ import { Router } from "express";
 import RoleRoutes from "#modules/roles/routes/role.routes.js";
 import CategoryRoutes from "#modules/categories/routes/category.routes.js";
 import UserRoutes from "#modules/users/routes/user.routes.js";
+import PostRoutes from "#modules/posts/routes/post.routes.js";
 
 class ApiRoutes {
-  constructor(roleRoutes, categoryRoutes, userRoutes) {
+  constructor(roleRoutes, categoryRoutes, userRoutes, postRoutes) {
     // Crear una instancia del enrutador de Express
     this.router = Router();
 
@@ -14,6 +15,7 @@ class ApiRoutes {
     this.roleRoutes = roleRoutes;
     this.categoryRoutes = categoryRoutes;
     this.userRoutes = userRoutes;
+    this.postRoutes = postRoutes;
 
     // Configurar las rutas de la API
     this.configureRoutes();
@@ -24,7 +26,8 @@ class ApiRoutes {
     const roleRoutes = await RoleRoutes.create();
     const categoryRoutes = await CategoryRoutes.create();
     const userRoutes = await UserRoutes.create();
-    return new ApiRoutes(roleRoutes, categoryRoutes, userRoutes);
+    const postRoutes = await PostRoutes.create();
+    return new ApiRoutes(roleRoutes, categoryRoutes, userRoutes, postRoutes);
   }
 
   // Método para configurar todas las rutas de la API
@@ -32,6 +35,7 @@ class ApiRoutes {
     this.router.use("/roles", this.roleRoutes.router);
     this.router.use("/categories", this.categoryRoutes.router);
     this.router.use("/users", this.userRoutes.router);
+    this.router.use("/posts", this.postRoutes.router);
   }
 }
 

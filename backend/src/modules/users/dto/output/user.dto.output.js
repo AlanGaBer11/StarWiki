@@ -14,6 +14,7 @@ class UserDtoOutput {
    * @param {boolean} params.verified - Verificado
    * @param {Date} params.created_at - Fecha de creación
    * @param {Date} params.updated_at - Fecha de actualización
+   * @param {Date} params.deleted_at - Fecha de eliminación
    */
   constructor({
     user_id,
@@ -29,6 +30,7 @@ class UserDtoOutput {
     verified,
     created_at,
     updated_at,
+    deleted_at,
   }) {
     this.user_id = user_id;
     this.role_id = role_id;
@@ -43,6 +45,7 @@ class UserDtoOutput {
     this.verified = verified;
     this.created_at = created_at;
     this.updated_at = updated_at;
+    this.deleted_at = deleted_at;
   }
 
   toJSON() {
@@ -60,6 +63,7 @@ class UserDtoOutput {
       verified: this.verified,
       created_at: this.created_at,
       updated_at: this.updated_at,
+      deleted_at: this.deleted_at,
     };
   }
 }
