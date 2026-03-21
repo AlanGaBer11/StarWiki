@@ -17,6 +17,11 @@ class PostRepository extends IPostRepository {
       currentPage: page,
     };
   }
+
+  // Método para buscar un post por su ID
+  async findById(post_id) {
+    return await Post.findByPk(post_id);
+  }
 }
 
 export default PostRepository;

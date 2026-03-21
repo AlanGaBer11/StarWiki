@@ -42,6 +42,21 @@ class PostService {
       throw error;
     }
   }
+
+  // Método para buscar un post por su ID
+  async findPostById(post_id) {
+    try {
+      const post = await this.postRepository.findById(post_id);
+
+      // Validar si se encontró el post
+      if (!post) return null;
+
+      return new PostDtoOutput(post);
+    } catch (error) {
+      logger.error("Error al buscar el post:", error.message);
+      throw error;
+    }
+  }
 }
 
 export default PostService;
