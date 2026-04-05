@@ -1,5 +1,6 @@
 import RepositoryConfig from "#config/Repository.js";
 import logger from "#config/chalk.js";
+import PostBuilder from "../builder/post.builder.js";
 /* DTOs */
 import PostDtoOutput from "../dto/output/post.dto.output.js";
 
@@ -54,6 +55,36 @@ class PostService {
       return new PostDtoOutput(post);
     } catch (error) {
       logger.error("Error al buscar el post:", error.message);
+      throw error;
+    }
+  }
+
+  // Método para crear un nuevo post
+  async createPost(postData) {
+    try {
+      const { user_id, category_id, title, content, image_url } = postData;
+
+      // Validar si el post ya existe
+      const existingPost = await this.postRepository.findByTitle(title);
+      if (existingPost) {
+        throw new Error("El post ya existe.");
+      }
+
+      // Builder para crear el post
+      const postBuilder = new PostBuilder()
+        .setUserId(user_id)
+        .setCategoryId(category_id)
+        .setTitle(title)
+        .setContent(content)
+        .setImageUrl(image_url);
+
+      // Construir el post
+      const newPost = postBuilder.build();
+
+      // Crear el post
+      return await this.postRepository.create(newPost);
+    } catch (error) {
+      logger.error("Error al crear el post: ", error.message);
       throw error;
     }
   }

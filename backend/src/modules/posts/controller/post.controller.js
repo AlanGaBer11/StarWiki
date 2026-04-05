@@ -6,6 +6,7 @@ import pagination from "#shared/utils/pagination.js";
 import PostResponseDtoOutput from "../dto/output/post.response.dto.output.js";
 // Entrada
 import PostFindDtoInput from "../dto/input/post.find.dto.input.js";
+import PostCreateDtoInput from "../dto/input/post.create.dto.input.js";
 
 class PostController {
   /**
@@ -132,6 +133,63 @@ class PostController {
         success: false,
         status: 500,
         message: "Ocurrió un error al buscar el post por ID.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de crear un nuevo post
+  async createPost(req, res) {
+    try {
+      const dto = new PostCreateDtoInput(req.body);
+
+      // Validaciones adicionales para el DTO
+      if (
+        !dto.user_id ||
+        !dto.category_id ||
+        !dto.title ||
+        !dto.content ||
+        !dto.image_url
+      ) {
+        logger.warning("Faltan datos requeridos para crear el post.");
+        const response = new PostResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: "Todos los campos son requeridos.",
+        });
+        return res.status(400).json(response);
+      }
+
+      // Llamar al proceso para crear un nuevo post
+      const newPost = await this.postProcess.createPost(dto);
+
+      // Enviar la respuesta con el post creado
+      logger.success("Post creado exitosamente.");
+      const response = new PostResponseDtoOutput({
+        success: true,
+        status: 201,
+        message: "Post creado exitosamente",
+        post: newPost,
+      });
+      return res.status(201).json(response);
+    } catch (error) {
+      if (
+        error.message?.includes("El post ya existe") ||
+        error.message?.includes("números enteros positivos")
+      ) {
+        logger.warning(error.message);
+        const response = new PostResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      logger.error("Error al crear el post:", error.message);
+      const response = new PostResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al crear el post.",
       });
       return res.status(500).json(response);
     }

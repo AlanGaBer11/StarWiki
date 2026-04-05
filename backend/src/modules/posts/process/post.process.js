@@ -41,6 +41,16 @@ class PostProcess {
       throw error;
     }
   }
+
+  // Método para crear un nuevo post
+  async createPost(postData) {
+    try {
+      return await this.postService.createPost(postData);
+    } catch (error) {
+      logger.error("Error en el proceso al crear el post:", error.message);
+      throw error;
+    }
+  }
 }
 
 export default PostProcess;
