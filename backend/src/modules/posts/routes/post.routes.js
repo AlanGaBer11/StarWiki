@@ -1,6 +1,8 @@
 import PostController from "../controller/post.controller.js";
 import { Router } from "express";
 
+import PostValidator from "../validator/post.validator.js";
+
 class PostRoutes {
   constructor(postController) {
     /**
@@ -35,6 +37,12 @@ class PostRoutes {
     this.router.get(
       "/:post_id",
       this.postController.findPostById.bind(this.postController),
+    );
+    // Ruta para crear un post
+    this.router.post(
+      "",
+      PostValidator.createPostValidator,
+      this.postController.createPost.bind(this.postController),
     );
   }
 }

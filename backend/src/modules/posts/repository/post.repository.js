@@ -22,6 +22,16 @@ class PostRepository extends IPostRepository {
   async findById(post_id) {
     return await Post.findByPk(post_id);
   }
+
+  // Método para buscar un post por su título
+  async findByTitle(title) {
+    return await Post.findOne({ where: { title } });
+  }
+
+  // Método para crear un nuevo post
+  async create(postData) {
+    return await Post.create(postData);
+  }
 }
 
 export default PostRepository;
