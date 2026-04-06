@@ -32,6 +32,13 @@ class PostRepository extends IPostRepository {
   async create(postData) {
     return await Post.create(postData);
   }
+
+  // Método para actualizar un post
+  async update(post_id, postData) {
+    const post = await Post.findByPk(post_id);
+    if (!post) return null;
+    return await post.update(postData);
+  }
 }
 
 export default PostRepository;

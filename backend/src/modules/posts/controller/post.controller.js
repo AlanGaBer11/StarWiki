@@ -7,6 +7,7 @@ import PostResponseDtoOutput from "../dto/output/post.response.dto.output.js";
 // Entrada
 import PostFindDtoInput from "../dto/input/post.find.dto.input.js";
 import PostCreateDtoInput from "../dto/input/post.create.dto.input.js";
+import PostUpdateDtoInput from "../dto/input/post.update.dto.input.js";
 
 class PostController {
   /**
@@ -190,6 +191,48 @@ class PostController {
         success: false,
         status: 500,
         message: "Ocurrió un error al crear el post.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de actualizar un post
+  async updatePost(req, res) {
+    try {
+      const dto = new PostUpdateDtoInput({ ...req.params, ...req.body });
+
+      // Llamar al poroceso para actualizar el post
+      const updatedPost = await this.postProcess.updatePost(dto.post_id, dto);
+
+      // Enviar la respuesta con el post actualizado
+      logger.success("Post actualizado exitosamente.");
+      const response = new PostResponseDtoOutput({
+        success: false,
+        status: 200,
+        message: "Post actualizado exitosamente.",
+        post: updatedPost,
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (
+        error.message?.includes("El post no existe") ||
+        error.message?.includes("El titulo ya existe") ||
+        error.message?.includes("número entero positivo") ||
+        error.message?.includes("al menos un campo a actualizar")
+      ) {
+        logger.warning(error.message);
+        const response = new PostResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      logger.error("Error al actualizar el post:", error.message);
+      const response = new PostResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al actualizar el post.",
       });
       return res.status(500).json(response);
     }

@@ -44,6 +44,12 @@ class PostRoutes {
       PostValidator.createPostValidator,
       this.postController.createPost.bind(this.postController),
     );
+    // Ruta para actualizar un post
+    this.router.put(
+      "/:post_id",
+      PostValidator.updatePostValidator,
+      this.postController.updatePost.bind(this.postController),
+    );
   }
 }
 
