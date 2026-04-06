@@ -51,6 +51,16 @@ class PostProcess {
       throw error;
     }
   }
+
+  // Método para actualizar un post
+  async updatePost(post_id, postData) {
+    try {
+      return await this.postService.updatePost(post_id, postData);
+    } catch (error) {
+      logger.error("Error en el proceso al actualizar el post:", error.message);
+      throw error;
+    }
+  }
 }
 
 export default PostProcess;

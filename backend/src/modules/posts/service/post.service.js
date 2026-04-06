@@ -88,6 +88,36 @@ class PostService {
       throw error;
     }
   }
+
+  // Método para actualizar un post
+  async updatePost(post_id, postData) {
+    try {
+      const { category_id, title, content, image_url } = postData;
+
+      // Validar si se encontro el post
+      const existingPost = await this.postRepository.findById(post_id);
+      if (!existingPost) throw new Error("El post no existe.");
+
+      // Validar si el titulo ya existe
+      const existingTitle = await this.postRepository.findByTitle(title);
+      if (existingTitle) throw new Error("El titulo ya existe.");
+
+      // Builder para actualizar el posts
+      const postBuilder = new PostBuilder()
+        .setCategoryId(category_id)
+        .setTitle(title)
+        .setContent(content)
+        .setImageUrl(image_url)
+        .setUpdatedAt(new Date()); // Se actualiza la fecha de modificación
+
+      const updatedPost = postBuilder.build();
+
+      return await this.postRepository.update(post_id, updatedPost);
+    } catch (error) {
+      logger.error("Error al actualizar el post: ", error.message);
+      throw error;
+    }
+  }
 }
 
 export default PostService;
