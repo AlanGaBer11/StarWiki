@@ -1,4 +1,4 @@
-import RepositoryConfig from "#config/Repository.js";
+import RepositoryConfig from "#config/repository.js";
 import RoleBuilder from "../builder/role.builder.js";
 import logger from "#config/chalk.js";
 

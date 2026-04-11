@@ -1,4 +1,4 @@
-import RepositoryConfig from "#config/Repository.js";
+import RepositoryConfig from "#config/repository.js";
 import logger from "#config/chalk.js";
 import PostBuilder from "../builder/post.builder.js";
 /* DTOs */
