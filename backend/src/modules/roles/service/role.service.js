@@ -85,7 +85,7 @@ class RoleService {
   }
   async updateRole(role_id, roleData) {
     try {
-      const { name, description, updated_at } = roleData;
+      const { name, description } = roleData;
 
       // Verificar si el rol existe
       const existingRole = await this.roleRepository.findById(role_id);
@@ -95,7 +95,7 @@ class RoleService {
       const builder = new RoleBuilder()
         .setName(name)
         .setDescription(description)
-        .setUpdatedAt(updated_at || new Date());
+        .setUpdatedAt(new Date());
 
       const updatedRole = builder.build();
 

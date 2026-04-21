@@ -94,7 +94,7 @@ class CategoryService {
   // Método para actualizar una categoría existente
   async updateCategory(category_id, categoryData) {
     try {
-      const { name, description, updated_at } = categoryData;
+      const { name, description } = categoryData;
 
       // Verificar si la categoría existe
       const existingCategory =
@@ -107,7 +107,7 @@ class CategoryService {
       const builder = new CategoryBuilder()
         .setName(name)
         .setDescription(description)
-        .setUpdatedAt(updated_at || new Date());
+        .setUpdatedAt(new Date());
 
       const updatedCategory = builder.build();
 

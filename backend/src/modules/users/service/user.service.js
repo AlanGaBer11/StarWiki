@@ -107,7 +107,6 @@ class UserService {
         password,
         avatar_url,
         biography,
-        updated_at,
       } = userData;
 
       // Validar si el usuario existe
@@ -143,7 +142,7 @@ class UserService {
         .setPassword(password)
         .setAvatarUrl(avatar_url)
         .setBiography(biography)
-        .setUpdatedAt(updated_at || new Date());
+        .setUpdatedAt(new Date());
 
       // Construir el objeto de usuario actualizado
       const updatedUser = builder.build();
