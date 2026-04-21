@@ -201,6 +201,18 @@ class PostController {
     try {
       const dto = new PostUpdateDtoInput({ ...req.params, ...req.body });
 
+      // Buscar el post para validar su existencia antes de intentar actualizarlo
+      const existingPost = await this.postProcess.findPostById(dto.post_id);
+      if (!existingPost) {
+        logger.warning(`No se encontró el post con ID: ${dto.post_id}`);
+        const response = new PostResponseDtoOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró el post con ID: ${dto.post_id}.`,
+        });
+        return res.status(404).json(response);
+      }
+
       // Llamar al poroceso para actualizar el post
       const updatedPost = await this.postProcess.updatePost(dto.post_id, dto);
 
@@ -215,7 +227,6 @@ class PostController {
       return res.status(200).json(response);
     } catch (error) {
       if (
-        error.message?.includes("El post no existe") ||
         error.message?.includes("El titulo ya existe") ||
         error.message?.includes("número entero positivo") ||
         error.message?.includes("al menos un campo a actualizar")
