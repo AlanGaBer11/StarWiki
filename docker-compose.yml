@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:17
+    container_name: starwiki_db_container
+    env_file:
+      - .env
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5434:5432"
+    volumes:
+      - starwiki_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  backend:
+    build: ./backend
+    container_name: starwiki_backend_container
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "${BACKEND_PORT}:3000"
+
+    develop:
+      watch:
+        - action: sync
+          path: ./backend/src
+          target: /app/src
+          ignore:
+            - node_modules
+        - action: rebuild
+          path: ./backend/package.json
+
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  starwiki_pg_data:
