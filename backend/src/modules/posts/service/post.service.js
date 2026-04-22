@@ -84,7 +84,7 @@ class PostService {
       // Crear el post
       return await this.postRepository.create(newPost);
     } catch (error) {
-      logger.error("Error al crear el post: ", error.message);
+      logger.error("Error al crear el post:", error.message);
       throw error;
     }
   }
@@ -114,7 +114,20 @@ class PostService {
 
       return await this.postRepository.update(post_id, updatedPost);
     } catch (error) {
-      logger.error("Error al actualizar el post: ", error.message);
+      logger.error("Error al actualizar el post:", error.message);
+      throw error;
+    }
+  }
+
+  // Método para eliminar un post
+  async deletePost(post_id) {
+    try {
+      // Validar si se encontro el post
+      const existingPost = await this.postRepository.findById(post_id);
+      if (!existingPost) throw new Error("El post no existe.");
+      return await this.postRepository.delete(post_id);
+    } catch (error) {
+      logger.error("Error al eliminar el post:", error.message);
       throw error;
     }
   }
