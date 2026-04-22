@@ -39,6 +39,13 @@ class PostRepository extends IPostRepository {
     if (!post) return null;
     return await post.update(postData);
   }
+
+  // Método para eliminar un post
+  async delete(post_id) {
+    const post = await Post.findByPk(post_id);
+    if (!post) return null;
+    await post.destroy();
+  }
 }
 
 export default PostRepository;

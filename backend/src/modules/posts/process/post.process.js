@@ -61,6 +61,16 @@ class PostProcess {
       throw error;
     }
   }
+
+  // Método para eliminar un post
+  async deletePost(post_id) {
+    try {
+      return await this.postService.deletePost(post_id);
+    } catch (error) {
+      logger.error("Error en el proceso al eliminar el post:", error.message);
+      throw error;
+    }
+  }
 }
 
 export default PostProcess;

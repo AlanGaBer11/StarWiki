@@ -186,7 +186,7 @@ class PostController {
         });
         return res.status(400).json(response);
       }
-      logger.error("Error al crear el post:", error.message);
+      logger.error("Error en el controladoral crear el post:", error.message);
       const response = new PostResponseDtoOutput({
         success: false,
         status: 500,
@@ -239,11 +239,65 @@ class PostController {
         });
         return res.status(400).json(response);
       }
-      logger.error("Error al actualizar el post:", error.message);
+      logger.error(
+        "Error en el controlador al actualizar el post:",
+        error.message,
+      );
       const response = new PostResponseDtoOutput({
         success: false,
         status: 500,
         message: "Ocurrió un error al actualizar el post.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de eliminar un post
+  async deletePost(req, res) {
+    try {
+      const dto = new PostFindDtoInput(req.params);
+
+      // Buscar el post para validar su existencia antes de intentar eliminarlo
+      const existingPost = await this.postProcess.findPostById(dto.post_id);
+      if (!existingPost) {
+        logger.warning(`No se encontró el post con ID: ${dto.post_id}.`);
+        const response = new PostResponseDtoOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró el post con ID: ${dto.post_id}.`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Llamar al proceso para eliminar el post
+      await this.postProcess.deletePost(dto.post_id);
+
+      // Enviar la respuesta de eliminación exitosa
+      logger.success("Post eliminado exitosamente.");
+      const response = new PostResponseDtoOutput({
+        success: true,
+        status: 200,
+        message: "Post eliminado exitosamente.",
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (error.message?.includes("número entero positivo")) {
+        logger.warning(error.message);
+        const response = new PostResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      logger.error(
+        "Error en el controlador al eliminar el post:",
+        error.message,
+      );
+      const response = new PostResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al eliminar el post.",
       });
       return res.status(500).json(response);
     }

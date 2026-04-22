@@ -50,6 +50,11 @@ class PostRoutes {
       PostValidator.updatePostValidator,
       this.postController.updatePost.bind(this.postController),
     );
+    // Ruta para eliminar un post
+    this.router.delete(
+      "/:post_id",
+      this.postController.deletePost.bind(this.postController),
+    );
   }
 }
 
