@@ -46,6 +46,14 @@ class PostRepository extends IPostRepository {
     if (!post) return null;
     await post.destroy();
   }
+
+  // Método para cambiar el estado de un post
+  async changeStatus(post_id, status) {
+    const post = await Post.findByPk(post_id);
+    if (!post) return null;
+    if (post.status === status) return post;
+    return await post.update({ status, updated_at: new Date() });
+  }
 }
 
 export default PostRepository;
