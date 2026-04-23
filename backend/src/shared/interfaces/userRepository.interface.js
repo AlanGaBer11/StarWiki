@@ -16,19 +16,9 @@ class IUserRepository extends IBaseRepository {
     throw new Error("Método no implementado");
   }
 
-  // Método para desactivar un usuario
-  async deactivate(user_id) {
-    throw new Error("Método no implementado");
-  }
-
-  // Método para activar un usuario
-  async activate(user_id) {
-    throw new Error("Método no implementado");
-  }
-
-  // Método para suspender un usuario
-  async suspend(user_id) {
-    throw new Error("Método no implementado");
+  // Método para cambiar el estado de un usuario
+  async changeStatus(user_id, status) {
+    throw new Error("Método no implementado.");
   }
 }
 

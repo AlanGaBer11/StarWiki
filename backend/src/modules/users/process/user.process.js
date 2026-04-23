@@ -80,7 +80,7 @@ class UserProcess {
   // Método para eliminar (soft delete) un usuario por su ID
   async softDeleteUser(user_id) {
     try {
-      return await this.userService.softDeleteUser(user_id,);
+      return await this.userService.softDeleteUser(user_id);
     } catch (error) {
       logger.error(
         "Error en el proceso al eliminar el usuario (soft delete):",
@@ -90,36 +90,13 @@ class UserProcess {
     }
   }
 
-  // Método para desactivar un usuario por su ID
-  async deactivateUser(user_id) {
+  // Método para cambiar el estado de un usuario por su ID
+  async changeUserStatus(user_id, status) {
     try {
-      return await this.userService.deactivateUser(user_id);
+      return await this.userService.changeUserStatus(user_id, status);
     } catch (error) {
       logger.error(
-        "Error en el proceso al desactivar el usuario:",
-        error.message,
-      );
-      throw error;
-    }
-  }
-
-  // Método para activar un usuario por su ID
-  async activateUser(user_id) {
-    try {
-      return await this.userService.activateUser(user_id);
-    } catch (error) {
-      logger.error("Error en el proceso al activar el usuario:", error.message);
-      throw error;
-    }
-  }
-
-  // Método para suspender un usuario por su ID
-  async suspendUser(user_id) {
-    try {
-      return await this.userService.suspendUser(user_id);
-    } catch (error) {
-      logger.error(
-        "Error en el proceso al suspender el usuario:",
+        "Error en el proceso al cambiar el estado del usuario:",
         error.message,
       );
       throw error;

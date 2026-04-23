@@ -58,20 +58,10 @@ class UserRoutes {
       "/:user_id/soft-delete",
       this.userController.softDeleteUser.bind(this.userController),
     );
-    // Ruta para desactivar un usuario
+    // Ruta para cambiar el estado de un usuario
     this.router.patch(
-      "/:user_id/deactivate",
-      this.userController.deactivateUser.bind(this.userController),
-    );
-    // Ruta para activar un usuario
-    this.router.patch(
-      "/:user_id/activate",
-      this.userController.activateUser.bind(this.userController),
-    );
-    // Ruta para suspender un usuario
-    this.router.patch(
-      "/:user_id/suspend",
-      this.userController.suspendUser.bind(this.userController),
+      "/:user_id/status",
+      this.userController.changeUserStaus.bind(this.userController),
     );
   }
 }

@@ -71,25 +71,12 @@ class UserRepository extends IUserRepository {
     });
   }
 
-  // Método para desactivar un usuario
-  async deactivate(user_id) {
+  // Mẃtodo para cambiar el estado de un usuario
+  async changeStatus(user_id, status) {
     const user = await User.findByPk(user_id);
     if (!user) return null;
-    return await user.update({ status: "Inactivo", updated_at: new Date() });
-  }
-
-  // Método para activar un usuario
-  async activate(user_id) {
-    const user = await User.findByPk(user_id);
-    if (!user) return null;
-    return await user.update({ status: "Activo", updated_at: new Date() });
-  }
-
-  // Método para suspender un usuario
-  async suspend(user_id) {
-    const user = await User.findByPk(user_id);
-    if (!user) return null;
-    return await user.update({ status: "Suspendido", updated_at: new Date() });
+    if (user.status == status) return user;
+    return await user.update({ status, updated_at: new Date() });
   }
 }
 export default UserRepository;
