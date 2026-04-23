@@ -30,6 +30,11 @@ class IUserRepository extends IBaseRepository {
   async suspend(user_id) {
     throw new Error("Método no implementado");
   }
+
+  // Método para cambiar el estado de un usuario
+  async changeStatus(user_id, status) {
+    throw new Error("Método no implementado.");
+  }
 }
 
 export default IUserRepository;

@@ -9,6 +9,8 @@ import UserResponseDtoOutput from "../dto/output/user.response.dto.output.js";
 import UserFindDtoInput from "../dto/input/user.find.dto.input.js";
 import UserCreateDtoInput from "../dto/input/user.create.dto.input.js";
 import UserUpdateDtoInput from "../dto/input/user.update.dto.input.js";
+import UserChangeStatusDTOInput from "../dto/input/user.change_status.dto.input.js";
+import e from "express";
 
 class UserController {
   /**
@@ -529,6 +531,69 @@ class UserController {
         success: false,
         status: 500,
         message: "Ocurrió un error al suspender el usuario.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de cambiar el estado de un usuario por su ID
+  async changeUserStaus(req, res) {
+    try {
+      const dto = new UserChangeStatusDTOInput({ ...req.params, ...req.body });
+
+      // Buscar el usuario existente
+      const existingPost = await this.userProcess.findUserById(dto.user_id);
+      if (!existingPost) {
+        logger.warning(`No se encontró el usuario con ID: ${dto.user_id}.`);
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró el usuario con ID: ${dto.user_id}.`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Llamar al proceso para cambiar el estado del usuario por su ID
+      const updatedUser = await this.userProcess.changeUserStatus(
+        dto.user_id,
+        dto.status,
+      );
+
+      // Enviar la respuesta con el usuario actualizado
+      logger.success("Estado del usuario cambiado exitosamente.");
+      const response = new UserResponseDtoOutput({
+        success: true,
+        status: 200,
+        message: "Estado del usuario cambiado exitosamente.",
+        user: updatedUser,
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (
+        error.message?.includes("número entero positivo") ||
+        error.message?.includes("El status del usuario no es válido") ||
+        error.message?.includes("ya tiene el estado solicitado") ||
+        error.message?.includes("no puede ser desactivado") ||
+        error.message?.includes("no puede ser activado") ||
+        error.message?.includes("inactivos pueden ser activados") ||
+        error.message?.includes("activos pueden ser suspendidos")
+      ) {
+        logger.warning(error.message);
+        const response = new UserResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      logger.error(
+        "Error en el controlador al cambiar el estado del usuario:",
+        error.message,
+      );
+      const response = new UserResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al cambiar el estado del usuario.",
       });
       return res.status(500).json(response);
     }

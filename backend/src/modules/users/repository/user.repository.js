@@ -91,5 +91,13 @@ class UserRepository extends IUserRepository {
     if (!user) return null;
     return await user.update({ status: "Suspendido", updated_at: new Date() });
   }
+
+  // Mẃtodo para cambiar el estado de un usuario
+  async changeStatus(user_id, status) {
+    const user = await User.findByPk(user_id);
+    if (!user) return null;
+    if (user.status == status) return user;
+    return await user.update({ status, updated_at: new Date() });
+  }
 }
 export default UserRepository;

@@ -73,6 +73,11 @@ class UserRoutes {
       "/:user_id/suspend",
       this.userController.suspendUser.bind(this.userController),
     );
+    // Ruta para cambiar el estado de un usuario
+    this.router.patch(
+      "/:user_id/status",
+      this.userController.changeUserStaus.bind(this.userController),
+    );
   }
 }
 
