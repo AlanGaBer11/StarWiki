@@ -222,25 +222,28 @@ class UserService {
         );
 
       // Validaciones según el nuevo estado solicitado
-      if (newStatus === "Inactivo") {
-        if (user.status === "Suspendido")
-          throw new Error(
-            "El usuario está suspendido y no puede ser desactivado.",
-          );
-      } else if (newStatus === "Activo") {
-        if (user.status === "Suspendido")
-          throw new Error(
-            "El usuario está suspendido y no puede ser activado.",
-          );
-        if (user.status !== "Inactivo")
-          throw new Error("Solo usuarios inactivos pueden ser activados.");
-      } else if (newStatus === "Suspendido") {
-        if (user.status !== "Activo")
-          throw new Error("Solo usuarios activos pueden ser suspendidos.");
-      } else {
-        throw new Error("El status del usuario no es válido.");
+      switch (newStatus) {
+        case "Inactivo":
+          if (user.status === "Suspendido")
+            throw new Error(
+              "El usuario está suspendido y no puede ser desactivado.",
+            );
+          break;
+        case "Activo":
+          if (user.status === "Suspendido")
+            throw new Error(
+              "El usuario está suspendido y no puede ser activado.",
+            );
+          if (user.status !== "Inactivo")
+            throw new Error("Solo usuarios inactivos pueden ser activados.");
+          break;
+        case "Suspendido":
+          if (user.status !== "Activo")
+            throw new Error("Solo usuarios activos pueden ser suspendidos.");
+          break;
+        default:
+          throw new Error("El estado del usuario no es válido.");
       }
-
       logger.info(
         `Usuario ${user_id} cambiado de estado: ${user.status} -> ${newStatus}.`,
       );
