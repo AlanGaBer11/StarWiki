@@ -5,6 +5,9 @@ import CategoryBuilder from "../builder/category.builder.js";
 /* DTOs */
 import CategoryDtoOutput from "../dto/output/category.dto.output.js";
 
+/* Errors */
+import { NotFoundError, ConflictError } from "#shared/utils/errors.js";
+
 class CategoryService {
   /**
    * @param {import('../repository/category.repository.js').default} categoryRepository
@@ -55,9 +58,8 @@ class CategoryService {
       const category = await this.categoryRepository.findById(category_id);
 
       // Validar si se encontró la categoría
-      if (!category) {
-        return null; // Retornar null si no se encontró la categoría
-      }
+      if (!category) throw new NotFoundError("Categoría no encontrada.");
+
       return new CategoryDtoOutput(category); // Mapear la categoría a un DTO de salida
     } catch (error) {
       logger.error("Error al buscar la categoría por ID:", error.message);
@@ -72,19 +74,15 @@ class CategoryService {
 
       // Validar si ya existe una categoría con el mismo nombre
       const existingCategory = await this.categoryRepository.findByName(name);
-      if (existingCategory) {
-        throw new Error(`La categoría ya existe.`);
-      }
+      if (existingCategory) throw new ConflictError("La categoría ya existe.");
 
       // Builder para crear la nueva categoría
       const categoryBuilder = new CategoryBuilder()
         .setName(name)
         .setDescription(description);
 
-      const newCategory = categoryBuilder.build();
-
       // Crear la nueva categoría en el repositorio
-      return await this.categoryRepository.create(newCategory);
+      return await this.categoryRepository.create(categoryBuilder.build());
     } catch (error) {
       logger.error("Error al crear la categoría:", error.message);
       throw error;
@@ -99,19 +97,20 @@ class CategoryService {
       // Verificar si la categoría existe
       const existingCategory =
         await this.categoryRepository.findById(category_id);
-      if (!existingCategory) {
-        throw new Error(`No se encontró la categoría con ID: ${category_id}.`);
-      }
+      if (!existingCategory)
+        throw new NotFoundError("Categoría no encontrada.");
 
       // Builder para actualizar la categoría
-      const builder = new CategoryBuilder()
+      const categoryBuilder = new CategoryBuilder()
         .setName(name)
         .setDescription(description)
         .setUpdatedAt(new Date());
 
-      const updatedCategory = builder.build();
-
-      return await this.categoryRepository.update(category_id, updatedCategory);
+      // Actualizar la categoría en el repositorio
+      return await this.categoryRepository.update(
+        category_id,
+        categoryBuilder.build(),
+      );
     } catch (error) {
       logger.error("Error al actualizar la categoría:", error.message);
       throw error;
@@ -123,9 +122,9 @@ class CategoryService {
     try {
       const existingCategory =
         await this.categoryRepository.findById(category_id);
-      if (!existingCategory) {
-        throw new Error(`No se encontró la categoría con ID: ${category_id}`);
-      }
+      if (!existingCategory)
+        throw new NotFoundError("Categoría no encontrada.");
+
       return await this.categoryRepository.delete(category_id);
     } catch (error) {
       logger.error("Error al eliminar la categoría:", error.message);

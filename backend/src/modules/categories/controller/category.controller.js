@@ -1,7 +1,7 @@
 import CategoryProcess from "../process/category.process.js";
 import logger from "#config/chalk.js";
 import pagination from "#shared/utils/pagination.js";
-
+import { AppError } from "#shared/utils/errors.js";
 /* DTOs */
 // Salida
 import CategoryResponseDtOutput from "../dto/output/category.response.dto.output.js";
@@ -39,278 +39,224 @@ class CategoryController {
       // Validar si se encontraron categorías
       if (!result.categories || result.categories.length === 0) {
         logger.warning("No se encontraron categorías.");
-        const response = new CategoryResponseDtOutput({
-          success: false,
-          status: 404,
-          message: "No se encontraron categorías.",
-          categories: [],
-        });
-        return res.status(404).json(response);
+        return res.status(404).json(
+          new CategoryResponseDtOutput({
+            success: false,
+            status: 404,
+            message: "No se encontraron categorías.",
+            categories: [],
+          }),
+        );
       }
 
       // Enviar la respuesta con las categorías encontradas
       logger.success("Categorías enviadas exitosamente.");
-      const response = new CategoryResponseDtOutput({
-        success: true,
-        status: 200,
-        message: "Categorías encontradas exitosamente.",
-        page,
-        limit,
-        totalCategories: result.totalCategories,
-        categories: result.categories,
-      });
-      return res.status(200).json(response);
-    } catch (error) {
-      if (
-        error.message?.includes(
-          "Los parámetros de paginación deben ser números enteros positivos.",
-        )
-      ) {
-        logger.warning("Error de validación de paginación:", error.message);
-        const response = new CategoryResponseDtOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
-      }
-      logger.error(
-        "Error en el controlador al buscar categorías:",
-        error.message,
+      return res.status(200).json(
+        new CategoryResponseDtOutput({
+          success: true,
+          status: 200,
+          message: "Categorías encontradas exitosamente.",
+          page,
+          limit,
+          totalCategories: result.totalCategories,
+          categories: result.categories,
+        }),
       );
-      const response = new CategoryResponseDtOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al buscar categorías.",
-      });
-      return res.status(500).json(response);
+    } catch (error) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new CategoryResponseDtOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
+      }
+      logger.error("Error inesperado:", error.message);
+      return res.status(500).json(
+        new CategoryResponseDtOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 
   // Método para manejar la solicitud de buscar una categoría por su ID
   async findCategoryById(req, res) {
     try {
-      const dto = new CategoryFindDtoInput(req.params);
+      const findDto = new CategoryFindDtoInput(req.params);
 
       // Llamar al proceso para buscar la categoría por ID
       const category = await this.categoryProcess.findCategoryById(
-        dto.category_id,
+        findDto.category_id,
       );
-
-      // Validar que se encontró la categoría
-      if (!category) {
-        logger.warning(
-          `No se encontró la categoría con ID: ${dto.category_id}`,
-        );
-        const response = new CategoryResponseDtOutput({
-          success: false,
-          status: 404,
-          message: `No se encontró la categoría con ID: ${dto.category_id}`,
-        });
-        return res.status(404).json(response);
-      }
 
       // Enviar la respuesta con la categoría encontrada
       logger.success("Categoría enviada exitosamente.");
-      const response = new CategoryResponseDtOutput({
-        success: true,
-        status: 200,
-        message: "Categoría encontrada exitosamente.",
-        category,
-      });
-      return res.status(200).json(response);
-    } catch (error) {
-      // Validar si el error es por un ID no válido
-      if (error.message?.includes("número entero positivo")) {
-        logger.warning(error.message);
-        const reponse = new CategoryResponseDtOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(reponse);
-      }
-
-      logger.error(
-        "Error en el controlador al buscar la categoría por ID:",
-        error.message,
+      return res.status(200).json(
+        new CategoryResponseDtOutput({
+          success: true,
+          status: 200,
+          message: "Categoría encontrada exitosamente.",
+          category,
+        }),
       );
-      const response = new CategoryResponseDtOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al buscar la categoría por ID.",
-      });
-      return res.status(500).json(response);
+    } catch (error) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new CategoryResponseDtOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
+      }
+      // Manejo de errores inesperados
+      logger.error("Error inesperado:", error.message);
+      return res.status(500).json(
+        new CategoryResponseDtOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 
   // Método para manejar la solicitud de crear una nueva categoría
   async createCategory(req, res) {
     try {
-      const categoryCreateInput = new CategoryCreateDtoInput(req.body);
-
-      // Validaciones básicas  para los datos de entrada
-      if (!categoryCreateInput.name || !categoryCreateInput.description) {
-        logger.warning("Faltan datos requeridos para crear la categoría.");
-        const response = new CategoryResponseDtOutput({
-          success: false,
-          status: 400,
-          message: "El nombre y la descripción son requeridos.",
-        });
-        return res.status(400).json(response);
-      }
+      const createDto = new CategoryCreateDtoInput(req.body);
 
       // Llamar al proceso para crear la nueva categoría
-      const newCategory =
-        await this.categoryProcess.createCategory(categoryCreateInput);
+      const newCategory = await this.categoryProcess.createCategory(createDto);
 
       // Enviar la respuesta con la categoría creada
       logger.success("Categoría creada exitosamente.");
-      const response = new CategoryResponseDtOutput({
-        success: true,
-        status: 201,
-        message: "Categoría creada exitosamente.",
-        category: newCategory,
-      });
-      return res.status(201).json(response);
-    } catch (error) {
-      if (error.message?.includes("La categoría ya existe")) {
-        logger.warning(error.message);
-        const response = new CategoryResponseDtOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
-      }
-      logger.error(
-        "Error en el controlador al crear la categoría:",
-        error.message,
+      return res.status(201).json(
+        new CategoryResponseDtOutput({
+          success: true,
+          status: 201,
+          message: "Categoría creada exitosamente.",
+          category: newCategory,
+        }),
       );
-      const response = new CategoryResponseDtOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al crear la categoría.",
-      });
-      return res.status(500).json(response);
+    } catch (error) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new CategoryResponseDtOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
+      }
+      // Manejo de errores inesperados
+      logger.error("Error inesperado:", error.message);
+      return res.status(500).json(
+        new CategoryResponseDtOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 
   // Método para manejar la solicitud de actualizar una categoría existente
   async updateCategory(req, res) {
     try {
-      const dto = new CategoryUpdateDtoInput({ ...req.params, ...req.body });
-
-      // Buscar la categoría existente
-      const existingCateory = await this.categoryProcess.findCategoryById(
-        dto.category_id,
-      );
-      if (!existingCateory) {
-        logger.warning(
-          `No se encontró la categoría con ID: ${dto.category_id}.`,
-        );
-        const response = new CategoryResponseDtOutput({
-          success: false,
-          status: 404,
-          message: `No se encontró la categoría con ID: ${dto.category_id}.`,
-        });
-        return res.status(404).json(response);
-      }
+      const updateDto = new CategoryUpdateDtoInput({
+        ...req.params,
+        ...req.body,
+      });
 
       // Llamar al proceso para actualizar la categoría
       const updatedCategory = await this.categoryProcess.updateCategory(
-        dto.category_id,
-        dto,
+        updateDto.category_id,
+        updateDto,
       );
 
-      //Envar la respuesta con la categoría actualizada
+      //Enviar la respuesta con la categoría actualizada
       logger.success("Categoría actualizada exitosamente.");
-      const response = new CategoryResponseDtOutput({
-        success: true,
-        status: 200,
-        message: "Categoría actualizada exitosamente.",
-        category: updatedCategory,
-      });
-      return res.status(200).json(response);
-    } catch (error) {
-      if (
-        error.message?.includes("número entero positivo") ||
-        error.message?.includes("al menos un campo para actualizar")
-      ) {
-        logger.warning(error.message);
-        const response = new CategoryResponseDtOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
-      }
-
-      logger.error(
-        "Error en el controlador al actualizar la categoría:",
-        error.message,
+      return res.status(200).json(
+        new CategoryResponseDtOutput({
+          success: true,
+          status: 200,
+          message: "Categoría actualizada exitosamente.",
+          category: updatedCategory,
+        }),
       );
-      const response = new CategoryResponseDtOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al actualizar la categoría.",
-      });
-      return res.status(500).json(response);
+    } catch (error) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new CategoryResponseDtOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
+      }
+      // Manejo de errores inesperados
+      logger.error("Error inesperado:", error.message);
+      return res.status(500).json(
+        new CategoryResponseDtOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 
   // Método para manejar la solicitud de eliminar una categoría existente
   async deleteCategory(req, res) {
     try {
-      const dto = new CategoryFindDtoInput(req.params);
-
-      // Buscar la categoría existente
-      const existingCateory = await this.categoryProcess.findCategoryById(
-        dto.category_id,
-      );
-      if (!existingCateory) {
-        logger.warning(
-          `No se encontró la categoría con ID: ${dto.category_id}.`,
-        );
-        const response = new CategoryResponseDtOutput({
-          success: false,
-          status: 404,
-          message: `No se encontró la categoría con ID: ${dto.category_id}`,
-        });
-        return res.status(404).json(response);
-      }
+      const findDto = new CategoryFindDtoInput(req.params);
 
       // Llamar al proceso para eliminar la categoría
-      await this.categoryProcess.deleteCategory(dto.category_id);
+      await this.categoryProcess.deleteCategory(findDto.category_id);
 
       // Enviar la respuesta indicando que la categoría fue eliminada
       logger.success("Categoría eliminada exitosamente.");
-      const response = new CategoryResponseDtOutput({
-        success: true,
-        status: 200,
-        message: "Categoría eliminada exitosamente.",
-      });
-      return res.status(200).json(response);
-    } catch (error) {
-      if (error.message?.includes("número entero positivo")) {
-        logger.warning(error.message);
-        const response = new CategoryResponseDtOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
-      }
-      logger.error(
-        "Error en el controlador al eliminar la categoría:",
-        error.message,
+      return res.status(200).json(
+        new CategoryResponseDtOutput({
+          success: true,
+          status: 200,
+          message: "Categoría eliminada exitosamente.",
+        }),
       );
-      const response = new CategoryResponseDtOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al eliminar la categoría.",
-      });
-      return res.status(500).json(response);
+    } catch (error) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new CategoryResponseDtOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
+      }
+      // Manejo de errores inesperados
+      logger.error("Error inesperado:", error.message);
+      return res.status(500).json(
+        new CategoryResponseDtOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 }
