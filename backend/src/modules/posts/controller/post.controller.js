@@ -8,6 +8,7 @@ import PostResponseDtoOutput from "../dto/output/post.response.dto.output.js";
 import PostFindDtoInput from "../dto/input/post.find.dto.input.js";
 import PostCreateDtoInput from "../dto/input/post.create.dto.input.js";
 import PostUpdateDtoInput from "../dto/input/post.update.dto.input.js";
+import PostChangeStatusDtoInput from "../dto/input/post.change_status.dto.input.js";
 
 class PostController {
   /**
@@ -298,6 +299,65 @@ class PostController {
         success: false,
         status: 500,
         message: "Ocurrió un error al eliminar el post.",
+      });
+      return res.status(500).json(response);
+    }
+  }
+
+  // Método para manejar la solicitud de cambiar el estado de un post
+  async changeStatusPost(req, res) {
+    try {
+      const dto = new PostChangeStatusDtoInput({ ...req.params, ...req.body });
+
+      // Buscar el post para validar su existencia antes de intentar cambiar su estado
+      const existingPost = await this.postProcess.findPostById(dto.post_id);
+      if (!existingPost) {
+        logger.warning(`No se encontró el post con ID: ${dto.post_id}.`);
+        const response = new PostResponseDtoOutput({
+          success: false,
+          status: 404,
+          message: `No se encontró el post con ID: ${dto.post_id}.`,
+        });
+        return res.status(404).json(response);
+      }
+
+      // Llamar al proceso para cambiar el estado del post
+      const updatedPost = await this.postProcess.changeStatusPost(
+        dto.post_id,
+        dto.status,
+      );
+
+      // Enviar la respuesta con el post actualizado
+      logger.success("Estado del post cambiado exitosamente.");
+      const response = new PostResponseDtoOutput({
+        success: true,
+        status: 200,
+        message: "Estado del post cambiado exitosamente.",
+        post: updatedPost,
+      });
+      return res.status(200).json(response);
+    } catch (error) {
+      if (
+        error.message?.includes("número entero positivo") ||
+        error.message?.includes("El status del post no es válido") ||
+        error.message?.includes("ya tiene el estado solicitado.")
+      ) {
+        logger.warning(error.message);
+        const response = new PostResponseDtoOutput({
+          success: false,
+          status: 400,
+          message: error.message,
+        });
+        return res.status(400).json(response);
+      }
+      logger.error(
+        "Error en el controlador al cambiar el estado del post:",
+        error.message,
+      );
+      const response = new PostResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error al cambiar el estado del post.",
       });
       return res.status(500).json(response);
     }

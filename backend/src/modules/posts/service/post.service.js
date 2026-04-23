@@ -131,6 +131,23 @@ class PostService {
       throw error;
     }
   }
+
+  // Método para cambiar el estado de un post
+  async changeStatusPost(post_id, status) {
+    try {
+      // Validar si se encontro el post
+      const existingPost = await this.postRepository.findById(post_id);
+      if (!existingPost) throw new Error("El post no existe.");
+
+      // Validar si el estado es el mismo
+      if (existingPost.status === status)
+        throw new Error("El post ya tiene el estado solicitado.");
+      return await this.postRepository.changeStatus(post_id, status);
+    } catch (error) {
+      logger.error("Error al cambiar el estado del post:", error.message);
+      throw error;
+    }
+  }
 }
 
 export default PostService;
