@@ -1,7 +1,7 @@
 import RoleProcess from "../process/role.process.js";
 import logger from "#config/chalk.js";
 import pagination from "#shared/utils/pagination.js";
-
+import { AppError } from "#shared/utils/errors.js";
 /* DTOs */
 // Salida
 import RoleResponseDtoOutput from "../dto/output/role.response.dto.output.js";
@@ -12,9 +12,7 @@ import RoleUpdateDtoInput from "../dto/input/role.update.dto.input.js";
 
 class RoleController {
   /**
-   *
    * @param {import('../process/role.process.js').default} roleProcess
-   *
    */
 
   // Inyección de la dependencia del proceso de roles
@@ -43,146 +41,131 @@ class RoleController {
       // Validar si se encontraron roles
       if (!result.roles || result.roles.length === 0) {
         logger.warning("No se encontraron roles.");
-        const response = new RoleResponseDtoOutput({
-          success: false,
-          status: 404,
-          message: "No se encontraron roles.",
-          roles: [],
-        });
-        return res.status(404).json(response);
+        return res.status(404).json(
+          new RoleResponseDtoOutput({
+            success: false,
+            status: 404,
+            message: "No se encontraron roles.",
+            roles: [],
+          }),
+        );
       }
 
       // Enviar la respuesta con los roles encontrados
       logger.success("Roles enviados exitosamente.");
-      const response = new RoleResponseDtoOutput({
-        success: true,
-        status: 200,
-        message: "Roles encontrados exitosamente.",
-        page,
-        limit,
-        totalRoles: result.totalRoles,
-        roles: result.roles,
-      });
-      return res.status(200).json(response);
+      return res.status(200).json(
+        new RoleResponseDtoOutput({
+          success: true,
+          status: 200,
+          message: "Roles encontrados exitosamente.",
+          page,
+          limit,
+          totalRoles: result.totalRoles,
+          roles: result.roles,
+        }),
+      );
     } catch (error) {
-      if (
-        error.message?.includes(
-          "Los parámetros de paginación deben ser números enteros positivos.",
-        )
-      ) {
-        logger.warning("Error de validación de paginación:", error.message);
-        const response = new RoleResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new RoleResponseDtoOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
       }
-      logger.error("Error en el controlador al buscar roles:", error.message);
-      const response = new RoleResponseDtoOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al buscar los roles.",
-      });
-      // Enviar una respuesta de error en caso de que ocurra un problema
-      return res.status(500).json(response);
+      // Manejo de errores inesperados
+      logger.error("Error inseperado:", error.message);
+      return res.status(500).json(
+        new RoleResponseDtoOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inseperado.",
+        }),
+      );
     }
   }
 
   // Método para manejar la solicitud de buscar un rol por su ID
   async findRoleById(req, res) {
     try {
-      const roleDto = new RoleFindDtoInput(req.params);
+      const findDto = new RoleFindDtoInput(req.params);
 
       // Llamar al proceso para buscar un rol por su ID
-      const role = await this.roleProcess.findRoleById(roleDto.role_id);
-
-      // Validar si se encontró el rol
-      if (!role) {
-        logger.warning(`No se encontró el rol con ID: ${roleDto.role_id}.`);
-        const response = new RoleResponseDtoOutput({
-          success: false,
-          status: 404,
-          message: `No se encontró el rol con ID: ${roleDto.role_id}.`,
-        });
-        return res.status(404).json(response);
-      }
+      const role = await this.roleProcess.findRoleById(findDto.role_id);
 
       // Enviar la respuesta con el rol encontrado
       logger.success("Rol enviado exitosamente.");
-      const response = new RoleResponseDtoOutput({
-        success: true,
-        status: 200,
-        message: "Rol encontrado exitosamente.",
-        role,
-      });
-      return res.status(200).json(response);
-    } catch (error) {
-      // Si el error es de validación (del DTO)
-      if (error.message?.includes("número entero positivo")) {
-        logger.warning(error.message);
-        const response = new RoleResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
-      }
-      logger.error(
-        "Error en el controlador al buscar el rol por ID:",
-        error.message,
+      return res.status(200).json(
+        new RoleResponseDtoOutput({
+          success: true,
+          status: 200,
+          message: "Rol encontrado exitosamente.",
+          role,
+        }),
       );
-      const response = new RoleResponseDtoOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al buscar el rol por ID.",
-      });
-      return res.status(500).json(response);
+    } catch (error) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new RoleResponseDtoOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
+      }
+      // Manejo de errores inesperados
+      logger.error("Error inesperado:", error.message);
+      return res.status(500).json(
+        new RoleResponseDtoOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 
   // Método para manejar la solicitud de crear un nuevo rol
   async createRole(req, res) {
     try {
-      const roleDto = new RoleCreateDtoInput(req.body);
+      const createDto = new RoleCreateDtoInput(req.body);
 
-      // Validaciones básicas para los datos de entrada
-      if (!roleDto.name || !roleDto.description) {
-        logger.warning("Faltan datos requeridos para crear el rol.");
-        const response = new RoleResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: "El nombre y la descripción del rol son requeridos.",
-        });
-        return res.status(400).json(response);
-      }
+      // Llamar al proceso para crear un nuevo rol
+      const newRole = await this.roleProcess.createRole(createDto);
 
-      // Llamar al proesso para crear un nuevo rol
-      const newRole = await this.roleProcess.createRole(roleDto);
       // Enviar la respuesta con el nuevo rol creado
       logger.success("Rol creado exitosamente.");
-      const response = new RoleResponseDtoOutput({
-        success: true,
-        status: 201,
-        message: "Rol creado exitosamente.",
-        role: newRole,
-      });
-      return res.status(201).json(response);
+      return res.status(201).json(
+        new RoleResponseDtoOutput({
+          success: true,
+          status: 201,
+          message: "Rol creado exitosamente.",
+          role: newRole,
+        }),
+      );
     } catch (error) {
-      if (error.message?.includes("El rol ya existe.")) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
         logger.warning(error.message);
-        const response = new RoleResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
+        return res.status(error.statusCode).json(
+          new RoleResponseDtoOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
       }
-      logger.error("Error en el controlador al crear el rol:", error.message);
+      // Manejo de errores inesperados
+      logger.error("Error inesperado:", error.message);
       const response = new RoleResponseDtoOutput({
         success: false,
         status: 500,
-        message: "Ocurrió un error al crear el rol.",
+        message: "Ocurrió un error inesperado.",
       });
       return res.status(500).json(response);
     }
@@ -191,109 +174,86 @@ class RoleController {
   // Método para manejar la solicitud de actualizar un rol existente
   async updateRole(req, res) {
     try {
-      const roleDto = new RoleUpdateDtoInput({ ...req.params, ...req.body });
-
-      // Bucar el rol existente para validar su existencia antes de intentar actualizarlo
-      const existingRole = await this.roleProcess.findRoleById(roleDto.role_id);
-      if (!existingRole) {
-        logger.warning(`No se econtróe el rol con ID: ${roleDto.role_id}`);
-        const response = new RoleResponseDtoOutput({
-          success: false,
-          status: 404,
-          message: `No se encontró el rol con ID: ${roleDto.role_id}.`,
-        });
-        return res.status(404).json(response);
-      }
+      const updateDto = new RoleUpdateDtoInput({ ...req.params, ...req.body });
 
       // Llamar al proceso para actualizar el rol existente
       const updateRole = await this.roleProcess.updateRole(
-        roleDto.role_id,
-        roleDto,
+        updateDto.role_id,
+        updateDto,
       );
 
       // Enviar la respuesta con el rol actualizado
       logger.success("Rol actualizado exitosamente.");
-      const response = new RoleResponseDtoOutput({
-        success: true,
-        status: 200,
-        message: "Rol actualizado exitosamente.",
-        role: updateRole,
-      });
-      return res.status(200).json(response);
+      return res.status(200).json(
+        new RoleResponseDtoOutput({
+          success: true,
+          status: 200,
+          message: "Rol actualizado exitosamente.",
+          role: updateRole,
+        }),
+      );
     } catch (error) {
-      if (
-        error.message?.includes("número entero positivo") ||
-        error.message?.includes("al menos un campo para actualizar")
-      ) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
         logger.warning(error.message);
-        const response = new RoleResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
+        return res.status(error.statusCode).json(
+          new RoleResponseDtoOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
       }
+      // Manejo de errores inesperados
+      logger.error("Error inesperado:", error.message);
+      return res.status(500).json(
+        new RoleResponseDtoOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
-    logger.error(
-      "Error en el controlador al actualizar el rol:",
-      error.message,
-    );
-    const response = new RoleResponseDtoOutput({
-      success: false,
-      status: 500,
-      message: "Ocurrió un error al actualizar el rol.",
-    });
-    return res.status(500).json(response);
   }
 
   // Método para manejar la solicitud de eliminar un rol existente
   async deleteRole(req, res) {
     try {
-      const roleDto = new RoleFindDtoInput(req.params);
-
-      // Bucar el rol existente para validar su existencia antes de intentar eliminarlo
-      const existingRole = await this.roleProcess.findRoleById(roleDto.role_id);
-      if (!existingRole) {
-        logger.warning(`No se econtróe el rol con ID: ${roleDto.role_id}`);
-        const response = new RoleResponseDtoOutput({
-          success: false,
-          status: 404,
-          message: `No se encontró el rol con ID: ${roleDto.role_id}.`,
-        });
-        return res.status(404).json(response);
-      }
+      const findDto = new RoleFindDtoInput(req.params);
 
       // Llamar al proceso para eliminar el rol existente
-      await this.roleProcess.deleteRole(roleDto.role_id);
+      await this.roleProcess.deleteRole(findDto.role_id);
 
       // Enviar la respuesta con el rol eliminado
       logger.success("Rol eliminado exitosamente.");
-      const response = new RoleResponseDtoOutput({
-        success: true,
-        status: 200,
-        message: "Rol eliminado exitosamente.",
-      });
-      return res.status(200).json(response);
-    } catch (error) {
-      if (error.message?.includes("número entero positivo")) {
-        logger.warning(error.message);
-        const response = new RoleResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
-      }
-      logger.error(
-        "Error en el controlador al eliminar el rol:",
-        error.message,
+      return res.status(200).json(
+        new RoleResponseDtoOutput({
+          success: true,
+          status: 200,
+          message: "Rol eliminado exitosamente.",
+        }),
       );
-      const response = new RoleResponseDtoOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al eliminar el rol.",
-      });
-      return res.status(500).json(response);
+    } catch (error) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new RoleResponseDtoOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
+      }
+      // Manejo de errores inesperados
+      logger.error("Error inesperado:", error.message);
+      return res.status(500).json(
+        new RoleResponseDtoOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 }

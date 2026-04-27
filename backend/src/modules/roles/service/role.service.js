@@ -5,6 +5,9 @@ import logger from "#config/chalk.js";
 /*  DTOs */
 import RoleDtoOutput from "../dto/output/role.dto.output.js";
 
+/* Errors */
+import { NotFoundError, ConflictError } from "#shared/utils/errors.js";
+
 class RoleService {
   /**
    * @param {import('../repository/role.repository.js').default} roleRepository
@@ -49,9 +52,8 @@ class RoleService {
       const role = await this.roleRepository.findById(role_id);
 
       // Validar si se encontró el rol
-      if (!role) {
-        return null; // Retornar null si no se encontró el rol
-      }
+      if (!role) throw new NotFoundError("Rol no encontrado.");
+
       return new RoleDtoOutput(role); // Mapear el rol a un DTO de salida
     } catch (error) {
       logger.error("Error al buscar el rol por ID:", error.message);
@@ -65,19 +67,15 @@ class RoleService {
 
       // Validar si el rol ya existe
       const existingRole = await this.roleRepository.findByName(name);
-      if (existingRole) {
-        throw new Error(`El rol ya existe.`);
-      }
+      if (existingRole) throw new ConflictError(`El rol ya existe.`);
 
       // Builder para crear un nuevo rol
-      const builder = new RoleBuilder()
+      const roleBuilder = new RoleBuilder()
         .setName(name)
         .setDescription(description);
 
-      const newRole = builder.build();
-
       // Crear el nuevo rol en el repositorio
-      return await this.roleRepository.create(newRole);
+      return await this.roleRepository.create(roleBuilder.build());
     } catch (error) {
       logger.error("Error al crear el rol:", error.message);
       throw error;
@@ -89,17 +87,21 @@ class RoleService {
 
       // Verificar si el rol existe
       const existingRole = await this.roleRepository.findById(role_id);
-      if (!existingRole) {
-        throw new Error(`No se encontró el rol con ID: ${role_id}.`);
+      if (!existingRole) throw new NotFoundError(`Rol no encontrado.`);
+
+      const roleWithSameName = await this.roleRepository.findByName(name);
+      if (roleWithSameName && roleWithSameName.id !== role_id) {
+        throw new ConflictError(`Otro rol con el mismo nombre ya existe.`);
       }
-      const builder = new RoleBuilder()
+
+      // Builder para actualizar el rol existente
+      const roleBuilder = new RoleBuilder()
         .setName(name)
         .setDescription(description)
         .setUpdatedAt(new Date());
 
-      const updatedRole = builder.build();
-
-      return await this.roleRepository.update(role_id, updatedRole);
+      // Actualizar el rol en el repositorio
+      return await this.roleRepository.update(role_id, roleBuilder.build());
     } catch (error) {
       logger.error("Error al actualizar el rol:", error.message);
       throw error;
@@ -111,9 +113,8 @@ class RoleService {
     try {
       // Verificar si el rol existe
       const existingRole = await this.roleRepository.findById(role_id);
-      if (!existingRole) {
-        throw new Error(`No se encontró el rol con ID: ${role_id}.`);
-      }
+      if (!existingRole) throw new NotFoundError(`Rol no encontrado`);
+
       return await this.roleRepository.delete(role_id);
     } catch (error) {
       logger.error("Error al eliminar el rol:", error.message);
