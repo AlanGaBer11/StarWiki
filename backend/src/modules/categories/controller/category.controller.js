@@ -22,6 +22,7 @@ class CategoryController {
      */
     this.categoryProcess = categoryProcess;
   }
+
   // Método estático para crear una instancia del controlador con el proceso inyectado
   static async create() {
     const process = await CategoryProcess.create();
@@ -74,6 +75,7 @@ class CategoryController {
           }),
         );
       }
+      // Manejo de errores inesperados
       logger.error("Error inesperado:", error.message);
       return res.status(500).json(
         new CategoryResponseDtOutput({

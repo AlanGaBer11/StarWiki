@@ -100,6 +100,14 @@ class CategoryService {
       if (!existingCategory)
         throw new NotFoundError("Categoría no encontrada.");
 
+      const categoryWithSameName =
+        await this.categoryRepository.findByName(name);
+      if (categoryWithSameName && categoryWithSameName.id !== category_id) {
+        throw new ConflictError(
+          `Otra categoría con el mismo nombre ya existe.`,
+        );
+      }
+
       // Builder para actualizar la categoría
       const categoryBuilder = new CategoryBuilder()
         .setName(name)
