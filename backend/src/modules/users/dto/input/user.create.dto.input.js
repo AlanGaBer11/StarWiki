@@ -1,3 +1,5 @@
+import { ValidationError } from "#shared/utils/errors.js";
+
 class UserCreateDtoInput {
   /**
    * @param {Object} data
@@ -13,7 +15,9 @@ class UserCreateDtoInput {
   constructor({ role_id, name, lastname, username, email, password }) {
     const parsedRoleId = Number.parseInt(role_id);
     if (Number.isNaN(parsedRoleId) || parsedRoleId <= 0) {
-      throw new Error("El ID de rol debe ser un número entero positivo.");
+      throw new ValidationError(
+        "El ID de rol debe ser un número entero positivo.",
+      );
     }
 
     this.role_id = parsedRoleId;

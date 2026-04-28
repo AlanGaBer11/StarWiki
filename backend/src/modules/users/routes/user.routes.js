@@ -61,7 +61,7 @@ class UserRoutes {
     // Ruta para cambiar el estado de un usuario
     this.router.patch(
       "/:user_id/status",
-      this.userController.changeUserStaus.bind(this.userController),
+      this.userController.changeUserStatus.bind(this.userController),
     );
   }
 }
