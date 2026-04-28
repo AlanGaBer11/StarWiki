@@ -77,12 +77,12 @@ class RoleController {
         );
       }
       // Manejo de errores inesperados
-      logger.error("Error inseperado:", error.message);
+      logger.error("Error inesperado:", error.message);
       return res.status(500).json(
         new RoleResponseDtoOutput({
           success: false,
           status: 500,
-          message: "Ocurrió un error inseperado.",
+          message: "Ocurrió un error inesperado.",
         }),
       );
     }
