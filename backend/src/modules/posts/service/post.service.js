@@ -133,7 +133,7 @@ class PostService {
   }
 
   // Método para cambiar el estado de un post
-  async changeStatusPost(post_id, status) {
+  async changePostStatus(post_id, status) {
     try {
       // Validar si se encontro el post
       const existingPost = await this.postRepository.findById(post_id);

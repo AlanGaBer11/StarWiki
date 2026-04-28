@@ -73,9 +73,9 @@ class PostProcess {
   }
 
   // Método para cambiar el estado de un post
-  async changeStatusPost(post_id, status) {
+  async changePostStatus(post_id, status) {
     try {
-      return await this.postService.changeStatusPost(post_id, status);
+      return await this.postService.changePostStatus(post_id, status);
     } catch (error) {
       logger.error(
         "Error en el proceso al cambiar el estado del post:",

@@ -305,7 +305,7 @@ class PostController {
   }
 
   // Método para manejar la solicitud de cambiar el estado de un post
-  async changeStatusPost(req, res) {
+  async changePostStatus(req, res) {
     try {
       const dto = new PostChangeStatusDtoInput({ ...req.params, ...req.body });
 
@@ -322,7 +322,7 @@ class PostController {
       }
 
       // Llamar al proceso para cambiar el estado del post
-      const updatedPost = await this.postProcess.changeStatusPost(
+      const updatedPost = await this.postProcess.changePostStatus(
         dto.post_id,
         dto.status,
       );
