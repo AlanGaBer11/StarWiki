@@ -5,7 +5,7 @@ import UserBuilder from "../builder/user.builder.js";
 /* DTOs */
 import UserDtoOutput from "../dto/output/user.dto.output.js";
 
-/* Errors*/
+/* Errors */
 import { NotFoundError, ConflictError } from "#shared/utils/errors.js";
 
 class UserService {

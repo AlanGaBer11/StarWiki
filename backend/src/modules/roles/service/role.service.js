@@ -2,7 +2,7 @@ import RepositoryConfig from "#config/repository.js";
 import RoleBuilder from "../builder/role.builder.js";
 import logger from "#config/chalk.js";
 
-/*  DTOs */
+/* DTOs */
 import RoleDtoOutput from "../dto/output/role.dto.output.js";
 
 /* Errors */
