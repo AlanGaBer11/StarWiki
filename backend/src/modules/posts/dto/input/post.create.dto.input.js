@@ -1,3 +1,4 @@
+import { ValidationError } from "#shared/utils/errors.js";
 class PostCreateDtoInput {
   /**
    * @param {Object} data
@@ -18,7 +19,7 @@ class PostCreateDtoInput {
       parsedUserId <= 0 ||
       parsedCategoryId <= 0
     ) {
-      throw new Error("Los IDs deben ser números enteros positivos.");
+      throw new ValidationError("Los IDs deben ser números enteros positivos.");
     }
 
     this.user_id = parsedUserId;

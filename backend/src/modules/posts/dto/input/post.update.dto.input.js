@@ -1,3 +1,5 @@
+import { ValidationError } from "#shared/utils/errors.js";
+
 class PostUpdateDtoInput {
   /**
    * @param {Object} params
@@ -15,7 +17,9 @@ class PostUpdateDtoInput {
 
     // Validar que el ID del post sea un número entero positivo
     if (Number.isNaN(parsedPostId) || parsedPostId <= 0) {
-      throw new Error("El ID del post debe ser un número entero positivo.");
+      throw new ValidationError(
+        "El ID del post debe ser un número entero positivo.",
+      );
     }
 
     // Validar que el ID de la categoría sea un número entero positivo
@@ -26,7 +30,7 @@ class PostUpdateDtoInput {
       category_id !== undefined &&
       (Number.isNaN(parsedCategoryId) || parsedCategoryId <= 0)
     ) {
-      throw new Error(
+      throw new ValidationError(
         "El ID de la categoría debe ser un número entero positivo.",
       );
     }
@@ -37,7 +41,9 @@ class PostUpdateDtoInput {
         (value) => value === undefined || value === null,
       )
     ) {
-      throw new Error("Debe proporcionar al menos un campo a actualizar.");
+      throw new ValidationError(
+        "Debe proporcionar al menos un campo a actualizar.",
+      );
     }
 
     this.post_id = parsedPostId;
