@@ -27,9 +27,9 @@ class PostService {
   }
 
   // Método para obtener todos los posts
-  async findAllPost(page, limit) {
+  async findAllPost(page, limit, query) {
     try {
-      const result = await this.postRepository.findAll(page, limit);
+      const result = await this.postRepository.findAll(page, limit, query);
 
       // Validar si se encontraron posts
       if (!result || result.posts.length === 0) {
