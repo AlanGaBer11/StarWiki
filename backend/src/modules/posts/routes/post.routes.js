@@ -58,7 +58,7 @@ class PostRoutes {
     // Ruta para cambiar el estado de un post
     this.router.patch(
       "/:post_id/status",
-      this.postController.changeStatusPost.bind(this.postController),
+      this.postController.changePostStatus.bind(this.postController),
     );
   }
 }

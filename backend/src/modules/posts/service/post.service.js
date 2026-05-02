@@ -1,8 +1,12 @@
 import RepositoryConfig from "#config/repository.js";
 import logger from "#config/chalk.js";
 import PostBuilder from "../builder/post.builder.js";
+
 /* DTOs */
 import PostDtoOutput from "../dto/output/post.dto.output.js";
+
+/* Errors */
+import { NotFoundError, ConflictError } from "#shared/utils/errors.js";
 
 class PostService {
   /**
@@ -50,7 +54,7 @@ class PostService {
       const post = await this.postRepository.findById(post_id);
 
       // Validar si se encontró el post
-      if (!post) return null;
+      if (!post) throw new NotFoundError("Post no encontrado.");
 
       return new PostDtoOutput(post);
     } catch (error) {
@@ -66,9 +70,7 @@ class PostService {
 
       // Validar si el post ya existe
       const existingPost = await this.postRepository.findByTitle(title);
-      if (existingPost) {
-        throw new Error("El post ya existe.");
-      }
+      if (existingPost) throw new ConflictError("El post ya existe.");
 
       // Builder para crear el post
       const postBuilder = new PostBuilder()
@@ -78,11 +80,8 @@ class PostService {
         .setContent(content)
         .setImageUrl(image_url);
 
-      // Construir el post
-      const newPost = postBuilder.build();
-
       // Crear el post
-      return await this.postRepository.create(newPost);
+      return await this.postRepository.create(postBuilder.build());
     } catch (error) {
       logger.error("Error al crear el post:", error.message);
       throw error;
@@ -96,11 +95,12 @@ class PostService {
 
       // Validar si se encontro el post
       const existingPost = await this.postRepository.findById(post_id);
-      if (!existingPost) throw new Error("El post no existe.");
+      if (!existingPost) throw new NotFoundError("Post no encontrado.");
 
       // Validar si el titulo ya existe
       const existingTitle = await this.postRepository.findByTitle(title);
-      if (existingTitle) throw new Error("El titulo ya existe.");
+      if (existingTitle && existingTitle.id !== post_id)
+        throw new ConflictError("El titulo ya existe.");
 
       // Builder para actualizar el posts
       const postBuilder = new PostBuilder()
@@ -124,7 +124,7 @@ class PostService {
     try {
       // Validar si se encontro el post
       const existingPost = await this.postRepository.findById(post_id);
-      if (!existingPost) throw new Error("El post no existe.");
+      if (!existingPost) throw new NotFoundError("Post no encontrado.");
       return await this.postRepository.delete(post_id);
     } catch (error) {
       logger.error("Error al eliminar el post:", error.message);
@@ -133,15 +133,15 @@ class PostService {
   }
 
   // Método para cambiar el estado de un post
-  async changeStatusPost(post_id, status) {
+  async changePostStatus(post_id, status) {
     try {
       // Validar si se encontro el post
       const existingPost = await this.postRepository.findById(post_id);
-      if (!existingPost) throw new Error("El post no existe.");
+      if (!existingPost) throw new NotFoundError("Post no encontrado.");
 
       // Validar si el estado es el mismo
       if (existingPost.status === status)
-        throw new Error("El post ya tiene el estado solicitado.");
+        throw new ConflictError("El post ya tiene el estado solicitado.");
       return await this.postRepository.changeStatus(post_id, status);
     } catch (error) {
       logger.error("Error al cambiar el estado del post:", error.message);

@@ -1,3 +1,4 @@
+import { ValidationError } from "#shared/utils/errors.js";
 class UserUpdateDtoInput {
   /**
    * @param {Object} params
@@ -12,7 +13,6 @@ class UserUpdateDtoInput {
    * @param {string} data.password
    * @param {string} data.avatar_url
    * @param {string} data.biography
-   * @param {Date} data.updated_at
    */
 
   constructor({
@@ -25,11 +25,12 @@ class UserUpdateDtoInput {
     password,
     avatar_url,
     biography,
-    updated_at,
   }) {
     const parseUserId = Number.parseInt(user_id);
     if (Number.isNaN(parseUserId) || parseUserId <= 0) {
-      throw new Error("El ID de usuario debe ser un número entero positivo.");
+      throw new ValidationError(
+        "El ID de usuario debe ser un número entero positivo.",
+      );
     }
 
     const parseRoleId =
@@ -38,7 +39,9 @@ class UserUpdateDtoInput {
       role_id !== undefined &&
       (Number.isNaN(parseRoleId) || parseRoleId <= 0)
     ) {
-      throw new Error("El ID de rol debe ser un número entero positivo.");
+      throw new ValidationError(
+        "El ID de rol debe ser un número entero positivo.",
+      );
     }
 
     // Validar que al menos unos de los campos a actualizar esté presente
@@ -54,7 +57,9 @@ class UserUpdateDtoInput {
         biography,
       ].every((value) => value === undefined || value === null)
     ) {
-      throw new Error("Debe proporcionar al menos un campo para actualizar.");
+      throw new ValidationError(
+        "Debe proporcionar al menos un campo para actualizar.",
+      );
     }
 
     this.user_id = parseUserId;
@@ -66,7 +71,6 @@ class UserUpdateDtoInput {
     this.password = password;
     this.avatar_url = avatar_url;
     this.biography = biography;
-    this.updated_at = updated_at || new Date();
   }
 }
 

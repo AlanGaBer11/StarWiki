@@ -1,6 +1,7 @@
 import PostProcess from "../process/post.process.js";
 import logger from "#config/chalk.js";
 import pagination from "#shared/utils/pagination.js";
+import { AppError } from "#shared/utils/errors.js";
 /* DTOs */
 // Salida
 import PostResponseDtoOutput from "../dto/output/post.response.dto.output.js";
@@ -38,328 +39,266 @@ class PostController {
       // Validar si se encontraron post
       if (!result.posts || result.posts.length === 0) {
         logger.warning("No se encontraron posts.");
-        const response = new PostResponseDtoOutput({
-          success: false,
-          status: 404,
-          message: "No se encontraron posts.",
-          post: [],
-        });
-        return res.status(404).json(response);
+        return res.status(404).json(
+          new PostResponseDtoOutput({
+            success: false,
+            status: 404,
+            message: "No se encontraron posts.",
+            post: [],
+          }),
+        );
       }
 
       // Enviar la respuesta con los posts encontrados
       logger.success("Posts encontrados exitosamente.");
-      const response = new PostResponseDtoOutput({
-        success: true,
-        status: 200,
-        message: "Post encontrados exitosamente.",
-        page,
-        limit,
-        totalPosts: result.totalPosts,
-        posts: result.posts,
-      });
-      return res.status(200).json(response);
+      return res.status(200).json(
+        new PostResponseDtoOutput({
+          success: true,
+          status: 200,
+          message: "Post encontrados exitosamente.",
+          page,
+          limit,
+          totalPosts: result.totalPosts,
+          posts: result.posts,
+        }),
+      );
     } catch (error) {
-      if (
-        error.message?.includes(
-          "Los parámetros de paginación deben ser números enteros positivos.",
-        )
-      ) {
-        logger.warning("Error de validación de paginación:", error.message);
-        const response = new PostResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new PostResponseDtoOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
       }
-
-      logger.error("Error en el controlador al buscar posts:", error.message);
-      const response = new PostResponseDtoOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al buscar posts.",
-      });
-      return res.status(500).json(response);
+      // Manejo de errores inesperados
+      logger.error("Error ", error.message);
+      return res.status(500).json(
+        new PostResponseDtoOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 
   // Método para manejar la solicitud de buscar un post por su ID
   async findPostById(req, res) {
     try {
-      const dto = new PostFindDtoInput(req.params);
+      const findDto = new PostFindDtoInput(req.params);
 
       // Llamar al proceso para buscar el post
-      const post = await this.postProcess.findPostById(dto.post_id);
-
-      // Validar si se encontro el post
-      if (!post) {
-        logger.warning(`No se encontró el post con ID: ${dto.post_id}`);
-        const response = new PostResponseDtoOutput({
-          success: false,
-          status: 404,
-          message: `No se encontró el post con ID: ${dto.post_id}.`,
-        });
-        return res.status(404).json(response);
-      }
+      const post = await this.postProcess.findPostById(findDto.post_id);
 
       // Enviar la respuesta con el post encontrado
       logger.success("Post encontrado exitosamente.");
-      const response = new PostResponseDtoOutput({
-        success: true,
-        status: 200,
-        message: "Post encontrado exitosamente.",
-        post,
-      });
-      return res.status(200).json(response);
-    } catch (error) {
-      if (
-        error.message?.includes(
-          "El ID del post debe ser un número entero positivo.",
-        )
-      ) {
-        logger.warning(error.message);
-        const response = new PostResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
-      }
-
-      logger.error(
-        "Error en el controlador al buscar el post por ID:",
-        error.message,
+      return res.status(200).json(
+        new PostResponseDtoOutput({
+          success: true,
+          status: 200,
+          message: "Post encontrado exitosamente.",
+          post,
+        }),
       );
-      const response = new PostResponseDtoOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al buscar el post por ID.",
-      });
-      return res.status(500).json(response);
+    } catch (error) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new PostResponseDtoOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
+      }
+      // Manejo de errores inesperados
+      logger.error("Error ", error.message);
+      return res.status(500).json(
+        new PostResponseDtoOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 
   // Método para manejar la solicitud de crear un nuevo post
   async createPost(req, res) {
     try {
-      const dto = new PostCreateDtoInput(req.body);
-
-      // Validaciones adicionales para el DTO
-      if (
-        !dto.user_id ||
-        !dto.category_id ||
-        !dto.title ||
-        !dto.content ||
-        !dto.image_url
-      ) {
-        logger.warning("Faltan datos requeridos para crear el post.");
-        const response = new PostResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: "Todos los campos son requeridos.",
-        });
-        return res.status(400).json(response);
-      }
-
+      const createDto = new PostCreateDtoInput(req.body);
       // Llamar al proceso para crear un nuevo post
-      const newPost = await this.postProcess.createPost(dto);
+      const newPost = await this.postProcess.createPost(createDto);
 
       // Enviar la respuesta con el post creado
       logger.success("Post creado exitosamente.");
-      const response = new PostResponseDtoOutput({
-        success: true,
-        status: 201,
-        message: "Post creado exitosamente",
-        post: newPost,
-      });
-      return res.status(201).json(response);
+      return res.status(201).json(
+        new PostResponseDtoOutput({
+          success: true,
+          status: 201,
+          message: "Post creado exitosamente",
+          post: newPost,
+        }),
+      );
     } catch (error) {
-      if (
-        error.message?.includes("El post ya existe") ||
-        error.message?.includes("números enteros positivos")
-      ) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
         logger.warning(error.message);
-        const response = new PostResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
+        return res.status(error.statusCode).json(
+          new PostResponseDtoOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
       }
-      logger.error("Error en el controladoral crear el post:", error.message);
-      const response = new PostResponseDtoOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al crear el post.",
-      });
-      return res.status(500).json(response);
+      // Manejo de errores inesperados
+      logger.error("Error ", error.message);
+      return res.status(500).json(
+        new PostResponseDtoOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 
   // Método para manejar la solicitud de actualizar un post
   async updatePost(req, res) {
     try {
-      const dto = new PostUpdateDtoInput({ ...req.params, ...req.body });
-
-      // Buscar el post para validar su existencia antes de intentar actualizarlo
-      const existingPost = await this.postProcess.findPostById(dto.post_id);
-      if (!existingPost) {
-        logger.warning(`No se encontró el post con ID: ${dto.post_id}`);
-        const response = new PostResponseDtoOutput({
-          success: false,
-          status: 404,
-          message: `No se encontró el post con ID: ${dto.post_id}.`,
-        });
-        return res.status(404).json(response);
-      }
-
+      const updateDto = new PostUpdateDtoInput({ ...req.params, ...req.body });
       // Llamar al poroceso para actualizar el post
-      const updatedPost = await this.postProcess.updatePost(dto.post_id, dto);
+      const updatedPost = await this.postProcess.updatePost(
+        updateDto.post_id,
+        updateDto,
+      );
 
       // Enviar la respuesta con el post actualizado
       logger.success("Post actualizado exitosamente.");
-      const response = new PostResponseDtoOutput({
-        success: false,
-        status: 200,
-        message: "Post actualizado exitosamente.",
-        post: updatedPost,
-      });
-      return res.status(200).json(response);
-    } catch (error) {
-      if (
-        error.message?.includes("El titulo ya existe") ||
-        error.message?.includes("número entero positivo") ||
-        error.message?.includes("al menos un campo a actualizar")
-      ) {
-        logger.warning(error.message);
-        const response = new PostResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
-      }
-      logger.error(
-        "Error en el controlador al actualizar el post:",
-        error.message,
+      return res.status(200).json(
+        new PostResponseDtoOutput({
+          success: true,
+          status: 200,
+          message: "Post actualizado exitosamente.",
+          post: updatedPost,
+        }),
       );
-      const response = new PostResponseDtoOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al actualizar el post.",
-      });
-      return res.status(500).json(response);
+    } catch (error) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new PostResponseDtoOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
+      }
+      // Manejo de errores inesperados
+      logger.error("Error ", error.message);
+      return res.status(500).json(
+        new PostResponseDtoOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 
   // Método para manejar la solicitud de eliminar un post
   async deletePost(req, res) {
     try {
-      const dto = new PostFindDtoInput(req.params);
-
-      // Buscar el post para validar su existencia antes de intentar eliminarlo
-      const existingPost = await this.postProcess.findPostById(dto.post_id);
-      if (!existingPost) {
-        logger.warning(`No se encontró el post con ID: ${dto.post_id}.`);
-        const response = new PostResponseDtoOutput({
-          success: false,
-          status: 404,
-          message: `No se encontró el post con ID: ${dto.post_id}.`,
-        });
-        return res.status(404).json(response);
-      }
+      const findDto = new PostFindDtoInput(req.params);
 
       // Llamar al proceso para eliminar el post
-      await this.postProcess.deletePost(dto.post_id);
+      await this.postProcess.deletePost(findDto.post_id);
 
       // Enviar la respuesta de eliminación exitosa
       logger.success("Post eliminado exitosamente.");
-      const response = new PostResponseDtoOutput({
-        success: true,
-        status: 200,
-        message: "Post eliminado exitosamente.",
-      });
-      return res.status(200).json(response);
-    } catch (error) {
-      if (error.message?.includes("número entero positivo")) {
-        logger.warning(error.message);
-        const response = new PostResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
-      }
-      logger.error(
-        "Error en el controlador al eliminar el post:",
-        error.message,
+      return res.status(200).json(
+        new PostResponseDtoOutput({
+          success: true,
+          status: 200,
+          message: "Post eliminado exitosamente.",
+        }),
       );
-      const response = new PostResponseDtoOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al eliminar el post.",
-      });
-      return res.status(500).json(response);
+    } catch (error) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new PostResponseDtoOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
+      }
+      // Manejo de errores inesperados
+      logger.error("Error ", error.message);
+      return res.status(500).json(
+        new PostResponseDtoOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 
   // Método para manejar la solicitud de cambiar el estado de un post
-  async changeStatusPost(req, res) {
+  async changePostStatus(req, res) {
     try {
-      const dto = new PostChangeStatusDtoInput({ ...req.params, ...req.body });
-
-      // Buscar el post para validar su existencia antes de intentar cambiar su estado
-      const existingPost = await this.postProcess.findPostById(dto.post_id);
-      if (!existingPost) {
-        logger.warning(`No se encontró el post con ID: ${dto.post_id}.`);
-        const response = new PostResponseDtoOutput({
-          success: false,
-          status: 404,
-          message: `No se encontró el post con ID: ${dto.post_id}.`,
-        });
-        return res.status(404).json(response);
-      }
+      const findDto = new PostChangeStatusDtoInput({
+        ...req.params,
+        ...req.body,
+      });
 
       // Llamar al proceso para cambiar el estado del post
-      const updatedPost = await this.postProcess.changeStatusPost(
-        dto.post_id,
-        dto.status,
+      const updatedPost = await this.postProcess.changePostStatus(
+        findDto.post_id,
+        findDto.status,
       );
 
       // Enviar la respuesta con el post actualizado
       logger.success("Estado del post cambiado exitosamente.");
-      const response = new PostResponseDtoOutput({
-        success: true,
-        status: 200,
-        message: "Estado del post cambiado exitosamente.",
-        post: updatedPost,
-      });
-      return res.status(200).json(response);
-    } catch (error) {
-      if (
-        error.message?.includes("número entero positivo") ||
-        error.message?.includes("El status del post no es válido") ||
-        error.message?.includes("ya tiene el estado solicitado.")
-      ) {
-        logger.warning(error.message);
-        const response = new PostResponseDtoOutput({
-          success: false,
-          status: 400,
-          message: error.message,
-        });
-        return res.status(400).json(response);
-      }
-      logger.error(
-        "Error en el controlador al cambiar el estado del post:",
-        error.message,
+      return res.status(200).json(
+        new PostResponseDtoOutput({
+          success: true,
+          status: 200,
+          message: "Estado del post cambiado exitosamente.",
+          post: updatedPost,
+        }),
       );
-      const response = new PostResponseDtoOutput({
-        success: false,
-        status: 500,
-        message: "Ocurrió un error al cambiar el estado del post.",
-      });
-      return res.status(500).json(response);
+    } catch (error) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new PostResponseDtoOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
+      }
+      // Manejo de errores inesperados
+      logger.error("Error ", error.message);
+      return res.status(500).json(
+        new PostResponseDtoOutput({
+          success: false,
+          status: 500,
+          message: "Ocurrió un error inesperado.",
+        }),
+      );
     }
   }
 }

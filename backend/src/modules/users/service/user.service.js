@@ -5,6 +5,9 @@ import UserBuilder from "../builder/user.builder.js";
 /* DTOs */
 import UserDtoOutput from "../dto/output/user.dto.output.js";
 
+/* Errors */
+import { NotFoundError, ConflictError } from "#shared/utils/errors.js";
+
 class UserService {
   /**
    * @param {import('../repository/user.repository.js').default} userRepository
@@ -48,9 +51,7 @@ class UserService {
       const user = await this.userRepository.findById(user_id);
 
       // Validar si se encontró el usuario
-      if (!user) {
-        return null;
-      }
+      if (!user) throw new NotFoundError("Usuario no encontrado.");
       return new UserDtoOutput(user); // Mapear el usuario a un DTO de salida
     } catch (error) {
       logger.error("Error al buscar el usuario por ID:", error.message);
@@ -66,14 +67,14 @@ class UserService {
       // Validar si el email existe
       const existingEmail = await this.userRepository.findByEmail(email);
       if (existingEmail) {
-        throw new Error("El correo electrónico ya está registrado.");
+        throw new ConflictError("El correo electrónico ya está registrado.");
       }
 
       // Validar si el username existe
       const existingUsername =
         await this.userRepository.findByUserName(username);
       if (existingUsername) {
-        throw new Error("El nombre de usuario ya está registrado.");
+        throw new ConflictError("El nombre de usuario ya está registrado.");
       }
 
       // Builder para crear un nuevo usuario
@@ -85,10 +86,8 @@ class UserService {
         .setEmail(email)
         .setPassword(password);
 
-      const newUser = userBuilder.build();
-
       // Crear el nuevo usuario en el repositorio
-      return await this.userRepository.create(newUser);
+      return await this.userRepository.create(userBuilder.build());
     } catch (error) {
       logger.error("Error al crear el usuario:", error.message);
       throw error;
@@ -112,14 +111,14 @@ class UserService {
       // Validar si el usuario existe
       const existingUser = await this.userRepository.findById(user_id);
       if (!existingUser) {
-        throw new Error(`No se encontró el usuario con ID ${user_id}.`);
+        throw new NotFoundError("Usuario no encontrado.");
       }
 
       // Validar si el email existe y pertenece a otro usuario
       if (email) {
         const existingEmail = await this.userRepository.findByEmail(email);
         if (existingEmail && existingEmail.user_id !== user_id) {
-          throw new Error("El correo electrónico ya está registrado.");
+          throw new ConflictError("El correo electrónico ya está registrado.");
         }
       }
 
@@ -128,12 +127,12 @@ class UserService {
         const existingUsername =
           await this.userRepository.findByUserName(username);
         if (existingUsername && existingUsername.user_id !== user_id) {
-          throw new Error("El nombre de usuario ya está registrado.");
+          throw new ConflictError("El nombre de usuario ya está registrado.");
         }
       }
 
       // Builder para actualizar el usuario
-      const builder = new UserBuilder()
+      const userBuilder = new UserBuilder()
         .setRoleId(role_id)
         .setName(name)
         .setLastname(lastname)
@@ -144,10 +143,7 @@ class UserService {
         .setBiography(biography)
         .setUpdatedAt(new Date());
 
-      // Construir el objeto de usuario actualizado
-      const updatedUser = builder.build();
-
-      return await this.userRepository.update(user_id, updatedUser);
+      return await this.userRepository.update(user_id, userBuilder.build());
     } catch (error) {
       logger.error("Error al actualizar el usuario:", error.message);
       throw error;
@@ -160,7 +156,7 @@ class UserService {
       // Validar si el usuario existe
       const existingUser = await this.userRepository.findById(user_id);
       if (!existingUser) {
-        throw new Error(`No se encontró el usuario con ID: ${user_id}.`);
+        throw new NotFoundError("Usuario no encontrado.");
       }
 
       return await this.userRepository.delete(user_id);
@@ -176,12 +172,12 @@ class UserService {
       // Validar si el usuario existe
       const existingUser = await this.userRepository.findById(user_id);
       if (!existingUser) {
-        throw new Error(`No se encontró el usuario con ID: ${user_id}.`);
+        throw new NotFoundError("Usuarion no encontrado.");
       }
 
       // Validar si el usuario ya ha sido eliminado
       if (existingUser.status === "Eliminado") {
-        throw new Error(`El usuario ya ha sido eliminado.`);
+        throw new ConflictError(`El usuario ya ha sido eliminado.`);
       }
 
       // Si solo permites eliminar desde "Activo" o "Inactivo":
@@ -189,7 +185,7 @@ class UserService {
         existingUser.status !== "Activo" &&
         existingUser.status !== "Inactivo"
       ) {
-        throw new Error(
+        throw new ConflictError(
           "Solo usuarios activos o inactivos pueden ser eliminados.",
         );
       }
@@ -210,14 +206,13 @@ class UserService {
   async changeUserStatus(user_id, newStatus) {
     try {
       const user = await this.userRepository.findById(user_id);
-      if (!user)
-        throw new Error(`No se encontró el usuario con ID: ${user_id}.`);
+      if (!user) throw new NotFoundError("Usuario no encontrado.");
 
       if (user.status === newStatus)
-        throw new Error("El usuario ya tiene el estado solicitado.");
+        throw new ConflictError("El usuario ya tiene el estado solicitado.");
 
       if (user.status === "Eliminado")
-        throw new Error(
+        throw new ConflictError(
           "No se puede cambiar el estado de un usuario eliminado.",
         );
 
@@ -225,24 +220,28 @@ class UserService {
       switch (newStatus) {
         case "Inactivo":
           if (user.status === "Suspendido")
-            throw new Error(
+            throw new ConflictError(
               "El usuario está suspendido y no puede ser desactivado.",
             );
           break;
         case "Activo":
           if (user.status === "Suspendido")
-            throw new Error(
+            throw new ConflictError(
               "El usuario está suspendido y no puede ser activado.",
             );
           if (user.status !== "Inactivo")
-            throw new Error("Solo usuarios inactivos pueden ser activados.");
+            throw new ConflictError(
+              "Solo usuarios inactivos pueden ser activados.",
+            );
           break;
         case "Suspendido":
           if (user.status !== "Activo")
-            throw new Error("Solo usuarios activos pueden ser suspendidos.");
+            throw new ConflictError(
+              "Solo usuarios activos pueden ser suspendidos.",
+            );
           break;
         default:
-          throw new Error("El estado del usuario no es válido.");
+          throw new ConflictError("El estado del usuario no es válido.");
       }
       logger.info(
         `Usuario ${user_id} cambiado de estado: ${user.status} -> ${newStatus}.`,
