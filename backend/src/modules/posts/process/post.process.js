@@ -20,9 +20,9 @@ class PostProcess {
   }
 
   // Método para buscar todos los post
-  async findAllPost(page, limit) {
+  async findAllPost(page, limit, query) {
     try {
-      return await this.postService.findAllPost(page, limit);
+      return await this.postService.findAllPost(page, limit, query);
     } catch (error) {
       logger.error("Error en el proceso al buscar posts:", error.message);
       throw error;

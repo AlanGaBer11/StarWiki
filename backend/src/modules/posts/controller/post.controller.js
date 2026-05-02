@@ -6,6 +6,7 @@ import { AppError } from "#shared/utils/errors.js";
 // Salida
 import PostResponseDtoOutput from "../dto/output/post.response.dto.output.js";
 // Entrada
+import PostQueryDtoInput from "../dto/input/post.query.dto.input.js";
 import PostFindDtoInput from "../dto/input/post.find.dto.input.js";
 import PostCreateDtoInput from "../dto/input/post.create.dto.input.js";
 import PostUpdateDtoInput from "../dto/input/post.update.dto.input.js";
@@ -32,9 +33,10 @@ class PostController {
   async findAllPosts(req, res) {
     try {
       const { page, limit } = pagination(req.query);
+      const queryDto = new PostQueryDtoInput(req.query);
 
       // Llamar al proceso para buscart todos los posts
-      const result = await this.postProcess.findAllPost(page, limit);
+      const result = await this.postProcess.findAllPost(page, limit, queryDto);
 
       // Validar si se encontraron post
       if (!result.posts || result.posts.length === 0) {
