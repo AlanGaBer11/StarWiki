@@ -20,8 +20,6 @@ class PostRepository extends IPostRepository {
       limit,
       order: [["created_at", "DESC"]],
     });
-    console.log("QUERY EN REPO:", query);
-
     return {
       posts: rows,
       totalPosts: count,
