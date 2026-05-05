@@ -37,12 +37,6 @@ class CategoryValidator {
 
   // Método para validar los datos de entrada al actualizar una categoría existente
   static updateCategoryValidation = [
-    check("category_id")
-      .notEmpty()
-      .withMessage("El ID de la categoría es obligatorio.")
-      .isInt({ gt: 0 })
-      .withMessage("El ID de la categoría debe ser un número entero positivo."),
-
     check("name")
       .optional()
       .notEmpty()
