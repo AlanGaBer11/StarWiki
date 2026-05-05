@@ -1,3 +1,5 @@
+import { parsePositiveInt } from "#shared/utils/parse.js";
+
 import { ValidationError } from "#shared/utils/errors.js";
 
 class PostUpdateDtoInput {
@@ -13,28 +15,6 @@ class PostUpdateDtoInput {
    */
 
   constructor({ post_id, category_id, title, content, image_url }) {
-    const parsedPostId = Number.parseInt(post_id);
-
-    // Validar que el ID del post sea un número entero positivo
-    if (Number.isNaN(parsedPostId) || parsedPostId <= 0) {
-      throw new ValidationError(
-        "El ID del post debe ser un número entero positivo.",
-      );
-    }
-
-    // Validar que el ID de la categoría sea un número entero positivo
-    const parsedCategoryId =
-      category_id !== undefined ? Number.parseInt(category_id) : undefined;
-
-    if (
-      category_id !== undefined &&
-      (Number.isNaN(parsedCategoryId) || parsedCategoryId <= 0)
-    ) {
-      throw new ValidationError(
-        "El ID de la categoría debe ser un número entero positivo.",
-      );
-    }
-
     // Validar que al menos uno de los campos a actualizar esté presente
     if (
       [category_id, title, content, image_url].every(
@@ -46,8 +26,8 @@ class PostUpdateDtoInput {
       );
     }
 
-    this.post_id = parsedPostId;
-    this.category_id = parsedCategoryId; // Asignamos la variable parseada
+    this.post_id = parsePositiveInt(post_id, "ID del post");
+    this.category_id = parsePositiveInt(category_id, "ID de la categoría");
     this.title = title;
     this.content = content;
     this.image_url = image_url;
