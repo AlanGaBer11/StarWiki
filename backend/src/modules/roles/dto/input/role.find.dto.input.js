@@ -1,17 +1,11 @@
-import { ValidationError } from "#shared/utils/errors.js";
+import { parsePositiveInt } from "#shared/utils/parse.js";
 class RoleFindDtoInput {
   /**
    * @param {Object} params
    * @param {number} params.role_id
    */
   constructor({ role_id }) {
-    const parsedId = Number.parseInt(role_id);
-    if (Number.isNaN(parsedId) || parsedId <= 0) {
-      throw new ValidationError(
-        "El ID de rol debe ser un número entero positivo.",
-      );
-    }
-    this.role_id = parsedId;
+    this.role_id = parsePositiveInt(role_id, "ID del rol");
   }
 }
 export default RoleFindDtoInput;

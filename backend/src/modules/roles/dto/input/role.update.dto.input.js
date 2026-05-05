@@ -1,3 +1,4 @@
+import { parsePositiveInt } from "#shared/utils/parse.js";
 import { ValidationError } from "#shared/utils/errors.js";
 
 class RoleUpdateDtoInput {
@@ -11,13 +12,6 @@ class RoleUpdateDtoInput {
    */
 
   constructor({ role_id, name, description }) {
-    const parseId = Number.parseInt(role_id);
-    if (Number.isNaN(parseId) || parseId <= 0) {
-      throw new ValidationError(
-        "El ID de rol debe ser un número entero positivo.",
-      );
-    }
-
     // Validar que al menos uno de los campos a actualizar esté presente
     if (
       (name === undefined || name === null) &&
@@ -28,7 +22,7 @@ class RoleUpdateDtoInput {
       );
     }
 
-    this.role_id = parseId;
+    this.role_id = parsePositiveInt(role_id, "ID del rol");
     this.name = name;
     this.description = description;
   }
