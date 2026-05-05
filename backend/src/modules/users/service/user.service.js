@@ -24,9 +24,9 @@ class UserService {
   }
 
   // Método para buscar todos los usuarios
-  async findAllUsers(page, limit) {
+  async findAllUsers(page, limit, query) {
     try {
-      const result = await this.userRepository.findAll(page, limit);
+      const result = await this.userRepository.findAll(page, limit, query);
 
       // Validar si se encontraron usuarios
       if (!result.users || result.users.length === 0) {

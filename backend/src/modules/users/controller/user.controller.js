@@ -7,11 +7,11 @@ import { AppError } from "#shared/utils/errors.js";
 // Salida
 import UserResponseDtoOutput from "../dto/output/user.response.dto.output.js";
 // Entrada
+import UserQueryDtoInput from "../dto/input/user.query.dto.input.js";
 import UserFindDtoInput from "../dto/input/user.find.dto.input.js";
 import UserCreateDtoInput from "../dto/input/user.create.dto.input.js";
 import UserUpdateDtoInput from "../dto/input/user.update.dto.input.js";
 import UserChangeStatusDTOInput from "../dto/input/user.change_status.dto.input.js";
-import e from "express";
 
 class UserController {
   /**
@@ -34,9 +34,10 @@ class UserController {
   async findAllUsers(req, res) {
     try {
       const { page, limit } = pagination(req.query);
+      const queryDto = new UserQueryDtoInput(req.query);
 
       // Llamar al proceso para buscar todos los usuarios
-      const result = await this.userProcess.findAllUsers(page, limit);
+      const result = await this.userProcess.findAllUsers(page, limit, queryDto);
 
       // Validar si se encontraron usuarios
       if (!result.users || result.users.length === 0) {

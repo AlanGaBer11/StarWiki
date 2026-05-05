@@ -1,10 +1,19 @@
 import IUserRepository from "#shared/interfaces/userRepository.interface.js";
 import User from "../model/User.js";
+import { Op } from "sequelize";
 class UserRepository extends IUserRepository {
   // Método para buscar todos los usuarios
-  async findAll(page = 1, limit = 10) {
+  async findAll(page = 1, limit = 10, query = {}) {
+    const { emailDomain, status, verified } = query;
+    const whereClause = {};
+
+    if (emailDomain) whereClause.email = { [Op.like]: `%@${emailDomain}%` };
+    if (status) whereClause.status = status;
+    if (typeof verified === "boolean") whereClause.verified = verified;
+
     const offset = (page - 1) * limit;
     const { count, rows } = await User.findAndCountAll({
+      where: whereClause,
       offset,
       limit,
       attributes: { exclude: ["password"] },

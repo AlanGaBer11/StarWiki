@@ -19,9 +19,9 @@ class UserProcess {
   }
 
   // Método para buscar todos los usuarios
-  async findAllUsers(page, limit) {
+  async findAllUsers(page, limit, query) {
     try {
-      return await this.userService.findAllUsers(page, limit);
+      return await this.userService.findAllUsers(page, limit, query);
     } catch (error) {
       logger.error("Error en el proceso al buscar usuarios:", error.message);
       throw error;
