@@ -1,3 +1,4 @@
+import { parsePositiveInt } from "#shared/utils/parse.js";
 import { ValidationError } from "#shared/utils/errors.js";
 
 class CategoryUpdateDtoInput {
@@ -11,13 +12,6 @@ class CategoryUpdateDtoInput {
    */
 
   constructor({ category_id, name, description, updated_at }) {
-    const parseId = Number.parseInt(category_id);
-    if (Number.isNaN(parseId) || parseId <= 0) {
-      throw new ValidationError(
-        "El ID de categoría debe ser un número entero positivo.",
-      );
-    }
-
     // Validar que al menos unos de los campos a actualizar esté presente
     if (
       (name === undefined || name === null) &&
@@ -28,7 +22,7 @@ class CategoryUpdateDtoInput {
       );
     }
 
-    this.category_id = parseId;
+    this.category_id = parsePositiveInt(category_id, "ID de la categoría");
     this.name = name;
     this.description = description;
   }

@@ -1,4 +1,5 @@
-import { ValidationError } from "#shared/utils/errors.js";
+import { parsePositiveInt } from "#shared/utils/parse.js";
+
 class PostCreateDtoInput {
   /**
    * @param {Object} data
@@ -10,20 +11,8 @@ class PostCreateDtoInput {
    */
 
   constructor({ user_id, category_id, title, content, image_url }) {
-    const parsedUserId = Number.parseInt(user_id);
-    const parsedCategoryId = Number.parseInt(category_id);
-
-    if (
-      Number.isNaN(parsedUserId) ||
-      Number.isNaN(parsedCategoryId) ||
-      parsedUserId <= 0 ||
-      parsedCategoryId <= 0
-    ) {
-      throw new ValidationError("Los IDs deben ser números enteros positivos.");
-    }
-
-    this.user_id = parsedUserId;
-    this.category_id = parsedCategoryId;
+    this.user_id_id = parsePositiveInt(user_id, "ID del usuario");
+    this.category_id_id = parsePositiveInt(category_id, "ID de la categoría");
     this.title = typeof title === "string" ? title.trim() : "";
     this.content = typeof content === "string" ? content.trim() : "";
     this.image_url = typeof image_url === "string" ? image_url.trim() : "";

@@ -1,4 +1,4 @@
-import { ValidationError } from "#shared/utils/errors.js";
+import { parsePositiveInt } from "#shared/utils/parse.js";
 
 class UserCreateDtoInput {
   /**
@@ -13,14 +13,7 @@ class UserCreateDtoInput {
    */
 
   constructor({ role_id, name, lastname, username, email, password }) {
-    const parsedRoleId = Number.parseInt(role_id);
-    if (Number.isNaN(parsedRoleId) || parsedRoleId <= 0) {
-      throw new ValidationError(
-        "El ID de rol debe ser un número entero positivo.",
-      );
-    }
-
-    this.role_id = parsedRoleId;
+    this.role_id = parsePositiveInt(role_id_id, "El ID del rol");
     this.name = typeof name === "string" ? name.trim() : "";
     this.lastname = typeof lastname === "string" ? lastname.trim() : "";
     this.username = typeof username === "string" ? username.trim() : "";

@@ -1,4 +1,4 @@
-import { ValidationError } from "#shared/utils/errors.js";
+import { parsePositiveInt } from "#shared/utils/parse.js";
 
 class UserFindDtoInput {
   /**
@@ -7,13 +7,7 @@ class UserFindDtoInput {
    */
 
   constructor({ user_id }) {
-    const parsedId = Number.parseInt(user_id);
-    if (Number.isNaN(parsedId) || parsedId <= 0) {
-      throw new ValidationError(
-        "El ID del usuario debe ser un número entero positivo.",
-      );
-    }
-    this.user_id = parsedId;
+    this.user_id = parsePositiveInt(user_id, "El ID del usuario");
   }
 }
 

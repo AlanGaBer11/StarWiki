@@ -1,4 +1,4 @@
-import { ValidationError } from "#shared/utils/errors.js";
+import { parsePositiveInt } from "#shared/utils/parse.js";
 class PostFindDtoInput {
   /**
    * @param {Object} params
@@ -6,14 +6,7 @@ class PostFindDtoInput {
    */
 
   constructor({ post_id }) {
-    const parsedId = Number.parseInt(post_id);
-
-    if (Number.isNaN(parsedId) || parsedId <= 0) {
-      throw new ValidationError(
-        "El ID del post debe ser un número entero positivo.",
-      );
-    }
-    this.post_id = parsedId;
+    this.post_id = parsePositiveInt(post_id, "ID del post");
   }
 }
 

@@ -1,3 +1,5 @@
+import { parsePositiveInt } from "#shared/utils/parse.js";
+
 import { ValidationError } from "#shared/utils/errors.js";
 class UserChangeStatusDTOInput {
   /**
@@ -10,21 +12,13 @@ class UserChangeStatusDTOInput {
    */
 
   constructor({ user_id, status }) {
-    // Validar que el user_id sea un número entero positivo
-    const parsedUserId = Number.parseInt(user_id);
-    if (Number.isNaN(parsedUserId) || parsedUserId <= 0) {
-      throw new ValidationError(
-        "El ID del usuario debe ser un número entero positivo.",
-      );
-    }
-
     // Validar que el estado sea uno de los valores permitidos
     const validateStatus = ["Activo", "Inactivo", "Suspendido"];
     if (!validateStatus.includes(status)) {
       throw new ValidationError("El status del usuario no es válido.");
     }
 
-    this.user_id = parsedUserId;
+    this.user_id = parsePositiveInt(user_id, "El ID del usuario");
     this.status = status;
   }
 }
