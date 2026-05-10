@@ -2,6 +2,7 @@ import RepositoryConfig from "#config/repository.js";
 import logger from "#config/chalk.js";
 
 /* DTOs */
+import CommentDtoOutput from "../dto/output/comment.dto.output.js";
 
 /* Errores */
 
@@ -37,7 +38,9 @@ class CommentService {
       // Registrar la cantidad de comentarios encontrados
       logger.info(`Se encontraron ${result.comments.length} comentarios.`);
       return {
-        comments: result.comments,
+        comments: result.comments.map(
+          (comment) => new CommentDtoOutput(comment),
+        ),
         totalComments: result.totalComments,
         totalPages: result.totalPages,
         currentPage: result.currentPage,
