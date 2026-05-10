@@ -1,7 +1,7 @@
 import CategoryProcess from "../process/category.process.js";
 import logger from "#config/chalk.js";
 import pagination from "#shared/utils/pagination.js";
-import { AppError } from "#shared/utils/errors.js";
+import { handleControllerError } from "#shared/utils/handleControllerError.js";
 /* DTOs */
 // Salida
 import CategoryResponseDtOutput from "../dto/output/category.response.dto.output.js";
@@ -64,25 +64,11 @@ class CategoryController {
         }),
       );
     } catch (error) {
-      // Manejo centralizado de errores
-      if (error instanceof AppError) {
-        logger.warning(error.message);
-        return res.status(error.statusCode).json(
-          new CategoryResponseDtOutput({
-            success: false,
-            status: error.statusCode,
-            message: error.message,
-          }),
-        );
-      }
-      // Manejo de errores inesperados
-      logger.error("Error inesperado:", error.message);
-      return res.status(500).json(
-        new CategoryResponseDtOutput({
-          success: false,
-          status: 500,
-          message: "Ocurrió un error inesperado.",
-        }),
+      return handleControllerError(
+        error,
+        res,
+        CategoryResponseDtOutput,
+        logger,
       );
     }
   }
@@ -108,25 +94,11 @@ class CategoryController {
         }),
       );
     } catch (error) {
-      // Manejo centralizado de errores
-      if (error instanceof AppError) {
-        logger.warning(error.message);
-        return res.status(error.statusCode).json(
-          new CategoryResponseDtOutput({
-            success: false,
-            status: error.statusCode,
-            message: error.message,
-          }),
-        );
-      }
-      // Manejo de errores inesperados
-      logger.error("Error inesperado:", error.message);
-      return res.status(500).json(
-        new CategoryResponseDtOutput({
-          success: false,
-          status: 500,
-          message: "Ocurrió un error inesperado.",
-        }),
+      return handleControllerError(
+        error,
+        res,
+        CategoryResponseDtOutput,
+        logger,
       );
     }
   }
@@ -150,25 +122,11 @@ class CategoryController {
         }),
       );
     } catch (error) {
-      // Manejo centralizado de errores
-      if (error instanceof AppError) {
-        logger.warning(error.message);
-        return res.status(error.statusCode).json(
-          new CategoryResponseDtOutput({
-            success: false,
-            status: error.statusCode,
-            message: error.message,
-          }),
-        );
-      }
-      // Manejo de errores inesperados
-      logger.error("Error inesperado:", error.message);
-      return res.status(500).json(
-        new CategoryResponseDtOutput({
-          success: false,
-          status: 500,
-          message: "Ocurrió un error inesperado.",
-        }),
+      return handleControllerError(
+        error,
+        res,
+        CategoryResponseDtOutput,
+        logger,
       );
     }
   }
@@ -198,25 +156,11 @@ class CategoryController {
         }),
       );
     } catch (error) {
-      // Manejo centralizado de errores
-      if (error instanceof AppError) {
-        logger.warning(error.message);
-        return res.status(error.statusCode).json(
-          new CategoryResponseDtOutput({
-            success: false,
-            status: error.statusCode,
-            message: error.message,
-          }),
-        );
-      }
-      // Manejo de errores inesperados
-      logger.error("Error inesperado:", error.message);
-      return res.status(500).json(
-        new CategoryResponseDtOutput({
-          success: false,
-          status: 500,
-          message: "Ocurrió un error inesperado.",
-        }),
+      return handleControllerError(
+        error,
+        res,
+        CategoryResponseDtOutput,
+        logger,
       );
     }
   }
@@ -239,25 +183,11 @@ class CategoryController {
         }),
       );
     } catch (error) {
-      // Manejo centralizado de errores
-      if (error instanceof AppError) {
-        logger.warning(error.message);
-        return res.status(error.statusCode).json(
-          new CategoryResponseDtOutput({
-            success: false,
-            status: error.statusCode,
-            message: error.message,
-          }),
-        );
-      }
-      // Manejo de errores inesperados
-      logger.error("Error inesperado:", error.message);
-      return res.status(500).json(
-        new CategoryResponseDtOutput({
-          success: false,
-          status: 500,
-          message: "Ocurrió un error inesperado.",
-        }),
+      return handleControllerError(
+        error,
+        res,
+        CategoryResponseDtOutput,
+        logger,
       );
     }
   }
