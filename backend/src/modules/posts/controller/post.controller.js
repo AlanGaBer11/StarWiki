@@ -14,7 +14,7 @@ import PostChangeStatusDtoInput from "../dto/input/post.change_status.dto.input.
 
 class PostController {
   /**
-   * @param {import('../processpost.process.js').default} postProcess
+   * @param {import('../process/post.process.js').default} postProcess
    */
 
   constructor(postProcess) {
