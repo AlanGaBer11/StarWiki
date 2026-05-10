@@ -25,6 +25,11 @@ class CommentRepository extends ICommentRepository {
       currentPage: page,
     };
   }
+
+  // Método para buscar un comentario por su ID
+  async findById(comment_id) {
+    return await Comment.findByPk(comment_id);
+  }
 }
 
 export default CommentRepository;

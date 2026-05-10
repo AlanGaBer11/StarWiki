@@ -5,6 +5,7 @@ import logger from "#config/chalk.js";
 import CommentDtoOutput from "../dto/output/comment.dto.output.js";
 
 /* Errores */
+import { NotFoundError } from "#shared/utils/errors.js";
 
 class CommentService {
   /**
@@ -47,6 +48,21 @@ class CommentService {
       };
     } catch (error) {
       logger.error("Error al buscar comentarios:", error.message);
+      throw error;
+    }
+  }
+
+  // Método para obtener un comentario por su ID
+  async findCommentById(comment_id) {
+    try {
+      const comment = await this.commentRepository.findById(comment_id);
+
+      // Validar si se encontró el comentario
+      if (!comment) throw new NotFoundError("Comentario no encontrado.");
+
+      return new CommentDtoOutput(comment);
+    } catch (error) {
+      logger.error("Error al buscar comentario:", error.message);
       throw error;
     }
   }

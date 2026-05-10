@@ -77,7 +77,7 @@ class PostController {
         );
       }
       // Manejo de errores inesperados
-      logger.error("Error ", error.message);
+      logger.error("Error inesperado:", error.message);
       return res.status(500).json(
         new PostResponseDtoOutput({
           success: false,
@@ -119,7 +119,7 @@ class PostController {
         );
       }
       // Manejo de errores inesperados
-      logger.error("Error ", error.message);
+      logger.error("Error inesperado:", error.message);
       return res.status(500).json(
         new PostResponseDtoOutput({
           success: false,
@@ -160,7 +160,7 @@ class PostController {
         );
       }
       // Manejo de errores inesperados
-      logger.error("Error ", error.message);
+      logger.error("Error inesperado:", error.message);
       return res.status(500).json(
         new PostResponseDtoOutput({
           success: false,
@@ -204,7 +204,7 @@ class PostController {
         );
       }
       // Manejo de errores inesperados
-      logger.error("Error ", error.message);
+      logger.error("Error inesperado:", error.message);
       return res.status(500).json(
         new PostResponseDtoOutput({
           success: false,
@@ -245,7 +245,7 @@ class PostController {
         );
       }
       // Manejo de errores inesperados
-      logger.error("Error ", error.message);
+      logger.error("Error inesperado:", error.message);
       return res.status(500).json(
         new PostResponseDtoOutput({
           success: false,
@@ -293,7 +293,7 @@ class PostController {
         );
       }
       // Manejo de errores inesperados
-      logger.error("Error ", error.message);
+      logger.error("Error inesperado:", error.message);
       return res.status(500).json(
         new PostResponseDtoOutput({
           success: false,
