@@ -27,6 +27,11 @@ class CommentRoutes {
       "",
       this.commentController.findAllComments.bind(this.commentController),
     );
+    // Ruta para obtener un comentario por su ID
+    this.router.get(
+      "/:comment_id",
+      this.commentController.findCommentById.bind(this.commentController),
+    );
   }
 }
 

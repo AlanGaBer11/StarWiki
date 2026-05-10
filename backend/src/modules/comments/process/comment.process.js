@@ -25,6 +25,19 @@ class CommentProcess {
       throw error;
     }
   }
+
+  // Método para obtener un comentario por su ID
+  async findCommentById(comment_id) {
+    try {
+      return await this.commentService.findCommentById(comment_id);
+    } catch (error) {
+      logger.error(
+        "Error en el proceso al buscar comentario por ID:",
+        error.message,
+      );
+      throw error;
+    }
+  }
 }
 
 export default CommentProcess;

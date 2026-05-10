@@ -8,6 +8,8 @@ import { AppError } from "#shared/utils/errors.js";
 import CommentResponseDtoOutput from "../dto/output/comment.response.dto.output.js";
 // Entrada
 import CommentQueryDtoInput from "../dto/input/comment.query.dto.input.js";
+import CommentFindDtoInput from "../dto/input/comment.find.dto.input.js";
+
 class CommentController {
   /**
    * @param {import("../process/comment.process.js").default} commentProcess
@@ -75,7 +77,7 @@ class CommentController {
         );
       }
       // Manejo de errores inesperados
-      logger.error("Error ", error.message);
+      logger.error("Error inesperado:", error.message);
       return res.status(500).json(
         new CommentResponseDtoOutput({
           success: false,
@@ -84,6 +86,50 @@ class CommentController {
         }),
       );
     }
+  }
+
+  // Método para manejar la solicitud de buscar un comentario por su ID
+  async findCommentById(req, res) {
+    try {
+      const findDto = new CommentFindDtoInput(req.params);
+
+      // Llamar al proceso para buscar el comentario
+      const comment = await this.commentProcess.findCommentById(
+        findDto.comment_id,
+      );
+
+      // Enviar la respuesta con el comentario encontrado
+      logger.success("Comentario encontrado exitosamente.");
+      return res.status(200).json(
+        new CommentResponseDtoOutput({
+          success: true,
+          status: 200,
+          message: "Comentario encontrado exitosamente.",
+          comment,
+        }),
+      );
+    } catch (error) {
+      // Manejo centralizado de errores
+      if (error instanceof AppError) {
+        logger.warning(error.message);
+        return res.status(error.statusCode).json(
+          new CommentResponseDtoOutput({
+            success: false,
+            status: error.statusCode,
+            message: error.message,
+          }),
+        );
+      }
+    }
+    // Manejo de errores inseperados
+    logger.error("Error inesperado:", error.message);
+    return res.status(500).json(
+      new CommentResponseDtoOutput({
+        success: false,
+        status: 500,
+        message: "Ocurrió un error inesperado.",
+      }),
+    );
   }
 }
 
