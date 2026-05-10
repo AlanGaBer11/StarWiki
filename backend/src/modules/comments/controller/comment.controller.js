@@ -7,7 +7,7 @@ import { AppError } from "#shared/utils/errors.js";
 // Salida
 import CommentResponseDtoOutput from "../dto/output/comment.response.dto.output.js";
 // Entrada
-
+import CommentQueryDtoInput from "../dto/input/comment.query.dto.input.js";
 class CommentController {
   /**
    * @param {import("../process/comment.process.js").default} commentProcess
@@ -27,12 +27,13 @@ class CommentController {
   async findAllComments(req, res) {
     try {
       const { page, limit } = pagination(req.query);
+      const queryDto = new CommentQueryDtoInput(req.query);
 
       // Llamar al proceso para buscar todos los comentarios
       const result = await this.commentProcess.findAllComments(
         page,
         limit,
-        req.query,
+        queryDto,
       );
 
       // Validar si se encontraron comentarios
@@ -42,7 +43,7 @@ class CommentController {
           new CommentResponseDtoOutput({
             success: false,
             status: 404,
-            message: "No se encontrtaron comentarios en está página.",
+            message: "No se encontrtaron comentarios.",
             comments: [],
           }),
         );
