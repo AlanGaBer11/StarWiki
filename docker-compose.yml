@@ -25,6 +25,8 @@ services:
     container_name: starwiki_backend_container
     env_file:
       - .env
+    environment:
+      - CI=true
     restart: always
     ports:
       - "${BACKEND_PORT}:3000"

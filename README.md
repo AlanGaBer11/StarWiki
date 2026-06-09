@@ -116,7 +116,7 @@ modules/users/
 
 - Node.js (v14 o superior)
 - PostgreSQL (v12 o superior)
-- npm
+- pnpm
 - Ionic CLI
 
 ### [Backend](./backend/README.md "Documentación Backend")
@@ -130,7 +130,7 @@ modules/users/
 2. Instala las dependencias:
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. Configura las variables de entorno:
@@ -149,9 +149,9 @@ modules/users/
 
 4. Inicia el servidor:
    ```bash
-   npm start
+   pnpm start
    # o para desarrollo
-   npm run dev
+   pnpm run dev
    ```
 
 ### [Frontend](./frontend/README.md "Documentación Frontend")
@@ -165,7 +165,7 @@ modules/users/
 2. Instala las dependencias:
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. Configura la URL de la API en el archivo de configuración
@@ -179,9 +179,9 @@ modules/users/
 
 ### Backend
 
-- `npm start` - Inicia el servidor en producción
-- `npm run dev` - Inicia el servidor en modo desarrollo
-- `npm run lint` - Ejecuta el linter
+- `pnpm start` - Inicia el servidor en producción
+- `pnpm run dev` - Inicia el servidor en modo desarrollo
+- `pnpm run lint` - Ejecuta el linter
 
 ### Frontend
 
