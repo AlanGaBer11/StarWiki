@@ -9,6 +9,7 @@ import CommentResponseDtoOutput from "../dto/output/comment.response.dto.output.
 // Entrada
 import CommentQueryDtoInput from "../dto/input/comment.query.dto.input.js";
 import CommentFindDtoInput from "../dto/input/comment.find.dto.input.js";
+import CommentCreateDtoInput from "../dto/input/comment.create.dto.input.js";
 
 class CommentController {
   /**
@@ -92,6 +93,33 @@ class CommentController {
           status: 200,
           message: "Comentario encontrado exitosamente.",
           comment,
+        }),
+      );
+    } catch (error) {
+      return handleControllerError(
+        error,
+        res,
+        CommentResponseDtoOutput,
+        logger,
+      );
+    }
+  }
+
+  // Método para manejar la solicitud de crear un nuevo comentario
+  async createComment(req, res) {
+    try {
+      const createDto = new CommentCreateDtoInput(req.body);
+      // Llamar al proceso para crear un nuevo comentario
+      const newComment = this.commentProcess.createCComment(createDto);
+
+      // Enviar la respuesta del post creado
+      logger.success("Comentario creado exitosamente");
+      return res.status(201).json(
+        new CommentResponseDtoOutput({
+          success: true,
+          status: 201,
+          message: "Comentario creado exitosamente",
+          comment: newComment,
         }),
       );
     } catch (error) {

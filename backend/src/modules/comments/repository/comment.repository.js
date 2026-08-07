@@ -30,6 +30,11 @@ class CommentRepository extends ICommentRepository {
   async findById(comment_id) {
     return await Comment.findByPk(comment_id);
   }
+
+  // Método para crear un nuevo comentario
+  async create(commentData) {
+    return await Comment.create(commentData);
+  }
 }
 
 export default CommentRepository;
