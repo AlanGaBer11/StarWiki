@@ -117,7 +117,7 @@ CREATE TABLE comments (
     FOREIGN KEY(post_id) REFERENCES posts(post_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
-
+1
 -- =============================================
 -- 4. TRIGGERS
 -- =============================================
@@ -150,3 +150,44 @@ CREATE INDEX idx_posts_title ON posts(title);
 -- COMMENTS
 CREATE INDEX idx_comments_post ON comments(post_id);
 CREATE INDEX idx_comments_user ON comments(user_id);
+
+
+-- =============================================
+-- 6. INSERTS DE PRUEBA (SEEDS BÁSICOS)
+-- =============================================
+
+-- Inserción de Roles
+INSERT INTO roles (name, description) VALUES
+('Admin', 'Administrador con acceso total al sistema'),
+('Editor', 'Usuario con permisos para redactar y moderar contenido'),
+('User', 'Usuario estándar que puede leer, publicar y comentar');
+
+-- Inserción de Categorías
+INSERT INTO categories (name, description) VALUES
+('Guías', 'Artículos formativos, tutoriales y paso a paso'),
+('Noticias', 'Actualizaciones y novedades del proyecto'),
+('Comunidad', 'Discusiones generales y aportes de usuarios');
+
+-- Inserción de Usuarios
+-- (Nota: IDs asignados según el orden de inserción: 1, 2, 3)
+INSERT INTO users (role_id, name, lastname, username, email, password, biography, status, verified) VALUES
+(1, 'Alan', 'García', 'alanygb', 'alan@example.com', '$2b$10$wN3k9W0123456789abcdefghijklmnopqrstuvwxyz0123456789abc', 'Desarrollador full stack y creador de StarWiki.', 'Activo', TRUE),
+(2, 'Carlos', 'Mendoza', 'cmendoza', 'carlos@example.com', '$2b$10$wN3k9W0123456789abcdefghijklmnopqrstuvwxyz0123456789abc', 'Editor de contenido técnico y redactor.', 'Activo', TRUE),
+(3, 'Lucía', 'Fernández', 'lucia_f', 'lucia@example.com', '$2b$10$wN3k9W0123456789abcdefghijklmnopqrstuvwxyz0123456789abc', 'Entusiasta de la tecnología y lectora habitual.', 'Activo', FALSE);
+
+-- Inserción de Verificación de Usuario
+-- Código de 6 dígitos con expiración de 24 horas para el usuario no verificado (user_id = 3)
+INSERT INTO user_verification (user_id, verified_code, expiration_code) VALUES
+(3, '482910', NOW() + INTERVAL '24 hours');
+
+-- Inserción de Posts
+INSERT INTO posts (user_id, category_id, title, content, image_url, status) VALUES
+(1, 2, 'Bienvenido a StarWiki', 'Este es el primer post oficial que marca el lanzamiento de la plataforma.', 'https://images.unsplash.com/photo-1518770660439-4636190af475', 'Publicado'),
+(2, 1, 'Guía de inicio rápido para Docker', 'Aprende a configurar tu entorno de desarrollo utilizando contenedores y docker compose de forma sencilla.', 'https://images.unsplash.com/photo-1605745341112-85968b19335b', 'Publicado'),
+(1, 3, 'Borrador: Roadmap 2026', 'Detalles sobre las próximas funcionalidades que implementaremos en la API y el cliente.', 'https://images.unsplash.com/photo-1451187580459-43490279c0fa', 'Borrador');
+
+-- Inserción de Comentarios
+INSERT INTO comments (post_id, user_id, content, status) VALUES
+(1, 2, '¡Excelente iniciativa! Quedó muy bien la estructura inicial.', 'Publicado'),
+(1, 3, 'Felicidades por el lanzamiento, esperando más publicaciones.', 'Publicado'),
+(2, 1, 'Gran resumen, muy útil para los nuevos integrantes.', 'Publicado');
