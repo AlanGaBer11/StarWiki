@@ -1,5 +1,6 @@
 import RepositoryConfig from "#config/repository.js";
 import logger from "#config/chalk.js";
+import CommentBuilder from "../builder/comment.builder.js";
 
 /* DTOs */
 import CommentDtoOutput from "../dto/output/comment.dto.output.js";
@@ -63,6 +64,25 @@ class CommentService {
       return new CommentDtoOutput(comment);
     } catch (error) {
       logger.error("Error al buscar comentario:", error.message);
+      throw error;
+    }
+  }
+
+  // Método para crear un nuevo comentario
+  async createComment(commentData) {
+    try {
+      const { post_id, user_id, content } = commentData;
+
+      // Builder para crear el comentario
+      const commentBuilder = new CommentBuilder()
+        .setPostId(post_id)
+        .setUserId(user_id)
+        .setContent(content);
+
+      // Crear el comentario
+      return await this.commentRepository.create(commentBuilder.build());
+    } catch (error) {
+      logger.error("Error al crear el comentario:", error.message);
       throw error;
     }
   }

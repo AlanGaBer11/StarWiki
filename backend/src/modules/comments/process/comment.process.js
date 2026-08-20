@@ -38,6 +38,16 @@ class CommentProcess {
       throw error;
     }
   }
+
+  // Método para crear un nuevo comentario
+  async createCComment(commentData) {
+    try {
+      return await this.commentService.createComment(commentData);
+    } catch (error) {
+      logger.error("Error en el proceso al crear comentario:", error.message);
+      throw error;
+    }
+  }
 }
 
 export default CommentProcess;

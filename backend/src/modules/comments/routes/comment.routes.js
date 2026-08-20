@@ -32,6 +32,11 @@ class CommentRoutes {
       "/:comment_id",
       this.commentController.findCommentById.bind(this.commentController),
     );
+    // Ruta para crear un nuevo comentario
+    this.router.post(
+      "",
+      this.commentController.createComment.bind(this.commentController),
+    );
   }
 }
 
