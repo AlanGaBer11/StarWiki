@@ -1,8 +1,8 @@
 # Usar la imagen oficial de Node.js basada en Alpine para un entorno ligero
-FROM node:24-alpine
+FROM node:24-slim
 
 # Instalar pnpm globalmente en el contenedor usando Corepack (el estándar de Node)
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable pnpm
 
 # Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
@@ -11,8 +11,7 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # CORRECCIÓN: Usamos la variable de configuración global de pnpm para permitir la construcción
-RUN PNPM_CONFIG_ONLY_BUILT_DEPENDENCIES=sharp pnpm install --frozen-lockfile
-
+RUN pnpm install --frozen-lockfile
 # Copiar el resto de los archivos del proyecto al contenedor
 COPY . .
 
