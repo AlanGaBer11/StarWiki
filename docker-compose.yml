@@ -50,3 +50,4 @@ services:
 
 volumes:
   starwiki_pg_data:
+    name: starwiki_pg_data
